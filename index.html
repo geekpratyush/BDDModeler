@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Pratyush Ranjan Mishra">
+  <meta name="description" content="RouteForge BDD Studio v1.0 Enterprise - Multi-Format Data Modeling & Behavioral Requirement Engineering Studio by Pratyush Ranjan Mishra">
+  <title>RouteForge BDD Studio v1.0 Enterprise - Pratyush Ranjan Mishra</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #151c2c;
+      --bg-card-hover: #1c263c;
+      --border: #1f2937;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --given: #10b981;
+      --when: #3b82f6;
+      --then: #f59e0b;
+      --and: #8b5cf6;
+      --but: #ef4444;
+      --font-main: 'Inter', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+    /* Header */
+    header {
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 60px;
+    }
+    .brand { font-size: 20px; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 8px; }
+    .brand span { font-size: 11px; background: rgba(59, 130, 246, 0.2); color: var(--accent); padding: 2px 6px; border-radius: 4px; }
+    .header-controls { display: flex; gap: 10px; align-items: center; }
+    
+    button, select {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-main);
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    button:hover { background: var(--border); }
+    button.primary { background: var(--accent); border-color: var(--accent); color: white; }
+    button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+    button.folder-btn { background: rgba(16, 185, 129, 0.15); color: var(--success); border-color: rgba(16, 185, 129, 0.3); font-weight: 600; }
+    button.folder-btn:hover { background: var(--success); color: white; }
+    button.sm { padding: 3px 8px; font-size: 11px; }
+    button.danger-sm { padding: 2px 6px; font-size: 11px; background: rgba(239,68,68,0.2); color: var(--danger); border-color: rgba(239,68,68,0.3); }
+    button.danger-sm:hover { background: var(--danger); color: white; }
+    button.action-sim { background: rgba(16, 185, 129, 0.2); color: var(--success); border-color: rgba(16, 185, 129, 0.4); font-size: 11px; }
+    button.action-sim:hover { background: var(--success); color: white; }
+
+    /* Layout */
+    .app-container { display: flex; flex: 1; overflow: hidden; }
+    .sidebar {
+      width: 310px;
+      background-color: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-header { padding: 14px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
+    .sidebar-title { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+    .sidebar-search { width: 100%; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 10px; border-radius: 6px; outline: none; font-size: 12px; }
+    
+    .feature-list { flex: 1; overflow-y: auto; padding: 8px; }
+    
+    /* Group Folder Styles */
+    .group-folder { margin-bottom: 12px; }
+    .group-header {
+      padding: 6px 10px; font-size: 12px; font-weight: 700; color: var(--text-secondary);
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; background: rgba(255,255,255,0.02); border-radius: 4px; margin-bottom: 4px;
+    }
+    .group-header:hover { color: var(--text-primary); background: var(--bg-card); }
+    .group-title { display: flex; align-items: center; gap: 6px; word-break: break-all; }
+
+    .feature-item {
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 4px;
+      margin-left: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .feature-item:hover { background: var(--bg-card); }
+    .feature-item.active { background: var(--bg-card); border-left: 3px solid var(--accent); font-weight: 500; }
+
+    .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    
+    /* Open Workspace File Tabs Bar */
+    .workspace-tabs-bar {
+      display: flex; background: #0d1322; border-bottom: 1px solid var(--border);
+      overflow-x: auto; padding: 0 8px; gap: 4px; min-height: 38px; align-items: center;
+    }
+    .workspace-tab {
+      padding: 6px 12px; font-size: 12px; color: var(--text-secondary); background: var(--bg-secondary);
+      border: 1px solid var(--border); border-bottom: none; border-radius: 6px 6px 0 0;
+      cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; max-width: 180px;
+    }
+    .workspace-tab.active { background: var(--bg-primary); color: var(--accent); border-color: var(--accent); font-weight: 600; }
+    .workspace-tab .close-tab { font-size: 10px; color: var(--danger); }
+    .workspace-tab .close-tab:hover { font-weight: bold; }
+
+    /* Meta Panel */
+    .meta-panel {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-primary);
+    }
+    .meta-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .meta-panel input.title {
+      background: transparent; border: none; color: var(--text-primary);
+      font-size: 22px; font-weight: 700; width: 100%; outline: none;
+    }
+    .meta-panel textarea.desc {
+      background: transparent; border: none; color: var(--text-secondary);
+      font-size: 13px; width: 100%; outline: none; resize: none; font-family: var(--font-main);
+      min-height: 48px;
+    }
+    .tag-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
+    .tag-chip { font-size: 11px; background: rgba(59, 130, 246, 0.15); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.3); padding: 2px 8px; border-radius: 12px; display: flex; align-items: center; gap: 4px; }
+    .tag-chip .remove { cursor: pointer; color: var(--danger); font-weight: bold; }
+
+    /* Mode Tabs */
+    .tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--bg-secondary); }
+    .tab {
+      padding: 12px 24px; cursor: pointer; border-bottom: 2px solid transparent;
+      color: var(--text-secondary); font-weight: 500; font-size: 14px;
+    }
+    .tab:hover { color: var(--text-primary); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* Content Area */
+    .content-area { flex: 1; overflow-y: auto; padding: 24px; background: var(--bg-primary); }
+
+    /* Scenario Card */
+    .scenario-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 20px; margin-bottom: 24px;
+    }
+    .scenario-header { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+    .scenario-type { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; background: var(--bg-secondary); color: var(--text-secondary); cursor: pointer; user-select: none; border: 1px solid var(--border); }
+    .scenario-name { flex: 1; background: transparent; border: none; color: var(--text-primary); font-size: 16px; font-weight: 600; outline: none; border-bottom: 1px solid transparent; }
+    .scenario-name:focus { border-bottom-color: var(--accent); }
+    
+    .step-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.03); }
+    .step-main { display: flex; gap: 8px; align-items: center; }
+    .step-type {
+      font-size: 11px; font-weight: 700; padding: 5px 8px; border-radius: 4px; width: 64px; text-align: center; cursor: pointer; user-select: none;
+    }
+    .type-given { background: rgba(16, 185, 129, 0.2); color: var(--given); }
+    .type-when { background: rgba(59, 130, 246, 0.2); color: var(--when); }
+    .type-then { background: rgba(245, 158, 11, 0.2); color: var(--then); }
+    .type-and { background: rgba(139, 92, 246, 0.2); color: var(--and); }
+    .type-but { background: rgba(239, 68, 68, 0.2); color: var(--but); }
+    
+    .step-input { flex: 1; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 12px; border-radius: 6px; outline: none; font-size: 13px; }
+    .step-input:focus { border-color: var(--accent); }
+
+    /* Multi-Format Payload Editor */
+    .payload-editor-toggle { font-size: 11px; color: var(--text-secondary); background: transparent; border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px; font-weight: 600; }
+    .payload-editor-toggle.active { color: var(--accent); border-color: var(--accent); background: rgba(59,130,246,0.1); }
+    .payload-container { margin-top: 6px; padding: 10px; background: #080c14; border: 1px solid var(--border); border-radius: 6px; display: none; }
+    .payload-container.open { display: block; }
+    .payload-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
+    .payload-format-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: rgba(139,92,246,0.2); color: var(--and); text-transform: uppercase; }
+    .payload-container textarea { width: 100%; height: 120px; background: transparent; border: none; color: #a5d6ff; font-family: var(--font-mono); font-size: 12px; outline: none; resize: vertical; line-height: 1.4; }
+
+    .add-step-toolbar { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .add-step-toolbar button { font-size: 11px; padding: 4px 8px; }
+
+    /* Examples Section */
+    .examples-section { margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--border); }
+    .examples-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .examples-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .examples-table th, .examples-table td { border: 1px solid var(--border); padding: 4px; text-align: center; }
+    .examples-table input { width: 100%; background: transparent; border: none; color: var(--text-primary); padding: 6px; outline: none; font-family: var(--font-mono); font-size: 12px; text-align: left; }
+    .examples-table th { background: var(--bg-secondary); }
+    .examples-table th input { font-weight: 600; color: var(--accent); }
+
+    /* Visual Flow Mode */
+    .flow-scenario { margin-bottom: 40px; }
+    .flow-title { font-size: 17px; margin-bottom: 20px; font-weight: 600; color: var(--text-primary); }
+    .flow-node {
+      padding: 12px 20px; border-radius: 8px; margin: 0 auto 16px auto; width: max-content;
+      min-width: 280px; max-width: 650px; text-align: left; font-weight: 500; font-size: 14px;
+      position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      animation: popIn 0.4s ease-out backwards;
+    }
+    .flow-node::after {
+      content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+      width: 2px; height: 16px; background: linear-gradient(to bottom, currentColor, transparent);
+    }
+    .flow-node:last-child::after { display: none; }
+    
+    .flow-given { background: rgba(16, 185, 129, 0.12); border: 1px solid var(--given); color: var(--text-primary); border-left: 4px solid var(--given); }
+    .flow-when { background: rgba(59, 130, 246, 0.12); border: 1px solid var(--when); color: var(--text-primary); border-left: 4px solid var(--when); }
+    .flow-then { background: rgba(245, 158, 11, 0.12); border: 1px solid var(--then); color: var(--text-primary); border-left: 4px solid var(--then); }
+    .flow-and { background: rgba(139, 92, 246, 0.12); border: 1px solid var(--and); color: var(--text-primary); border-left: 4px solid var(--and); }
+    .flow-but { background: rgba(239, 68, 68, 0.12); border: 1px solid var(--but); color: var(--text-primary); border-left: 4px solid var(--but); }
+    
+    .flow-json-block { margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; font-family: var(--font-mono); font-size: 11px; color: #a5d6ff; max-height: 140px; overflow-y: auto; white-space: pre-wrap; }
+
+    @keyframes popIn { 0% { opacity: 0; transform: scale(0.96) translateY(8px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+
+    /* Simulate Mode */
+    .sim-container { max-width: 850px; margin: 0 auto; }
+    .sim-controls { display: flex; gap: 12px; margin-bottom: 24px; padding: 16px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap;}
+    .sim-step { padding: 16px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--border); background: var(--bg-secondary); opacity: 0.55; transition: all 0.3s; }
+    .sim-step.active { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); animation: pulse 2s infinite; }
+    .sim-step.pass { opacity: 1; border-color: var(--success); background: rgba(16, 185, 129, 0.05); }
+    .sim-step.fail { opacity: 1; border-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
+    .sim-step-header { display: flex; justify-content: space-between; align-items: center; }
+    .placeholder-highlight { color: #60a5fa; font-weight: 700; background: rgba(59, 130, 246, 0.2); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); }
+    .sim-actions { display: none; gap: 8px; }
+    .sim-step.active .sim-actions { display: flex; }
+
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+
+    /* Gherkin View */
+    .gherkin-view { background: var(--bg-card); padding: 24px; border-radius: 8px; border: 1px solid var(--border); font-family: var(--font-mono); font-size: 13px; white-space: pre-wrap; color: #e2e8f0; line-height: 1.5; }
+
+    /* Help & Modal Panel */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100; display: none; }
+    .modal-overlay.open { display: flex; align-items: center; justify-content: center; }
+    .modal-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; width: 640px; max-width: 90%; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 101; }
+
+    .help-panel {
+      position: fixed; right: 0; top: 0; bottom: 0; width: 750px; max-width: 100%;
+      background: #0d1322; border-left: 1px solid var(--border); z-index: 150;
+      transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.7);
+    }
+    .help-panel.open { transform: translateX(0); }
+    .help-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary); }
+    .help-search { padding: 14px 24px; border-bottom: 1px solid var(--border); background: var(--bg-secondary); }
+    .help-search input { width: 100%; background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 10px 16px; border-radius: 6px; outline: none; font-size: 13px; }
+    .help-body { display: flex; flex: 1; overflow: hidden; background: #080c14; }
+    .help-nav { width: 240px; border-right: 1px solid var(--border); overflow-y: auto; padding: 12px; background: var(--bg-secondary); }
+    .help-topic { padding: 10px 14px; cursor: pointer; border-radius: 6px; margin-bottom: 4px; color: var(--text-secondary); font-size: 13px; transition: all 0.15s; }
+    .help-topic:hover { background: var(--bg-card); color: var(--text-primary); }
+    .help-topic.active { background: var(--bg-card); color: var(--accent); font-weight: 600; border-left: 3px solid var(--accent); }
+    .help-content { flex: 1; overflow-y: auto; padding: 28px; line-height: 1.6; color: #cbd5e1; }
+    .help-content h2 { margin-bottom: 16px; color: #f8fafc; font-size: 20px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .help-content p, .help-content ul { margin-bottom: 16px; color: #cbd5e1; font-size: 14px; line-height: 1.6; }
+    .help-content li { margin-left: 20px; margin-bottom: 8px; }
+    .help-content code { background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px; }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div>RouteForge BDD Studio <span>v1.0 Enterprise</span></div>
+      <div style="font-size:10px; font-weight:400; color:var(--text-secondary); margin-top:2px;">
+        Architected by <a href="https://www.linkedin.com/in/leadtherightway/" target="_blank" style="color:var(--accent); text-decoration:none; font-weight:600;">Pratyush Ranjan Mishra</a> | <a href="https://github.com/geekpratyush" target="_blank" style="color:var(--text-secondary); text-decoration:none;">GitHub @geekpratyush</a>
+      </div>
+    </div>
+    <div class="header-controls">
+      <button class="folder-btn" onclick="openFolderPicker()">📂 Open Project Folder</button>
+      <input type="file" id="folder-input" webkitdirectory directory multiple style="display:none;" onchange="handleFolderSelect(event)">
+      
+      <label style="font-size:12px; color:var(--text-secondary); margin-left:8px;">Domain Template:</label>
+      <select id="context-select" style="background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 12px; border-radius: 6px;">
+        <!-- Dynamically rendered -->
+      </select>
+      <button onclick="createCustomDomainPrompt()" class="sm">+ New Domain</button>
+      <button onclick="openImportModal()">Import File</button>
+      <button onclick="exportGherkin()">Export Gherkin</button>
+      <button onclick="toggleHelp()">Help (?)</button>
+    </div>
+  </header>
+
+  <div class="app-container">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">
+          <span>Project Workspace</span>
+          <div style="display:flex; gap:4px;">
+            <button class="sm" onclick="createNewGroupPrompt()" title="Create New Folder Group">+ Group</button>
+            <button class="primary sm" onclick="createNewFeature()" title="Create New Feature">+ Feature</button>
+          </div>
+        </div>
+        <input type="text" class="sidebar-search" id="sidebar-search" placeholder="Search features & groups..." onkeyup="renderSidebar()">
+      </div>
+      <div class="feature-list" id="feature-list"></div>
+    </div>
+
+    <div class="main-area">
+      <!-- Active Open Tabs Bar -->
+      <div class="workspace-tabs-bar" id="workspace-tabs-bar" style="display:none;"></div>
+
+      <div class="meta-panel" id="meta-panel" style="display:none;">
+        <div class="meta-row">
+          <input type="text" class="title" id="feature-title" placeholder="Feature Title" onchange="updateFeatureMeta()">
+          <select id="feature-group-select" onchange="updateFeatureMeta()" style="width:200px; font-size:12px;">
+            <!-- Group options dynamically populated -->
+          </select>
+        </div>
+        <textarea class="desc" id="feature-desc" placeholder="As a [role]&#10;I want [goal]&#10;So that [benefit]" onchange="updateFeatureMeta()"></textarea>
+        
+        <div class="tag-chips" id="tag-chips">
+          <!-- Tag chips rendered here -->
+        </div>
+      </div>
+
+      <div class="tabs" id="tabs" style="display:none;">
+        <div class="tab active" onclick="setMode('edit')">Edit Mode</div>
+        <div class="tab" onclick="setMode('visual')">Visual Flow</div>
+        <div class="tab" onclick="setMode('simulate')">Interactive Simulation</div>
+        <div class="tab" onclick="setMode('gherkin')">Gherkin View</div>
+      </div>
+
+      <div class="content-area" id="content-area">
+        <div style="text-align: center; color: var(--text-secondary); margin-top: 100px;" id="empty-state">
+          Select or load a project folder containing <code>.feature</code> files to begin.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Modal -->
+  <div class="modal-overlay" id="import-modal">
+    <div class="modal-card">
+      <h3 style="color:var(--text-primary);">Import Gherkin Feature</h3>
+      <p style="font-size:13px; color:var(--text-secondary);">Paste your .feature syntax below, or choose a file from your computer.</p>
+      <textarea id="import-text" style="width:100%; height:180px; background:var(--bg-primary); border:1px solid var(--border); color:var(--text-primary); font-family:var(--font-mono); font-size:12px; padding:10px; border-radius:6px; outline:none;" placeholder="Feature: My Feature..."></textarea>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <input type="file" id="file-input" accept=".feature,.txt" style="font-size:12px;" onchange="handleFileSelect(event)">
+        <div style="display:flex; gap:8px;">
+          <button onclick="closeImportModal()">Cancel</button>
+          <button class="primary" onclick="processImport()">Import</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Panel -->
+  <div class="modal-overlay" id="help-overlay" onclick="toggleHelp()"></div>
+  <div class="help-panel" id="help-panel">
+    <div class="help-header">
+      <h2>RouteForge Documentation & Guide</h2>
+      <button onclick="toggleHelp()">Close X</button>
+    </div>
+    <div class="help-search">
+      <input type="text" id="help-search-input" placeholder="Search guide topics..." onkeyup="filterHelp()">
+    </div>
+    <div class="help-body">
+      <div class="help-nav" id="help-nav"></div>
+      <div class="help-content" id="help-content"></div>
+    </div>
+  </div>
+
+  <script>
+    // Utility: Unique ID Generator
+    const uuid = () => Math.random().toString(36).substring(2, 15);
+
+    // Sample Multi-Format Payload Presets for BAs
+    const payloadPresets = {
+      iso_xml: `<?xml version="1.0" encoding="UTF-8"?>\n<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08">\n  <FIToFICstmrCdtTrf>\n    <GrpHdr>\n      <MsgId><msg_id></MsgId>\n      <CreDtTm>2026-07-26T12:00:00Z</CreDtTm>\n    </GrpHdr>\n    <CdtTrfTxInf>\n      <IntrBkSttlmAmt Ccy="<currency>"><amount></IntrBkSttlmAmt>\n      <Dbtr><Nm><debtor_name></Nm></Dbtr>\n      <Cdtr><Nm><creditor_name></Nm></Cdtr>\n    </CdtTrfTxInf>\n  </FIToFICstmrCdtTrf>\n</Document>`,
+      swift_mt103: `{1:F01BANKDEFMAXXX0000000000}\n{2:I103BANKDEFMAXXXN}\n{4:\n:20:<msg_id>\n:23B:CRED\n:32A:260726<currency><amount>\n:50K:/<debtor_account>\n<debtor_name>\n:59:/<creditor_account>\n<creditor_name>\n:71A:OUR\n-}`,
+      json_facility: `{\n  "facilityId": "<facility_id>",\n  "sanctionedLimit": "<sanctioned_limit>",\n  "sublimits": [\n    { "type": "LC", "amount": 500000 },\n    { "type": "BG", "amount": 300000 }\n  ]\n}`,
+      flatfile_ach: `101 011000015 123456789 260726 1100 A094101YOUR BANK               MY COMPANY             \n5200COMPANY NAME        <ref_num>  000123450000001                          \n622123456789<account_no>0000<amount>0001234<debtor_name>                  0`,
+      yaml_rules: `riskPolicy:\n  ruleId: POL-992\n  thresholdAmount: <sanctioned_limit>\n  sanctionsCheck: STRICT\n  allowQueuing: true`
+    };
+
+    // Initial Application State
+    let appState = {
+      context: 'banking',
+      features: [],
+      activeFeatureId: null,
+      openTabs: [],
+      mode: 'edit',
+      sim: {
+        scenarioId: null,
+        stepIndex: -1,
+        results: {},
+        exampleRowId: null
+      }
+    };
+
+    // Pre-loaded Industry Templates
+    const templates = {
+      banking: [
+        {
+          id: "bk-1",
+          group: "Limits & Earmarking",
+          name: "Clearing Line Utilization & Intraday Queueing",
+          desc: "As a Cash Management Engine\nI want to validate clearing line limits before releasing payments\nSo that intraday exposure stays within sanctioned thresholds",
+          tags: ["@banking", "@limits", "@clearing"],
+          scenarios: [
+            {
+              id: "sc-bk-1",
+              name: "Validate payment release against intraday clearing limit",
+              type: "scenario-outline",
+              tags: ["@clearing-utilization"],
+              steps: [
+                { id: "st-1", type: "given", text: "an account <acc_id> with sanctioned clearing limit of <sanctioned_limit>", payloadFormat: "json", jsonPayload: "{\n  \"account\": {\n    \"id\": \"<acc_id>\",\n    \"currency\": \"USD\",\n    \"limitTree\": {\n      \"sanctionedLimit\": \"<sanctioned_limit>\",\n      \"utilizedLimit\": 300000\n    }\n  }\n}" },
+                { id: "st-2", type: "and", text: "current intraday utilization is <current_utilization>" },
+                { id: "st-3", type: "when", text: "an outbound payment of <payment_amount> is submitted" },
+                { id: "st-4", type: "then", text: "the clearing decision should be <decision>" },
+                { id: "st-5", type: "and", text: "the updated utilization should equal <final_utilization>" }
+              ],
+              examples: {
+                headers: ["acc_id", "sanctioned_limit", "current_utilization", "payment_amount", "decision", "final_utilization"],
+                rows: [
+                  { id: "r1", cells: ["ACC-8821", "1000000", "500000", "200000", "APPROVED", "700000"] },
+                  { id: "r2", cells: ["ACC-8821", "1000000", "900000", "250000", "QUEUED_EXCESS", "900000"] }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          id: "bk-2",
+          group: "Limits & Earmarking",
+          name: "Excess Approval & Hierarchy Escalation",
+          desc: "As a Credit Officer\nI want excess payment requests routed through dual-signoff matrices\nSo that unauthorized overdrafts are blocked",
+          tags: ["@credit", "@excess-approval"],
+          scenarios: [
+            {
+              id: "sc-bk-2",
+              name: "Dual Signoff for Over-Limit Credit Request",
+              type: "scenario-outline",
+              tags: ["@approval-workflow"],
+              steps: [
+                { id: "st-11", type: "given", text: "a credit facility with parent limit <parent_limit> and sublimit <sublimit>", payloadFormat: "json", jsonPayload: "{\n  \"facilityHierarchy\": {\n    \"parentFacilityId\": \"FAC-MAIN-900\",\n    \"parentLimit\": \"<parent_limit>\",\n    \"subLimitNode\": {\n      \"subLimitId\": \"SUB-LC-01\",\n      \"allocated\": \"<sublimit>\"\n    }\n  }\n}" },
+                { id: "st-12", type: "when", text: "an excess payment of <excess_amount> requires approval" },
+                { id: "st-13", type: "then", text: "the workflow routes to <approval_tier> with signoff requirement <signoff_type>" }
+              ],
+              examples: {
+                headers: ["parent_limit", "sublimit", "excess_amount", "approval_tier", "signoff_type"],
+                rows: [
+                  { id: "r21", cells: ["5000000", "1000000", "50000", "TIER_1_MANAGER", "SINGLE_SIGNOFF"] },
+                  { id: "r22", cells: ["5000000", "1000000", "300000", "TIER_2_VP_CREDIT", "DUAL_SIGNOFF"] }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          id: "bk-3",
+          group: "Limits & Earmarking",
+          name: "Daily Overdraft & Limit Sublimit Engine",
+          desc: "As a Core Banking System\nI want day-end balance verification against daily overdraft thresholds\nSo that interest penalties and auto-blocks trigger correctly",
+          tags: ["@overdraft", "@daily-od"],
+          scenarios: [
+            {
+              id: "sc-bk-3",
+              name: "Earmarking funds for outbound SWIFT and auto-release",
+              type: "scenario",
+              tags: ["@earmarking"],
+              steps: [
+                { id: "st-31", type: "given", text: "an available balance of 150000 USD in account ACC-771" },
+                { id: "st-32", type: "when", text: "an earmark hold of 40000 USD is placed for SWIFT deal REF-9912" },
+                { id: "st-33", type: "then", text: "the effective available balance should drop to 110000 USD" },
+                { id: "st-34", type: "and", text: "upon deal settlement, the earmarked hold is released and balance debited" }
+              ],
+              examples: { headers: [], rows: [] }
+            }
+          ]
+        },
+        {
+          id: "bk-4",
+          group: "Payments & ISO Gateway",
+          name: "ISO 20022 MX Pacs.008 XML & SWIFT Transformation",
+          desc: "As a Payment Messaging Gateway\nI want to convert ISO 20022 MX pacs.008 XML payloads to legacy SWIFT MT103 format\nSo that downstream clearing systems receive valid messages",
+          tags: ["@iso20022", "@swift", "@transformation"],
+          scenarios: [
+            {
+              id: "sc-bk-4",
+              name: "Transform pacs.008 credit transfer XML to MT103 message format",
+              type: "scenario-outline",
+              tags: ["@mx-to-mt"],
+              steps: [
+                { id: "st-41", type: "given", text: "an incoming ISO 20022 XML message <msg_id> of type pacs.008", payloadFormat: "xml", jsonPayload: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Document xmlns=\"urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08\">\n  <FIToFICstmrCdtTrf>\n    <GrpHdr>\n      <MsgId><msg_id></MsgId>\n      <CreDtTm>2026-07-26T11:00:00Z</CreDtTm>\n    </GrpHdr>\n    <CdtTrfTxInf>\n      <IntrBkSttlmAmt Ccy=\"<currency>\"><amount></IntrBkSttlmAmt>\n    </CdtTrfTxInf>\n  </FIToFICstmrCdtTrf>\n</Document>" },
+                { id: "st-42", type: "when", text: "the ISO transformation engine parses the XML payload" },
+                { id: "st-43", type: "then", text: "the generated SWIFT MT103 flat block should contain field 32A with value <expected_32a>", payloadFormat: "swift", jsonPayload: "{1:F01BANKDEFMAXXX0000000000}\n{2:I103BANKDEFMAXXXN}\n{4:\n:20:<msg_id>\n:32A:<expected_32a>\n-}" },
+                { id: "st-44", type: "and", text: "transformation validation status should be <transform_status>" }
+              ],
+              examples: {
+                headers: ["msg_id", "currency", "amount", "expected_32a", "transform_status"],
+                rows: [
+                  { id: "r41", cells: ["MX-2026-001", "USD", "150000.00", "260726USD150000,00", "SUCCESS"] },
+                  { id: "r42", cells: ["MX-2026-002", "EUR", "85000.50", "260726EUR85000,50", "SUCCESS"] }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          id: "bk-5",
+          group: "Sanctions & Compliance",
+          name: "Sanctions Screening & Message Quarantine Engine",
+          desc: "As a Compliance Officer\nI want payment messages screened against OFAC and UN sanctions lists\nSo that high-risk transactions are quarantined for manual review",
+          tags: ["@sanctions", "@compliance", "@ofac"],
+          scenarios: [
+            {
+              id: "sc-bk-5",
+              name: "Quarantine payment message matching sanction list hit",
+              type: "scenario-outline",
+              tags: ["@sanctions-match"],
+              steps: [
+                { id: "st-51", type: "given", text: "a payment transaction with beneficiary name <beneficiary_name>", payloadFormat: "json", jsonPayload: "{\n  \"sanctionsCheckPayload\": {\n    \"transactionRef\": \"TX-9901\",\n    \"parties\": {\n      \"orderingCustomer\": \"Global Importers LLC\",\n      \"beneficiary\": \"<beneficiary_name>\"\n    }\n  }\n}" },
+                { id: "st-52", type: "when", text: "fuzzy sanction list matching algorithm runs with score threshold 80%" },
+                { id: "st-53", type: "then", text: "the screening result should be <screening_result>" },
+                { id: "st-54", type: "and", text: "the message disposition should be <disposition>" }
+              ],
+              examples: {
+                headers: ["beneficiary_name", "screening_result", "disposition"],
+                rows: [
+                  { id: "r51", cells: ["Acme International Inc", "NO_MATCH", "PASSED_TO_CLEARING"] },
+                  { id: "r52", cells: ["Sanctioned Entity Corp", "HIGH_MATCH_95_PERCENT", "QUARANTINED_MANUAL_REVIEW"] }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      ecommerce: [],
+      healthcare: [],
+      saas: [],
+      custom: []
+    };
+
+    // Help topics
+    const helpTopics = [
+      { id: "author-info", title: "Author Credits & Platform Overview", keywords: "author pratyush ranjan mishra architecture contact linkedin github routeforge", content: "<h2>RouteForge BDD Studio v1.0 Enterprise</h2><p>Architected & Developed by <strong>Pratyush Ranjan Mishra</strong>.</p><p>RouteForge BDD Studio bridges the gap between Business Analysts, Solution Architects, and Quality Engineers by combining multi-format payload modeling (ISO 20022 XML, SWIFT MT103, ACH FlatFiles, JSON) with native Gherkin execution and interactive 1-click simulation.</p><p><strong>Connect with the Author:</strong></p><ul><li><strong>LinkedIn:</strong> <a href=\"https://www.linkedin.com/in/leadtherightway/\" target=\"_blank\" style=\"color:#60a5fa;\">linkedin.com/in/leadtherightway</a></li><li><strong>GitHub:</strong> <a href=\"https://github.com/geekpratyush\" target=\"_blank\" style=\"color:#60a5fa;\">github.com/geekpratyush</a></li></ul>" },
+      { id: "multi-format-payloads", title: "Multi-Format Payloads (XML, SWIFT, FlatFile, JSON, YAML)", keywords: "xml swift flatfile ach csv json yaml docstring payload format", content: "<h2>Multi-Format Payloads & Freedom for BAs</h2><p>RouteForge BDD Studio gives Business Analysts complete freedom to model data in any industry format:</p><ul><li><strong>JSON:</strong> REST APIs, Microservices, and MongoDB documents.</li><li><strong>XML:</strong> ISO 20022 MX payment messages (<code>pacs.008</code>, <code>camt.053</code>), SOAP Services, FPML.</li><li><strong>SWIFT MT & FlatFiles:</strong> SWIFT MT103 / MT202 blocks, NACHA ACH fixed-width records, ISO 8583 card settlement flat lines, CSV.</li><li><strong>YAML:</strong> Policy rules, system flags, and configuration maps.</li></ul><p>Use the <strong>⚡ Insert Sample Preset</strong> dropdown inside any step payload container to instantly populate realistic industry templates!</p>" },
+      { id: "folder-opening", title: "Opening Local Project Folders", keywords: "folder open directory project feature subfolders", content: "<h2>Opening Local Project Folders</h2><p>RouteForge BDD Studio allows you to open an entire directory from your local system containing <code>.feature</code> files.</p><ul><li>Click <strong>📂 Open Project Folder</strong> in the top header.</li><li>Select your project root directory.</li><li>Subfolders (e.g. <code>/banking/limits/</code>, <code>/payments/iso/</code>) are automatically mapped into sidebar project folders!</li><li>Open features appear in the top Workspace Tabs Bar for quick navigation.</li></ul>" }
+    ];
+
+    // Load State
+    function loadState() {
+      const saved = localStorage.getItem('rf_bdd_state_v1.0') || localStorage.getItem('rf_bdd_state_v2.5');
+      if (saved) {
+        appState = JSON.parse(saved);
+        if(!appState.openTabs) appState.openTabs = appState.features.map(f => f.id);
+        if(!appState.customDomains) appState.customDomains = [];
+      } else {
+        appState.context = 'banking';
+        appState.features = templates.banking;
+        appState.activeFeatureId = appState.features[0].id;
+        appState.openTabs = appState.features.map(f => f.id);
+        appState.customDomains = [];
+      }
+      renderDomainSelectOptions();
+      renderSidebar();
+      renderOpenTabs();
+      if (appState.activeFeatureId) {
+        renderActiveFeature();
+      }
+    }
+
+    function renderDomainSelectOptions() {
+      const sel = document.getElementById('context-select');
+      const baseDomains = [
+        { key: 'banking', name: 'Banking & Cash Management' },
+        { key: 'ecommerce', name: 'E-Commerce & Retail' },
+        { key: 'healthcare', name: 'Healthcare & Life Sciences' },
+        { key: 'saas', name: 'SaaS & Enterprise Cloud' },
+        { key: 'custom', name: 'Custom Workspace' }
+      ];
+
+      const customList = appState.customDomains || [];
+      const allDomains = [...baseDomains, ...customList];
+
+      sel.innerHTML = allDomains.map(d => `<option value="${d.key}">${escapeHtml(d.name)}</option>`).join('') +
+        `<option value="__create_new_domain__">+ Create New Domain...</option>`;
+      
+      sel.value = appState.context || 'banking';
+    }
+
+    function createCustomDomainPrompt() {
+      const name = prompt("Enter New Industry / Business Domain Name (e.g. Insurance & Claims, Logistics & Freight, Telecom Billing):");
+      if (!name || !name.trim()) return;
+      const cleanName = name.trim();
+      const domainKey = 'custom_' + cleanName.toLowerCase().replace(/[^a-z0-9]/g, '_');
+
+      if (!appState.customDomains) appState.customDomains = [];
+      if (!appState.customDomains.find(d => d.key === domainKey)) {
+        appState.customDomains.push({ key: domainKey, name: cleanName });
+      }
+
+      templates[domainKey] = [
+        {
+          id: uuid(),
+          group: `${cleanName} Core`,
+          name: `Initial ${cleanName} Requirement`,
+          desc: `As a Business Analyst\nI want to define ${cleanName} rules\nSo that stakeholders align on execution logic`,
+          tags: [`@${cleanName.toLowerCase().replace(/\s+/g, '')}`],
+          scenarios: [
+            {
+              id: uuid(),
+              name: `Default ${cleanName} Scenario`,
+              type: "scenario",
+              tags: [],
+              steps: [{ id: uuid(), type: "given", text: "business context is initialized", payloadFormat: "json" }],
+              examples: { headers: [], rows: [] }
+            }
+          ]
+        }
+      ];
+
+      appState.context = domainKey;
+      appState.features = JSON.parse(JSON.stringify(templates[domainKey]));
+      appState.activeFeatureId = appState.features[0].id;
+      appState.openTabs = appState.features.map(f => f.id);
+
+      saveState();
+      renderDomainSelectOptions();
+      renderSidebar();
+      renderOpenTabs();
+      renderActiveFeature();
+    }
+
+    function createNewGroupPrompt() {
+      const name = prompt("Enter New Subfolder / Group Name (e.g. Sanctions, Earmarking Engine, Checkout, Claims Triage):");
+      if (!name || !name.trim()) return;
+      createNewFeature(name.trim());
+    }
+
+    function saveState() {
+      localStorage.setItem('rf_bdd_state_v1.0', JSON.stringify(appState));
+    }
+
+    // Open Project Folder Logic
+    async function openFolderPicker() {
+      if ('showDirectoryPicker' in window) {
+        try {
+          const dirHandle = await window.showDirectoryPicker();
+          const loadedFeatures = [];
+          await readDirectoryRecursively(dirHandle, '', loadedFeatures, dirHandle.name);
+          if (loadedFeatures.length > 0) {
+            appState.features = loadedFeatures;
+            appState.activeFeatureId = loadedFeatures[0].id;
+            appState.openTabs = loadedFeatures.map(f => f.id);
+            saveState();
+            renderSidebar();
+            renderOpenTabs();
+            renderActiveFeature();
+            alert(`Successfully loaded ${loadedFeatures.length} feature file(s) across subfolder groups from '${dirHandle.name}'!`);
+          } else {
+            alert("No .feature or .txt files found in the selected project folder.");
+          }
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            document.getElementById('folder-input').click();
+          }
+        }
+      } else {
+        document.getElementById('folder-input').click();
+      }
+    }
+
+    async function readDirectoryRecursively(dirHandle, currentPath, resultList, rootName) {
+      for await (const entry of dirHandle.values()) {
+        if (entry.kind === 'file' && (entry.name.endsWith('.feature') || entry.name.endsWith('.txt'))) {
+          const file = await entry.getFile();
+          const text = await file.text();
+          const groupName = currentPath ? `${rootName}/${currentPath}` : rootName;
+          const feat = parseGherkinText(text, entry.name.replace(/\.(feature|txt)$/i, ''), groupName);
+          if (feat) resultList.push(feat);
+        } else if (entry.kind === 'directory') {
+          const subPath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
+          await readDirectoryRecursively(entry, subPath, resultList, rootName);
+        }
+      }
+    }
+
+    function handleFolderSelect(event) {
+      const files = Array.from(event.target.files);
+      const featureFiles = files.filter(f => f.name.endsWith('.feature') || f.name.endsWith('.txt'));
+      
+      if (featureFiles.length === 0) {
+        alert("No .feature files found in the selected folder.");
+        return;
+      }
+
+      const loadedFeatures = [];
+      let readCount = 0;
+
+      featureFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = e.target.result;
+          const pathParts = file.webkitRelativePath.split('/');
+          let groupName = "Project Folder";
+          if (pathParts.length > 2) {
+            groupName = pathParts.slice(0, pathParts.length - 1).join('/');
+          } else if (pathParts.length === 2) {
+            groupName = pathParts[0];
+          }
+
+          const feat = parseGherkinText(text, file.name.replace(/\.(feature|txt)$/i, ''), groupName);
+          if (feat) loadedFeatures.push(feat);
+
+          readCount++;
+          if (readCount === featureFiles.length) {
+            if (loadedFeatures.length > 0) {
+              appState.features = loadedFeatures;
+              appState.activeFeatureId = loadedFeatures[0].id;
+              appState.openTabs = loadedFeatures.map(f => f.id);
+              saveState();
+              renderSidebar();
+              renderOpenTabs();
+              renderActiveFeature();
+              alert(`Successfully loaded ${loadedFeatures.length} feature file(s) across subfolder groups!`);
+            }
+          }
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    // Sidebar & Workspace Tabs
+    function renderSidebar() {
+      const list = document.getElementById('feature-list');
+      const search = document.getElementById('sidebar-search').value.toLowerCase();
+      list.innerHTML = '';
+
+      const groups = {};
+      appState.features.forEach(f => {
+        const groupName = f.group || "General Features";
+        if (!groups[groupName]) groups[groupName] = [];
+        groups[groupName].push(f);
+      });
+
+      if (Object.keys(groups).length === 0) {
+        list.innerHTML = '<div style="padding:16px; font-size:12px; color:var(--text-secondary); text-align:center;">No features in workspace. Open a folder or click "+ New Feature".</div>';
+        return;
+      }
+
+      for (const [groupName, featureList] of Object.entries(groups)) {
+        const filteredFeatures = featureList.filter(f => 
+          f.name.toLowerCase().includes(search) || 
+          groupName.toLowerCase().includes(search) ||
+          (f.tags && f.tags.some(t => t.toLowerCase().includes(search)))
+        );
+
+        if (filteredFeatures.length === 0 && search !== '') continue;
+
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'group-folder';
+
+        const groupHeader = document.createElement('div');
+        groupHeader.className = 'group-header';
+        groupHeader.innerHTML = `
+          <div class="group-title">📁 ${escapeHtml(groupName)} (${filteredFeatures.length})</div>
+          <div style="display:flex; gap:4px; align-items:center;">
+            <button class="sm" onclick="addFeatureToGroup('${escapeHtml(groupName)}', event)" title="Add feature to group">+ Add</button>
+            <button class="danger-sm" onclick="deleteGroupFolder('${escapeHtml(groupName)}', event)" title="Delete Group Folder">✕ Group</button>
+          </div>
+        `;
+        groupDiv.appendChild(groupHeader);
+
+        filteredFeatures.forEach(f => {
+          const item = document.createElement('div');
+          item.className = `feature-item ${f.id === appState.activeFeatureId ? 'active' : ''}`;
+          item.innerHTML = `
+            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:190px;">${escapeHtml(f.name || 'Untitled Feature')}</span>
+            <button onclick="deleteFeature('${f.id}', event)" class="danger-sm">✕</button>
+          `;
+          item.onclick = () => { selectFeature(f.id); };
+          groupDiv.appendChild(item);
+        });
+
+        list.appendChild(groupDiv);
+      }
+    }
+
+    function renderOpenTabs() {
+      const bar = document.getElementById('workspace-tabs-bar');
+      if (!appState.openTabs || appState.openTabs.length === 0) {
+        bar.style.display = 'none';
+        return;
+      }
+
+      bar.style.display = 'flex';
+      bar.innerHTML = '';
+
+      appState.openTabs.forEach(fId => {
+        const f = appState.features.find(feat => feat.id === fId);
+        if (!f) return;
+
+        const tab = document.createElement('div');
+        tab.className = `workspace-tab ${f.id === appState.activeFeatureId ? 'active' : ''}`;
+        tab.innerHTML = `
+          <span style="overflow:hidden; text-overflow:ellipsis;">📄 ${escapeHtml(f.name)}</span>
+          <span class="close-tab" onclick="closeWorkspaceTab('${f.id}', event)">✕</span>
+        `;
+        tab.onclick = () => { selectFeature(f.id); };
+        bar.appendChild(tab);
+      });
+    }
+
+    function selectFeature(id) {
+      appState.activeFeatureId = id;
+      if (!appState.openTabs) appState.openTabs = [];
+      if (!appState.openTabs.includes(id)) appState.openTabs.push(id);
+      saveState();
+      renderSidebar();
+      renderOpenTabs();
+      renderActiveFeature();
+    }
+
+    function closeWorkspaceTab(id, event) {
+      event.stopPropagation();
+      appState.openTabs = appState.openTabs.filter(t => t !== id);
+      if (appState.activeFeatureId === id) {
+        appState.activeFeatureId = appState.openTabs.length ? appState.openTabs[0] : (appState.features.length ? appState.features[0].id : null);
+      }
+      saveState();
+      renderSidebar();
+      renderOpenTabs();
+      renderActiveFeature();
+    }
+
+    function createNewFeature(groupName = "General Features") {
+      const nf = {
+        id: uuid(),
+        group: groupName,
+        name: "New Business Feature",
+        desc: "As a [role]\nI want [goal]\nSo that [benefit]",
+        tags: ["@draft"],
+        scenarios: [
+          {
+            id: uuid(),
+            name: "Default Scenario",
+            type: "scenario",
+            tags: [],
+            steps: [{ id: uuid(), type: "given", text: "initial state is configured" }],
+            examples: { headers: [], rows: [] }
+          }
+        ]
+      };
+      appState.features.push(nf);
+      selectFeature(nf.id);
+    }
+
+    function addFeatureToGroup(groupName, event) {
+      event.stopPropagation();
+      createNewFeature(groupName);
+    }
+
+    function deleteGroupFolder(groupName, event) {
+      if (event) event.stopPropagation();
+      const groupFeatures = appState.features.filter(f => (f.group || "General Features") === groupName);
+      const count = groupFeatures.length;
+
+      if (!confirm(`Are you sure you want to delete group folder '${groupName}' and all ${count} feature(s) inside it?`)) return;
+
+      appState.features = appState.features.filter(f => (f.group || "General Features") !== groupName);
+      
+      const remainingIds = appState.features.map(f => f.id);
+      appState.openTabs = (appState.openTabs || []).filter(id => remainingIds.includes(id));
+      
+      if (!remainingIds.includes(appState.activeFeatureId)) {
+        appState.activeFeatureId = remainingIds.length ? remainingIds[0] : null;
+      }
+
+      saveState();
+      renderSidebar();
+      renderOpenTabs();
+      renderActiveFeature();
+    }
+
+    function deleteFeature(id, event) {
+      event.stopPropagation();
+      if(!confirm('Are you sure you want to delete this feature?')) return;
+      appState.features = appState.features.filter(f => f.id !== id);
+      appState.openTabs = (appState.openTabs || []).filter(t => t !== id);
+      if (appState.activeFeatureId === id) {
+        appState.activeFeatureId = appState.features.length ? appState.features[0].id : null;
+      }
+      saveState();
+      renderSidebar();
+      renderOpenTabs();
+      renderActiveFeature();
+    }
+
+    // Render Active Feature Details
+    function renderActiveFeature() {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      if (!f) {
+        document.getElementById('meta-panel').style.display = 'none';
+        document.getElementById('tabs').style.display = 'none';
+        document.getElementById('content-area').innerHTML = '<div id="empty-state" style="text-align: center; color: var(--text-secondary); margin-top: 100px;">Select or load a project folder containing <code>.feature</code> files to begin.</div>';
+        return;
+      }
+
+      document.getElementById('meta-panel').style.display = 'block';
+      document.getElementById('tabs').style.display = 'flex';
+      document.getElementById('feature-title').value = f.name;
+      document.getElementById('feature-desc').value = f.desc;
+
+      const groupSelect = document.getElementById('feature-group-select');
+      const existingGroups = Array.from(new Set(appState.features.map(feat => feat.group || "General Features")));
+      if(!existingGroups.includes("General Features")) existingGroups.push("General Features");
+      groupSelect.innerHTML = existingGroups.map(g => `<option value="${escapeHtml(g)}" ${g === f.group ? 'selected' : ''}>${escapeHtml(g)}</option>`).join('') +
+        `<option value="__new__">+ Create New Folder Group...</option>`;
+
+      const tagContainer = document.getElementById('tag-chips');
+      tagContainer.innerHTML = (f.tags || []).map((t, idx) => `
+        <div class="tag-chip">
+          ${escapeHtml(t)}
+          <span class="remove" onclick="removeTag(${idx})">✕</span>
+        </div>
+      `).join('') + `<button class="sm" onclick="addTagPrompt()" style="border-radius:12px;">+ Add Tag</button>`;
+
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      const tabMap = { 'edit': 0, 'visual': 1, 'simulate': 2, 'gherkin': 3 };
+      document.querySelectorAll('.tab')[tabMap[appState.mode]].classList.add('active');
+
+      renderModeContent(f);
+    }
+
+    function updateFeatureMeta() {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      if (f) {
+        f.name = document.getElementById('feature-title').value;
+        f.desc = document.getElementById('feature-desc').value;
+        const gVal = document.getElementById('feature-group-select').value;
+        if(gVal === '__new__') {
+          const newG = prompt("Enter New Subfolder Group / Project Name:");
+          if(newG) f.group = newG;
+        } else {
+          f.group = gVal;
+        }
+        saveState();
+        renderSidebar();
+        renderOpenTabs();
+        renderActiveFeature();
+      }
+    }
+
+    function addTagPrompt() {
+      const tag = prompt("Enter Tag Name (e.g. @regression, @smoke):");
+      if (tag) {
+        const f = appState.features.find(f => f.id === appState.activeFeatureId);
+        if (!f.tags) f.tags = [];
+        f.tags.push(tag.startsWith('@') ? tag : `@${tag}`);
+        saveState();
+        renderActiveFeature();
+      }
+    }
+
+    function removeTag(idx) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      f.tags.splice(idx, 1);
+      saveState();
+      renderActiveFeature();
+    }
+
+    function setMode(mode) {
+      appState.mode = mode;
+      saveState();
+      renderActiveFeature();
+    }
+
+    function renderModeContent(f) {
+      const area = document.getElementById('content-area');
+      area.innerHTML = '';
+
+      if (appState.mode === 'edit') renderEditMode(f, area);
+      if (appState.mode === 'visual') renderVisualMode(f, area);
+      if (appState.mode === 'simulate') renderSimulateMode(f, area);
+      if (appState.mode === 'gherkin') renderGherkinMode(f, area);
+    }
+
+    // --- Edit Mode ---
+    function renderEditMode(f, container) {
+      f.scenarios.forEach((s) => {
+        const sc = document.createElement('div');
+        sc.className = 'scenario-card';
+        
+        let stepsHtml = '';
+        s.steps.forEach((step) => {
+          const hasPayload = !!step.jsonPayload;
+          const pFormat = step.payloadFormat || 'json';
+
+          stepsHtml += `
+            <div class="step-row">
+              <div class="step-main">
+                <div class="step-type type-${step.type}" onclick="cycleStepType('${s.id}', '${step.id}')">${step.type.toUpperCase()}</div>
+                <input type="text" class="step-input" value="${escapeHtml(step.text)}" onchange="updateStepText('${s.id}', '${step.id}', this.value)" placeholder="step description...">
+                <button class="payload-editor-toggle ${hasPayload ? 'active' : ''}" onclick="togglePayloadEditor('${s.id}', '${step.id}')">{ } ${pFormat.toUpperCase()} Payload</button>
+                <button onclick="moveStep('${s.id}', '${step.id}', -1)" class="sm">↑</button>
+                <button onclick="moveStep('${s.id}', '${step.id}', 1)" class="sm">↓</button>
+                <button onclick="deleteStep('${s.id}', '${step.id}')" class="danger-sm">✕</button>
+              </div>
+              
+              <div class="payload-container ${hasPayload ? 'open' : ''}" id="payload-container-${step.id}">
+                <div class="payload-header-bar">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <label style="font-size:11px; color:var(--text-secondary);">Data Format:</label>
+                    <select onchange="updateStepPayloadFormat('${s.id}', '${step.id}', this.value)" style="font-size:11px; padding:3px 6px; background:var(--bg-secondary);">
+                      <option value="json" ${pFormat === 'json' ? 'selected' : ''}>JSON (REST / Microservices)</option>
+                      <option value="xml" ${pFormat === 'xml' ? 'selected' : ''}>XML (ISO 20022 / SOAP)</option>
+                      <option value="swift" ${pFormat === 'swift' ? 'selected' : ''}>SWIFT MT / Block Message</option>
+                      <option value="flatfile" ${pFormat === 'flatfile' ? 'selected' : ''}>FlatFile / ACH / Fixed-Width / CSV</option>
+                      <option value="yaml" ${pFormat === 'yaml' ? 'selected' : ''}>YAML / Key-Value Map</option>
+                    </select>
+                  </div>
+                  
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <select style="font-size:11px; padding:3px 6px; background:var(--bg-secondary);" onchange="loadPayloadPreset('${s.id}', '${step.id}', this.value); this.value='';">
+                      <option value="">⚡ Load Sample Preset...</option>
+                      <option value="iso_xml">ISO 20022 pacs.008 XML</option>
+                      <option value="swift_mt103">SWIFT MT103 Block</option>
+                      <option value="json_facility">JSON Credit Limit Tree</option>
+                      <option value="flatfile_ach">NACHA ACH Flat Record</option>
+                      <option value="yaml_rules">YAML Policy Rules</option>
+                    </select>
+                    <span class="payload-format-badge">${pFormat.toUpperCase()}</span>
+                  </div>
+                </div>
+
+                <textarea placeholder="Enter ${pFormat.toUpperCase()} payload text or use <placeholder> syntax..." onchange="updateStepJsonPayload('${s.id}', '${step.id}', this.value)" id="payload-text-${step.id}">${escapeHtml(step.jsonPayload || '')}</textarea>
+              </div>
+            </div>
+          `;
+        });
+
+        let examplesHtml = '';
+        if (s.type === 'scenario-outline') {
+          let thead = s.examples.headers.map((h, colIdx) => `
+            <th>
+              <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+                <input type="text" value="${escapeHtml(h)}" onchange="updateExHeader('${s.id}', ${colIdx}, this.value)">
+                <button class="danger-sm" onclick="deleteExCol('${s.id}', ${colIdx})" title="Delete Column">✕ Delete Col</button>
+              </div>
+            </th>
+          `).join('');
+
+          let tbody = s.examples.rows.map((r) => `
+            <tr>
+              ${r.cells.map((c, colIdx) => `<td><input type="text" value="${escapeHtml(c)}" onchange="updateExCell('${s.id}', '${r.id}', ${colIdx}, this.value)"></td>`).join('')}
+              <td style="width:140px;">
+                <button class="action-sim" onclick="simulateWithRow('${s.id}', '${r.id}')">⚡ Simulate Row</button>
+                <button class="danger-sm" onclick="deleteExRow('${s.id}', '${r.id}')">✕</button>
+              </td>
+            </tr>
+          `).join('');
+
+          examplesHtml = `
+            <div class="examples-section">
+              <div class="examples-header-bar">
+                <h4 style="color:var(--text-primary);">Examples Table (Data-Driven Permutations)</h4>
+                <div style="display:flex; gap:8px;">
+                  <button onclick="addExCol('${s.id}')" class="sm">+ Column</button>
+                  <button onclick="addExRow('${s.id}')" class="sm">+ Row</button>
+                </div>
+              </div>
+              <table class="examples-table">
+                <thead><tr>${thead}<th style="width:140px;">Actions</th></tr></thead>
+                <tbody>${tbody}</tbody>
+              </table>
+            </div>
+          `;
+        } else {
+          examplesHtml = `<div class="examples-section"><button onclick="convertToOutline('${s.id}')" class="sm">+ Add Examples Data Table (Convert to Outline)</button></div>`;
+        }
+
+        sc.innerHTML = `
+          <div class="scenario-header">
+            <div class="scenario-type" onclick="toggleScenarioType('${s.id}')">${s.type === 'scenario-outline' ? 'SCENARIO OUTLINE' : 'SCENARIO'}</div>
+            <input type="text" class="scenario-name" value="${escapeHtml(s.name)}" onchange="updateScenarioName('${s.id}', this.value)" placeholder="Scenario Title">
+            <button onclick="deleteScenario('${s.id}')" class="danger-sm">✕ Delete Scenario</button>
+          </div>
+          <div class="steps-container">${stepsHtml}</div>
+          <div class="add-step-toolbar">
+            <button onclick="addStep('${s.id}', 'given')">+ Given</button>
+            <button onclick="addStep('${s.id}', 'when')">+ When</button>
+            <button onclick="addStep('${s.id}', 'then')">+ Then</button>
+            <button onclick="addStep('${s.id}', 'and')">+ And</button>
+            <button onclick="addStep('${s.id}', 'but')">+ But</button>
+          </div>
+          ${examplesHtml}
+        `;
+        container.appendChild(sc);
+      });
+
+      const addScBtn = document.createElement('button');
+      addScBtn.className = 'primary';
+      addScBtn.innerText = '+ Add New Scenario';
+      addScBtn.onclick = () => { addScenario(); };
+      container.appendChild(addScBtn);
+    }
+
+    function togglePayloadEditor(sId, stepId) {
+      const container = document.getElementById(`payload-container-${stepId}`);
+      if (container) container.classList.toggle('open');
+    }
+
+    function updateStepPayloadFormat(sId, stepId, format) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const s = f.scenarios.find(s => s.id === sId);
+      const step = s.steps.find(st => st.id === stepId);
+      step.payloadFormat = format;
+      saveState(); renderActiveFeature();
+    }
+
+    function loadPayloadPreset(sId, stepId, presetKey) {
+      if(!presetKey || !payloadPresets[presetKey]) return;
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const s = f.scenarios.find(s => s.id === sId);
+      const step = s.steps.find(st => st.id === stepId);
+      
+      step.jsonPayload = payloadPresets[presetKey];
+      if (presetKey === 'iso_xml') step.payloadFormat = 'xml';
+      else if (presetKey === 'swift_mt103') step.payloadFormat = 'swift';
+      else if (presetKey === 'flatfile_ach') step.payloadFormat = 'flatfile';
+      else if (presetKey === 'yaml_rules') step.payloadFormat = 'yaml';
+      else step.payloadFormat = 'json';
+
+      saveState(); renderActiveFeature();
+    }
+
+    function updateStepJsonPayload(sId, stepId, val) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const s = f.scenarios.find(s => s.id === sId);
+      const step = s.steps.find(st => st.id === stepId);
+      step.jsonPayload = val;
+      saveState();
+    }
+
+    function moveStep(sId, stepId, dir) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const s = f.scenarios.find(s => s.id === sId);
+      const idx = s.steps.findIndex(st => st.id === stepId);
+      if (idx + dir >= 0 && idx + dir < s.steps.length) {
+        const temp = s.steps[idx];
+        s.steps[idx] = s.steps[idx + dir];
+        s.steps[idx + dir] = temp;
+        saveState(); renderActiveFeature();
+      }
+    }
+
+    function cycleStepType(sId, stepId) {
+      const types = ['given', 'when', 'then', 'and', 'but'];
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const s = f.scenarios.find(s => s.id === sId);
+      const step = s.steps.find(st => st.id === stepId);
+      step.type = types[(types.indexOf(step.type) + 1) % types.length];
+      saveState(); renderActiveFeature();
+    }
+
+    function updateStepText(sId, stepId, val) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      f.scenarios.find(s => s.id === sId).steps.find(st => st.id === stepId).text = val;
+      saveState();
+    }
+
+    function addStep(sId, type) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      f.scenarios.find(s => s.id === sId).steps.push({ id: uuid(), type, text: "", payloadFormat: "json" });
+      saveState(); renderActiveFeature();
+    }
+
+    function deleteStep(sId, stepId) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const s = f.scenarios.find(s => s.id === sId);
+      s.steps = s.steps.filter(st => st.id !== stepId);
+      saveState(); renderActiveFeature();
+    }
+
+    function addScenario() {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      f.scenarios.push({ id: uuid(), name: "New Scenario", type: "scenario", tags: [], steps: [{ id: uuid(), type: "given", text: "", payloadFormat: "json" }], examples: { headers: [], rows: [] } });
+      saveState(); renderActiveFeature();
+    }
+
+    function deleteScenario(sId) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      f.scenarios = f.scenarios.filter(s => s.id !== sId);
+      saveState(); renderActiveFeature();
+    }
+
+    function toggleScenarioType(sId) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const s = f.scenarios.find(s => s.id === sId);
+      s.type = s.type === 'scenario' ? 'scenario-outline' : 'scenario';
+      if(s.type === 'scenario-outline' && s.examples.headers.length === 0) {
+        s.examples.headers = ['param1', 'param2'];
+        s.examples.rows = [{id: uuid(), cells: ['val1', 'val2']}];
+      }
+      saveState(); renderActiveFeature();
+    }
+
+    function convertToOutline(sId) {
+      toggleScenarioType(sId);
+    }
+
+    function updateScenarioName(sId, val) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      f.scenarios.find(s => s.id === sId).name = val;
+      saveState();
+    }
+
+    function addExCol(sId) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const s = f.scenarios.find(s => s.id === sId);
+      s.examples.headers.push(`col_${s.examples.headers.length + 1}`);
+      s.examples.rows.forEach(r => r.cells.push(''));
+      saveState(); renderActiveFeature();
+    }
+
+    function deleteExCol(sId, colIndex) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const s = f.scenarios.find(s => s.id === sId);
+      s.examples.headers.splice(colIndex, 1);
+      s.examples.rows.forEach(r => r.cells.splice(colIndex, 1));
+      saveState(); renderActiveFeature();
+    }
+
+    function addExRow(sId) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const s = f.scenarios.find(s => s.id === sId);
+      s.examples.rows.push({id: uuid(), cells: new Array(s.examples.headers.length).fill('')});
+      saveState(); renderActiveFeature();
+    }
+
+    function updateExHeader(sId, idx, val) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      f.scenarios.find(s => s.id === sId).examples.headers[idx] = val;
+      saveState();
+    }
+
+    function updateExCell(sId, rId, idx, val) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      f.scenarios.find(s => s.id === sId).examples.rows.find(r => r.id === rId).cells[idx] = val;
+      saveState();
+    }
+
+    function deleteExRow(sId, rId) {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const s = f.scenarios.find(s => s.id === sId);
+      s.examples.rows = s.examples.rows.filter(r => r.id !== rId);
+      saveState(); renderActiveFeature();
+    }
+
+    function simulateWithRow(sId, rId) {
+      appState.sim.scenarioId = sId;
+      appState.sim.exampleRowId = rId;
+      appState.sim.stepIndex = 0;
+      appState.sim.results = {};
+      appState.mode = 'simulate';
+      saveState();
+      renderActiveFeature();
+    }
+
+    // --- Visual Mode ---
+    function renderVisualMode(f, container) {
+      f.scenarios.forEach(s => {
+        const scWrap = document.createElement('div');
+        scWrap.className = 'flow-scenario';
+        scWrap.innerHTML = `<div class="flow-title">📍 ${s.type === 'scenario-outline'?'Scenario Outline':'Scenario'}: ${escapeHtml(s.name)}</div>`;
+        
+        s.steps.forEach((step, i) => {
+          const n = document.createElement('div');
+          n.className = `flow-node flow-${step.type}`;
+          n.style.animationDelay = `${i * 0.08}s`;
+          
+          let jsonStr = '';
+          if (step.jsonPayload) {
+            const fmt = (step.payloadFormat || 'json').toUpperCase();
+            jsonStr = `<div class="flow-json-block"><strong>[ ${fmt} Payload ]</strong>\n${escapeHtml(step.jsonPayload)}</div>`;
+          }
+
+          n.innerHTML = `<div><strong>${step.type.toUpperCase()}</strong> ${escapeHtml(step.text)}</div>${jsonStr}`;
+          scWrap.appendChild(n);
+        });
+
+        if (s.type === 'scenario-outline' && s.examples.rows.length > 0) {
+          let thead = s.examples.headers.map(h => `<th>${escapeHtml(h)}</th>`).join('');
+          let tbody = s.examples.rows.map(r => `<tr>${r.cells.map(c => `<td>${escapeHtml(c)}</td>`).join('')}</tr>`).join('');
+          const t = document.createElement('table');
+          t.className = 'examples-table';
+          t.style.maxWidth = '650px'; t.style.margin = '20px auto';
+          t.innerHTML = `<thead><tr>${thead}</tr></thead><tbody>${tbody}</tbody>`;
+          scWrap.appendChild(t);
+        }
+
+        container.appendChild(scWrap);
+      });
+    }
+
+    // --- Simulate Mode ---
+    function renderSimulateMode(f, container) {
+      const wrap = document.createElement('div');
+      wrap.className = 'sim-container';
+
+      if (f.scenarios.length === 0) {
+        wrap.innerHTML = '<p>No scenarios to simulate.</p>';
+        container.appendChild(wrap);
+        return;
+      }
+
+      if (!appState.sim.scenarioId || !f.scenarios.find(s => s.id === appState.sim.scenarioId)) {
+        appState.sim.scenarioId = f.scenarios[0].id;
+        appState.sim.stepIndex = -1;
+        appState.sim.results = {};
+        appState.sim.exampleRowId = null;
+      }
+      
+      const activeSc = f.scenarios.find(s => s.id === appState.sim.scenarioId);
+
+      let scOptions = f.scenarios.map(s => `<option value="${s.id}" ${s.id === appState.sim.scenarioId ? 'selected' : ''}>${s.name}</option>`).join('');
+      let exOptions = '';
+      if (activeSc.type === 'scenario-outline' && activeSc.examples.rows.length > 0) {
+        if (!appState.sim.exampleRowId || !activeSc.examples.rows.find(r=>r.id===appState.sim.exampleRowId)) {
+          appState.sim.exampleRowId = activeSc.examples.rows[0].id;
+        }
+        exOptions = `<select id="sim-ex" style="padding:6px; border-radius:4px; background:var(--bg-secondary); color:white; border:1px solid var(--border);" onchange="simChangeEx(this.value)">` + 
+          activeSc.examples.rows.map((r,i) => `<option value="${r.id}" ${r.id===appState.sim.exampleRowId?'selected':''}>Data Permutation Row ${i+1}: (${r.cells.join(', ')})</option>`).join('') +
+          `</select>`;
+      }
+
+      wrap.innerHTML = `
+        <div class="sim-controls">
+          <select style="padding: 6px; border-radius:4px; background:var(--bg-secondary); color:white; border:1px solid var(--border); flex:1;" onchange="simChangeSc(this.value)">
+            ${scOptions}
+          </select>
+          ${exOptions}
+          <button class="primary" onclick="simStart()">▶ Start Simulation</button>
+          <button onclick="simPrev()" ${appState.sim.stepIndex <= 0 ? 'disabled' : ''}>Prev</button>
+          <button onclick="simNext()" ${appState.sim.stepIndex >= activeSc.steps.length-1 || appState.sim.stepIndex < 0 ? 'disabled' : ''}>Next</button>
+        </div>
+        <div id="sim-steps"></div>
+      `;
+      container.appendChild(wrap);
+
+      const stepsDiv = document.getElementById('sim-steps');
+      let activeRow = activeSc.examples.rows.find(r => r.id === appState.sim.exampleRowId);
+
+      activeSc.steps.forEach((step, idx) => {
+        let text = escapeHtml(step.text);
+        let payloadText = step.jsonPayload ? escapeHtml(step.jsonPayload) : '';
+        const fmt = (step.payloadFormat || 'json').toUpperCase();
+
+        if (activeSc.type === 'scenario-outline' && activeRow) {
+          activeSc.examples.headers.forEach((h, i) => {
+            const val = activeRow.cells[i] !== undefined ? activeRow.cells[i] : '';
+            text = text.replace(new RegExp(`<${h}>`, 'g'), `<span class="placeholder-highlight">${escapeHtml(val)}</span>`);
+            if (payloadText) {
+              payloadText = payloadText.replace(new RegExp(`<${h}>`, 'g'), val);
+            }
+          });
+        }
+
+        let stateClass = '';
+        if (appState.sim.stepIndex === idx) stateClass = 'active';
+        else if (appState.sim.results[step.id] === 'pass') stateClass = 'pass';
+        else if (appState.sim.results[step.id] === 'fail') stateClass = 'fail';
+
+        const stepDiv = document.createElement('div');
+        stepDiv.className = `sim-step ${stateClass}`;
+        stepDiv.innerHTML = `
+          <div class="sim-step-header">
+            <div><strong>${step.type.toUpperCase()}</strong> ${text}</div>
+            <div class="sim-actions">
+              <button onclick="simMark('${step.id}', 'pass')" style="background:var(--success); color:white; border:none; padding:4px 8px; border-radius:4px;">✓ Pass</button>
+              <button onclick="simMark('${step.id}', 'fail')" style="background:var(--danger); color:white; border:none; padding:4px 8px; border-radius:4px;">✕ Fail</button>
+            </div>
+          </div>
+          ${payloadText ? `<div class="flow-json-block" style="margin-top:10px; max-height:180px;"><strong>[ ${fmt} Payload Substituted ]</strong>\n${payloadText}</div>` : ''}
+        `;
+        stepsDiv.appendChild(stepDiv);
+      });
+    }
+
+    window.simChangeSc = (sId) => { appState.sim.scenarioId = sId; appState.sim.stepIndex = -1; appState.sim.results = {}; saveState(); renderActiveFeature(); }
+    window.simChangeEx = (rId) => { appState.sim.exampleRowId = rId; appState.sim.stepIndex = -1; appState.sim.results = {}; saveState(); renderActiveFeature(); }
+    window.simStart = () => { appState.sim.stepIndex = 0; appState.sim.results = {}; saveState(); renderActiveFeature(); }
+    window.simNext = () => { appState.sim.stepIndex++; saveState(); renderActiveFeature(); }
+    window.simPrev = () => { appState.sim.stepIndex--; saveState(); renderActiveFeature(); }
+    window.simMark = (stepId, res) => {
+      appState.sim.results[stepId] = res;
+      appState.sim.stepIndex++;
+      saveState(); renderActiveFeature();
+    }
+
+    // --- Gherkin View & Export Mode ---
+    function generateGherkin(f) {
+      let out = "";
+      if (f.tags && f.tags.length > 0) out += f.tags.join(" ") + "\n";
+      out += `Feature: ${f.name}\n`;
+      if (f.desc) out += f.desc.split("\n").map(l => `  ${l}`).join("\n") + "\n";
+      out += "\n";
+
+      f.scenarios.forEach(s => {
+        if (s.tags && s.tags.length > 0) out += `  ${s.tags.join(" ")}\n`;
+        out += `  ${s.type === 'scenario-outline' ? 'Scenario Outline' : 'Scenario'}: ${s.name}\n`;
+        s.steps.forEach(step => {
+          let capType = step.type.charAt(0).toUpperCase() + step.type.slice(1);
+          out += `    ${capType} ${step.text}\n`;
+          if (step.jsonPayload) {
+            const fmt = step.payloadFormat || 'json';
+            out += `    """${fmt}\n`;
+            out += step.jsonPayload.split("\n").map(line => `    ${line}`).join("\n") + "\n";
+            out += `    """\n`;
+          }
+        });
+
+        if (s.type === 'scenario-outline' && s.examples.rows.length > 0) {
+          out += "\n    Examples:\n";
+          out += `      | ${s.examples.headers.join(" | ")} |\n`;
+          s.examples.rows.forEach(r => {
+            out += `      | ${r.cells.join(" | ")} |\n`;
+          });
+        }
+        out += "\n";
+      });
+      return out;
+    }
+
+    function renderGherkinMode(f, container) {
+      const gherkin = generateGherkin(f);
+      container.innerHTML = `
+        <div style="margin-bottom:16px; display:flex; gap:12px;">
+          <button class="primary" onclick="copyGherkin()">Copy to Clipboard</button>
+          <button onclick="downloadGherkin()">Download .feature File</button>
+        </div>
+        <div class="gherkin-view" id="gherkin-text">${escapeHtml(gherkin)}</div>
+      `;
+    }
+
+    window.copyGherkin = () => {
+      const text = document.getElementById('gherkin-text').innerText;
+      navigator.clipboard.writeText(text).then(() => alert('Gherkin syntax copied to clipboard!'));
+    }
+
+    window.downloadGherkin = () => {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const text = document.getElementById('gherkin-text').innerText;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = (f.name.replace(/\s+/g, '_').toLowerCase() || 'feature') + '.feature';
+      a.click();
+    }
+
+    // --- Import Modal Logic ---
+    window.openImportModal = () => {
+      document.getElementById('import-modal').classList.add('open');
+    }
+    window.closeImportModal = () => {
+      document.getElementById('import-modal').classList.remove('open');
+    }
+
+    window.handleFileSelect = (evt) => {
+      const file = evt.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('import-text').value = e.target.result;
+        };
+        reader.readAsText(file);
+      }
+    }
+
+    window.processImport = () => {
+      const text = document.getElementById('import-text').value;
+      if (!text.trim()) return alert('Please enter or select Gherkin feature text.');
+
+      const newFeat = parseGherkinText(text, "Imported Feature", "Imported Files");
+      if (newFeat) {
+        appState.features.push(newFeat);
+        selectFeature(newFeat.id);
+        closeImportModal();
+      }
+    }
+
+    // Comprehensive Gherkin Parser
+    function parseGherkinText(text, defaultTitle = "Untitled Feature", groupName = "General Features") {
+      const lines = text.split('\n');
+      let featureName = defaultTitle;
+      let featureDesc = "";
+      let featureTags = [];
+      let scenarios = [];
+      let currentSc = null;
+      let currentStep = null;
+      let inDocString = false;
+      let docStringFmt = "json";
+      let docStringLines = [];
+      let inExamples = false;
+
+      lines.forEach(l => {
+        const rawLine = l;
+        const trim = l.trim();
+
+        if (inDocString) {
+          if (trim.startsWith('"""')) {
+            inDocString = false;
+            if (currentStep) {
+              currentStep.jsonPayload = docStringLines.join('\n');
+              currentStep.payloadFormat = docStringFmt || 'json';
+            }
+            docStringLines = [];
+          } else {
+            docStringLines.push(rawLine);
+          }
+          return;
+        }
+
+        if (trim.startsWith('"""')) {
+          inDocString = true;
+          docStringFmt = trim.replace('"""', '').trim().toLowerCase() || 'json';
+          docStringLines = [];
+          return;
+        }
+
+        if (trim.startsWith('Feature:')) {
+          featureName = trim.replace('Feature:', '').trim();
+          inExamples = false;
+        } else if (trim.startsWith('@') && !currentSc) {
+          featureTags = trim.split(/\s+/);
+        } else if (trim.startsWith('Scenario:') || trim.startsWith('Scenario Outline:')) {
+          const isOutline = trim.startsWith('Scenario Outline:');
+          const scName = trim.replace(/Scenario Outline:|Scenario:/, '').trim();
+          inExamples = false;
+          currentSc = {
+            id: uuid(),
+            name: scName || "Untitled Scenario",
+            type: isOutline ? 'scenario-outline' : 'scenario',
+            tags: [],
+            steps: [],
+            examples: { headers: [], rows: [] }
+          };
+          scenarios.push(currentSc);
+        } else if (currentSc && (trim.startsWith('Given ') || trim.startsWith('When ') || trim.startsWith('Then ') || trim.startsWith('And ') || trim.startsWith('But '))) {
+          inExamples = false;
+          const spaceIdx = trim.indexOf(' ');
+          const type = trim.substring(0, spaceIdx).toLowerCase();
+          const stepText = trim.substring(spaceIdx + 1);
+          currentStep = { id: uuid(), type, text: stepText, payloadFormat: "json" };
+          currentSc.steps.push(currentStep);
+        } else if (currentSc && trim.startsWith('Examples:')) {
+          inExamples = true;
+          currentSc.type = 'scenario-outline';
+        } else if (currentSc && inExamples && trim.startsWith('|')) {
+          const cells = trim.split('|').slice(1, -1).map(c => c.trim());
+          if (currentSc.examples.headers.length === 0) {
+            currentSc.examples.headers = cells;
+          } else {
+            currentSc.examples.rows.push({ id: uuid(), cells });
+          }
+        }
+      });
+
+      if (scenarios.length === 0) {
+        scenarios.push({ id: uuid(), name: "Default Scenario", type: "scenario", tags: [], steps: [], examples: { headers: [], rows: [] } });
+      }
+
+      return {
+        id: uuid(),
+        group: groupName,
+        name: featureName,
+        desc: featureDesc,
+        tags: featureTags,
+        scenarios
+      };
+    }
+
+    window.exportGherkin = () => {
+      if (!appState.activeFeatureId) return alert('Select a feature first.');
+      setMode('gherkin');
+    }
+
+    // --- Help System ---
+    window.toggleHelp = () => {
+      const p = document.getElementById('help-panel');
+      const o = document.getElementById('help-overlay');
+      const isOpen = p.classList.contains('open');
+      if (isOpen) { p.classList.remove('open'); o.classList.remove('open'); }
+      else { p.classList.add('open'); o.classList.add('open'); renderHelpNav(); selectHelpTopic(helpTopics[0].id); }
+    }
+
+    function renderHelpNav(filter = '') {
+      const nav = document.getElementById('help-nav');
+      nav.innerHTML = '';
+      helpTopics.forEach(t => {
+        if (t.title.toLowerCase().includes(filter) || t.keywords.toLowerCase().includes(filter)) {
+          const d = document.createElement('div');
+          d.className = 'help-topic';
+          d.id = `help-nav-${t.id}`;
+          d.innerText = t.title;
+          d.onclick = () => selectHelpTopic(t.id);
+          nav.appendChild(d);
+        }
+      });
+    }
+
+    function selectHelpTopic(id) {
+      document.querySelectorAll('.help-topic').forEach(e => e.classList.remove('active'));
+      const el = document.getElementById(`help-nav-${id}`);
+      if (el) el.classList.add('active');
+      const t = helpTopics.find(t => t.id === id);
+      if (t) document.getElementById('help-content').innerHTML = t.content;
+    }
+
+    window.filterHelp = () => {
+      const v = document.getElementById('help-search-input').value.toLowerCase();
+      renderHelpNav(v);
+      const first = document.querySelector('.help-topic');
+      if (first) first.click();
+    }
+
+    function escapeHtml(unsafe) {
+      return (unsafe || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    // Domain context selector
+    document.getElementById('context-select').addEventListener('change', (e) => {
+      const domain = e.target.value;
+      if (domain === '__create_new_domain__') {
+        createCustomDomainPrompt();
+        return;
+      }
+      if (confirm(`Load templates for domain '${domain.toUpperCase()}'?`)) {
+        appState.context = domain;
+        appState.features = templates[domain] ? JSON.parse(JSON.stringify(templates[domain])) : [];
+        appState.activeFeatureId = appState.features.length ? appState.features[0].id : null;
+        appState.openTabs = appState.features.map(f => f.id);
+        saveState();
+        renderDomainSelectOptions();
+        renderSidebar();
+        renderOpenTabs();
+        renderActiveFeature();
+      } else {
+        e.target.value = appState.context;
+      }
+    });
+
+    // Initialize
+    loadState();
+  </script>
+</body>
+</html>
