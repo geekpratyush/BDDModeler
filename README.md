@@ -1,4 +1,4 @@
-# RouteForge BDD Studio v1.0 Enterprise 🚀
+# Enterprise BDD Studio v1.0 Enterprise 🚀
 
 > **Multi-Format Data Modeling & Behavioral Requirement Engineering Studio**  
 > Architected & Developed by **Pratyush Ranjan Mishra**  
@@ -8,9 +8,9 @@
 
 ## 🌟 Overview
 
-**RouteForge BDD Studio v1.0 Enterprise** is a high-performance, zero-dependency browser application designed by **Pratyush Ranjan Mishra** for Business Analysts (BAs), Solution Architects, and QA Engineering teams.
+**Enterprise BDD Studio v1.0 Enterprise** is a high-performance, zero-dependency browser application designed by **Pratyush Ranjan Mishra** for Business Analysts (BAs), Solution Architects, and QA Engineering teams.
 
-Unlike conventional BDD tools that enforce rigid JSON structures, **RouteForge BDD Studio** grants BAs total freedom to model **any data format** (ISO 20022 XML, SWIFT MT blocks, NACHA ACH fixed-width flat files, JSON, and YAML) directly inside Gherkin feature files.
+Unlike conventional BDD tools that enforce rigid JSON structures, **Enterprise BDD Studio** grants BAs total freedom to model **any data format** (ISO 20022 XML, SWIFT MT blocks, NACHA ACH fixed-width flat files, JSON, and YAML) directly inside Gherkin feature files.
 
 ---
 
@@ -59,7 +59,7 @@ Host this zero-dependency static studio directly on GitHub Pages!
 
 ## 🛠️ Local Development & Quick Start
 
-Since **RouteForge BDD Studio** is a pure HTML5/JavaScript application with zero node_modules or build dependencies:
+Since **Enterprise BDD Studio** is a pure HTML5/JavaScript application with zero node_modules or build dependencies:
 
 ```bash
 # 1. Clone the repository
@@ -90,7 +90,7 @@ git config user.email "leadtherightway@gmail.com" # (or your GitHub email)
 
 # Add files and commit
 git add .
-git commit -m "feat: initial release of RouteForge BDD Studio v1.0 Enterprise by Pratyush Ranjan Mishra"
+git commit -m "feat: initial release of Enterprise BDD Studio v1.0 Enterprise by Pratyush Ranjan Mishra"
 
 # Set main branch and remote
 git branch -M main

@@ -51,7 +51,7 @@ def create_slide_1():
     draw_header_footer(draw, 1, 7, "ENTERPRISE BDD REQUIREMENT STUDIO")
     
     # Hero Title
-    draw.text((50, 140), "RouteForge BDD Studio", fill=TEXT_WHITE, font=ImageFont.truetype(FONT_PATH_BOLD, 52))
+    draw.text((50, 140), "Enterprise BDD Studio", fill=TEXT_WHITE, font=ImageFont.truetype(FONT_PATH_BOLD, 52))
     draw.text((50, 210), "v1.0 Enterprise", fill=ACCENT_BLUE, font=ImageFont.truetype(FONT_PATH_BOLD, 46))
     
     # Subtitle
@@ -72,7 +72,7 @@ def create_slide_1():
 
     # Main Center Box
     draw.rectangle([(50, 520), (WIDTH - 50, 930)], fill=CARD_BG, outline=BORDER_COLOR, width=2)
-    draw.text((80, 550), "🌟 Why Enterprise BAs Love RouteForge:", fill=TEXT_WHITE, font=font_subtitle)
+    draw.text((80, 550), "🌟 Why Enterprise BAs Love Enterprise BDD Studio:", fill=TEXT_WHITE, font=font_subtitle)
     
     bullets = [
         "1. Complete Data Freedom: XML, SWIFT, FlatFiles, JSON directly in Gherkin.",
@@ -114,7 +114,7 @@ def create_slide_2():
 
     # Solution Box
     draw.rectangle([(50, 600), (WIDTH - 50, 930)], fill=CARD_BG, outline=GREEN_SUCCESS, width=2)
-    draw.text((80, 630), "✅ The RouteForge BDD Studio Solution:", fill=GREEN_SUCCESS, font=font_subtitle)
+    draw.text((80, 630), "✅ The Enterprise BDD Studio Solution:", fill=GREEN_SUCCESS, font=font_subtitle)
     
     sols = [
         "• Format-Agnostic DocStrings (\"\"\"xml, \"\"\"swift, \"\"\"flatfile, \"\"\"json).",
@@ -249,7 +249,7 @@ def create_slide_7():
     draw = ImageDraw.Draw(img)
     draw_header_footer(draw, 7, 7, "TRY IT LIVE TODAY")
     
-    draw.text((50, 130), "Try RouteForge BDD Studio Live!", fill=TEXT_WHITE, font=font_title)
+    draw.text((50, 130), "Try Enterprise BDD Studio Live!", fill=TEXT_WHITE, font=font_title)
     draw.text((50, 190), "100% Free & Open-Source Zero-Dependency Tool", fill=GREEN_SUCCESS, font=font_subtitle)
     
     # CTA Big Box
@@ -281,7 +281,7 @@ def main():
         create_slide_7()
     ]
     
-    out_pdf = "/home/pratyush/software/BDDModeler/RouteForge_BDD_Studio_v1.0_Enterprise_Carousel.pdf"
+    out_pdf = "/home/pratyush/software/BDDModeler/Enterprise_BDD_Studio_v1.0_Enterprise_Carousel.pdf"
     slides[0].save(out_pdf, save_all=True, append_images=slides[1:])
     print("PDF Carousel successfully created at:", out_pdf)
 

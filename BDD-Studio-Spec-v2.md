@@ -1,6 +1,6 @@
-# RouteForge BDD Studio — Build Specification v2.0
+# Enterprise BDD Studio — Build Specification v2.0
 
-> **Project:** RouteForge BDD Studio
+> **Project:** Enterprise BDD Studio
 > **Type:** Single-page HTML application (static, no backend)
 > **Target:** GitHub Pages deployment
 > **Audience:** Business Analysts, QA Engineers, Product Owners, Developers
