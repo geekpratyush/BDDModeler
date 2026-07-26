@@ -1,0 +1,7 @@
+# Ignore PDF files
+*.pdf
+RouteForge_BDD_Studio_v1.0_Enterprise_Carousel.pdf
+
+# Ignore OS & temporary files
+.DS_Store
+*.log
