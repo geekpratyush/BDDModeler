@@ -284,6 +284,15 @@
     .help-content li { margin-left: 20px; margin-bottom: 8px; }
     .help-content code { background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px; }
 
+    /* Payload Repository Modal Styles */
+    .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; margin-top: 16px; max-height: 480px; overflow-y: auto; padding-right: 4px; }
+    .payload-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.2s; }
+    .payload-card:hover { border-color: var(--accent); }
+    .payload-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .payload-card-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+    .payload-card-meta { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
+    .payload-card-code { background: #080c14; border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-family: var(--font-mono); font-size: 11px; color: #a5d6ff; height: 110px; overflow-y: auto; white-space: pre-wrap; line-height: 1.4; word-break: break-all; }
+    .payload-card-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
   </style>
 </head>
 <body>
@@ -304,6 +313,7 @@
         <!-- Dynamically rendered -->
       </select>
       <button onclick="createCustomDomainPrompt()" class="sm">+ New Domain</button>
+      <button onclick="openPayloadModal()" style="background:rgba(139,92,246,0.15); color:var(--and); border-color:rgba(139,92,246,0.4); font-weight:600;" title="Payload Repository & Custom Templates">📦 Payloads Library</button>
       <button onclick="openImportModal()">Import File</button>
       <button onclick="exportGherkin()">Export Gherkin</button>
       <button onclick="openAboutModal()" style="background:var(--bg-card); border:1px solid var(--accent); color:var(--text-primary);" title="Visual Feature Carousel & Architect Overview">About Studio 🎨</button>
@@ -376,6 +386,77 @@
     </div>
   </div>
 
+  <!-- Payload Repository Modal -->
+  <div class="modal-overlay" id="payload-modal">
+    <div class="modal-card" style="width: 960px; max-width: 95vw; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:12px;">
+        <div>
+          <h2 style="font-size:18px; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+            📦 Payload Repository & Custom Library
+            <span style="font-size:11px; background:rgba(139,92,246,0.2); color:var(--and); padding:2px 8px; border-radius:10px; font-weight:600;">Persisted in Cache</span>
+          </h2>
+          <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
+            Create, edit, import/export, and load payload templates from folders to use across Given/When/Then/And steps.
+          </div>
+        </div>
+        <button onclick="closePayloadModal()" style="background:transparent; border:none; color:var(--text-secondary); font-size:20px; cursor:pointer;">✕</button>
+      </div>
+
+      <!-- Payload Toolbar -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; gap:12px; flex-wrap:wrap;">
+        <div style="display:flex; gap:8px; flex:1; min-width:280px;">
+          <input type="text" id="payload-search-input" placeholder="Search payloads by name, content, or category..." onkeyup="renderPayloadLibraryGrid()" style="flex:1; background:var(--bg-primary); border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; border-radius:6px; font-size:12px; outline:none;">
+          <select id="payload-format-filter" onchange="renderPayloadLibraryGrid()" style="font-size:12px; padding:6px; background:var(--bg-primary);">
+            <option value="all">All Formats</option>
+            <option value="json">JSON</option>
+            <option value="xml">XML</option>
+            <option value="swift">SWIFT</option>
+            <option value="flatfile">FlatFile</option>
+            <option value="yaml">YAML</option>
+          </select>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button class="primary sm" onclick="openCreatePayloadForm()">➕ Create Payload</button>
+          <button class="folder-btn sm" onclick="openPayloadFolderPicker()">📂 Load Payloads Folder</button>
+          <input type="file" id="payload-folder-input" webkitdirectory directory multiple style="display:none;" onchange="handlePayloadFolderSelect(event)">
+          <button class="sm" onclick="triggerPayloadFileImport()">📥 Import File / JSON</button>
+          <input type="file" id="payload-file-input" accept=".json,.xml,.swift,.txt,.yaml,.yml,.csv" multiple style="display:none;" onchange="handlePayloadFileImport(event)">
+          <button class="sm" onclick="exportPayloadLibrary()">📤 Export Library</button>
+          <button class="danger-sm" onclick="resetPayloadLibraryToDefaults()">🔄 Reset</button>
+        </div>
+      </div>
+
+      <!-- Create / Edit Form Drawer -->
+      <div id="payload-form-container" style="display:none; background:var(--bg-primary); border:1px solid var(--accent); border-radius:8px; padding:14px; margin-top:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <h4 style="color:var(--accent);" id="payload-form-title">Create Custom Payload</h4>
+          <button class="sm" onclick="closePayloadForm()">Cancel</button>
+        </div>
+        <input type="hidden" id="payload-edit-id" value="">
+        <div style="display:flex; gap:12px; margin-bottom:10px; flex-wrap:wrap;">
+          <input type="text" id="payload-form-name" placeholder="Payload Template Name (e.g. ISO pacs.002 Status Report)" style="flex:2; min-width:200px; background:var(--bg-secondary); border:1px solid var(--border); color:var(--text-primary); padding:6px 10px; border-radius:6px; font-size:12px; outline:none;">
+          <select id="payload-form-format" style="flex:1; min-width:120px; background:var(--bg-secondary); border:1px solid var(--border); color:var(--text-primary); padding:6px; border-radius:6px; font-size:12px;">
+            <option value="json">JSON</option>
+            <option value="xml">XML</option>
+            <option value="swift">SWIFT</option>
+            <option value="flatfile">FlatFile</option>
+            <option value="yaml">YAML</option>
+          </select>
+          <input type="text" id="payload-form-category" placeholder="Category / Tag (e.g. Payments, Custom)" style="flex:1; min-width:120px; background:var(--bg-secondary); border:1px solid var(--border); color:var(--text-primary); padding:6px 10px; border-radius:6px; font-size:12px; outline:none;">
+        </div>
+        <textarea id="payload-form-content" placeholder="Enter payload content template or <placeholder> tags..." style="width:100%; height:140px; background:#080c14; border:1px solid var(--border); color:#a5d6ff; font-family:var(--font-mono); font-size:12px; padding:10px; border-radius:6px; outline:none; resize:vertical; line-height:1.4;"></textarea>
+        <div style="display:flex; justify-content:flex-end; margin-top:10px; gap:8px;">
+          <button class="primary sm" onclick="savePayloadFromForm()">💾 Save Payload to Cache</button>
+        </div>
+      </div>
+
+      <!-- Grid Container -->
+      <div class="payload-grid" id="payload-grid-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
   <!-- About Carousel Modal -->
   <div class="modal-overlay" id="about-modal">
     <div class="modal-card" style="width: 860px; max-width: 95vw; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; color: var(--text-primary); box-shadow: 0 20px 40px rgba(0,0,0,0.7);">
@@ -424,13 +505,73 @@
     // Utility: Unique ID Generator
     const uuid = () => Math.random().toString(36).substring(2, 15);
 
-    // Sample Multi-Format Payload Presets for BAs
+    // Default Reusable Payload Library Items (Saved in Cache)
+    const defaultPayloadLibrary = [
+      {
+        id: "pl-iso-pacs008",
+        name: "ISO 20022 pacs.008 Payment Transfer XML",
+        format: "xml",
+        category: "Banking & Payments",
+        content: `<?xml version="1.0" encoding="UTF-8"?>\n<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08">\n  <FIToFICstmrCdtTrf>\n    <GrpHdr>\n      <MsgId><msg_id></MsgId>\n      <CreDtTm>2026-07-26T12:00:00Z</CreDtTm>\n    </GrpHdr>\n    <CdtTrfTxInf>\n      <IntrBkSttlmAmt Ccy="<currency>"><amount></IntrBkSttlmAmt>\n      <Dbtr><Nm><debtor_name></Nm></Dbtr>\n      <Cdtr><Nm><creditor_name></Nm></Cdtr>\n    </CdtTrfTxInf>\n  </FIToFICstmrCdtTrf>\n</Document>`
+      },
+      {
+        id: "pl-iso-camt053",
+        name: "ISO 20022 camt.053 Bank Statement XML",
+        format: "xml",
+        category: "Banking & Statements",
+        content: `<?xml version="1.0" encoding="UTF-8"?>\n<Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08">\n  <BkToCstmrStmt>\n    <GrpHdr><MsgId>STMT-<msg_id></MsgId></GrpHdr>\n    <Stmt>\n      <Id><acc_id></Id>\n      <Bal>\n        <Amt Ccy="<currency>"><opening_balance></Amt>\n        <CdtDbtInd>CRDT</CdtDbtInd>\n      </Bal>\n    </Stmt>\n  </BkToCstmrStmt>\n</Document>`
+      },
+      {
+        id: "pl-swift-mt103",
+        name: "SWIFT MT103 Single Customer Credit Transfer",
+        format: "swift",
+        category: "SWIFT Block Messages",
+        content: `{1:F01BANKDEFMAXXX0000000000}\n{2:I103BANKDEFMAXXXN}\n{4:\n:20:<msg_id>\n:23B:CRED\n:32A:260726<currency><amount>\n:50K:/<debtor_account>\n<debtor_name>\n:59:/<creditor_account>\n<creditor_name>\n:71A:OUR\n-}`
+      },
+      {
+        id: "pl-swift-mt202",
+        name: "SWIFT MT202 Financial Institution Transfer",
+        format: "swift",
+        category: "SWIFT Block Messages",
+        content: `{1:F01BANKDEFMAXXX0000000000}\n{2:I202BANKDEFMAXXXN}\n{4:\n:20:<msg_id>\n:21:TRF-REF-<ref_num>\n:32A:260726<currency><amount>\n:53A:INTERBANK-ACC\n:58A:<creditor_bank>\n-}`
+      },
+      {
+        id: "pl-json-facility",
+        name: "JSON Credit Limit & Sublimit Hierarchy Tree",
+        format: "json",
+        category: "Credit & Risk",
+        content: `{\n  "facilityId": "<facility_id>",\n  "sanctionedLimit": "<sanctioned_limit>",\n  "sublimits": [\n    { "type": "LC", "amount": 500000 },\n    { "type": "BG", "amount": 300000 }\n  ]\n}`
+      },
+      {
+        id: "pl-json-customer",
+        name: "JSON Customer Onboarding & KYC Record",
+        format: "json",
+        category: "E-Commerce & Retail",
+        content: `{\n  "customerId": "<cust_id>",\n  "personalDetails": {\n    "fullName": "<customer_name>",\n    "email": "<email_id>",\n    "kycStatus": "VERIFIED"\n  },\n  "accountTier": "PREMIUM"\n}`
+      },
+      {
+        id: "pl-flat-ach",
+        name: "NACHA ACH Fixed-Width Record",
+        format: "flatfile",
+        category: "FlatFiles & ACH",
+        content: `101 011000015 123456789 260726 1100 A094101YOUR BANK               MY COMPANY             \n5200COMPANY NAME        <ref_num>  000123450000001                          \n622123456789<account_no>0000<amount>0001234<debtor_name>                  0`
+      },
+      {
+        id: "pl-yaml-rules",
+        name: "YAML Risk & Sanctions Policy Rule Map",
+        format: "yaml",
+        category: "Compliance & Security",
+        content: `riskPolicy:\n  ruleId: POL-992\n  thresholdAmount: <sanctioned_limit>\n  sanctionsCheck: STRICT\n  allowQueuing: true`
+      }
+    ];
+
+    // Backward-compatible preset keys lookup map
     const payloadPresets = {
-      iso_xml: `<?xml version="1.0" encoding="UTF-8"?>\n<Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08">\n  <FIToFICstmrCdtTrf>\n    <GrpHdr>\n      <MsgId><msg_id></MsgId>\n      <CreDtTm>2026-07-26T12:00:00Z</CreDtTm>\n    </GrpHdr>\n    <CdtTrfTxInf>\n      <IntrBkSttlmAmt Ccy="<currency>"><amount></IntrBkSttlmAmt>\n      <Dbtr><Nm><debtor_name></Nm></Dbtr>\n      <Cdtr><Nm><creditor_name></Nm></Cdtr>\n    </CdtTrfTxInf>\n  </FIToFICstmrCdtTrf>\n</Document>`,
-      swift_mt103: `{1:F01BANKDEFMAXXX0000000000}\n{2:I103BANKDEFMAXXXN}\n{4:\n:20:<msg_id>\n:23B:CRED\n:32A:260726<currency><amount>\n:50K:/<debtor_account>\n<debtor_name>\n:59:/<creditor_account>\n<creditor_name>\n:71A:OUR\n-}`,
-      json_facility: `{\n  "facilityId": "<facility_id>",\n  "sanctionedLimit": "<sanctioned_limit>",\n  "sublimits": [\n    { "type": "LC", "amount": 500000 },\n    { "type": "BG", "amount": 300000 }\n  ]\n}`,
-      flatfile_ach: `101 011000015 123456789 260726 1100 A094101YOUR BANK               MY COMPANY             \n5200COMPANY NAME        <ref_num>  000123450000001                          \n622123456789<account_no>0000<amount>0001234<debtor_name>                  0`,
-      yaml_rules: `riskPolicy:\n  ruleId: POL-992\n  thresholdAmount: <sanctioned_limit>\n  sanctionsCheck: STRICT\n  allowQueuing: true`
+      iso_xml: defaultPayloadLibrary[0].content,
+      swift_mt103: defaultPayloadLibrary[2].content,
+      json_facility: defaultPayloadLibrary[4].content,
+      flatfile_ach: defaultPayloadLibrary[6].content,
+      yaml_rules: defaultPayloadLibrary[7].content
     };
 
     // Initial Application State
@@ -586,10 +727,219 @@
           ]
         }
       ],
-      ecommerce: [],
-      healthcare: [],
-      saas: [],
-      custom: []
+      ecommerce: [
+        {
+          id: "ec-1",
+          group: "Cart & Promotions",
+          name: "Shopping Cart & Dynamic Coupon Discount Calculation",
+          desc: "As an E-Commerce Checkout Service\nI want to calculate promotional coupon discounts against eligible cart items\nSo that customers receive valid price adjustments during checkout",
+          tags: ["@ecommerce", "@checkout", "@promotions"],
+          scenarios: [
+            {
+              id: "sc-ec-1",
+              name: "Apply percentage promo coupon to shopping cart",
+              type: "scenario-outline",
+              tags: ["@coupon-discount"],
+              steps: [
+                { id: "st-ec-1", type: "given", text: "a customer shopping cart <cart_id> with subtotal <cart_subtotal>", payloadFormat: "json", jsonPayload: "{\n  \"cart\": {\n    \"id\": \"<cart_id>\",\n    \"currency\": \"USD\",\n    \"subtotal\": \"<cart_subtotal>\",\n    \"items\": [\n      { \"sku\": \"ITEM-8812\", \"qty\": 2, \"unitPrice\": 100 }\n    ]\n  }\n}" },
+                { id: "st-ec-2", type: "when", text: "promotional coupon code <coupon_code> is applied" },
+                { id: "st-ec-3", type: "then", text: "the discount amount calculated should be <expected_discount>" },
+                { id: "st-ec-4", type: "and", text: "the final payable total should equal <final_total>" }
+              ],
+              examples: {
+                headers: ["cart_id", "cart_subtotal", "coupon_code", "expected_discount", "final_total"],
+                rows: [
+                  { id: "r-ec-1", cells: ["CART-901", "200.00", "SAVE20", "40.00", "160.00"] },
+                  { id: "r-ec-2", cells: ["CART-902", "500.00", "VIP50", "250.00", "250.00"] }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          id: "ec-2",
+          group: "Payment & Checkout",
+          name: "Payment Gateway Authorization & 3D Secure Verification",
+          desc: "As a Payment Processing Engine\nI want to authorize credit card payments with 3DS challenge authentication\nSo that fraudulent transactions are blocked before order placement",
+          tags: ["@payments", "@3ds", "@security"],
+          scenarios: [
+            {
+              id: "sc-ec-2",
+              name: "Authorize credit card transaction with 3DS v2 challenge",
+              type: "scenario-outline",
+              tags: ["@card-auth"],
+              steps: [
+                { id: "st-ec-21", type: "given", text: "a payment authorization request for card <card_num>", payloadFormat: "json", jsonPayload: "{\n  \"paymentRequest\": {\n    \"amount\": \"<amount>\",\n    \"currency\": \"USD\",\n    \"card\": {\n      \"number\": \"<card_num>\",\n      \"cvv\": \"991\",\n      \"expiry\": \"12/28\"\n    }\n  }\n}" },
+                { id: "st-ec-22", type: "when", text: "risk engine performs 3DS fraud evaluation" },
+                { id: "st-ec-23", type: "then", text: "the gateway response status should be <auth_status>" },
+                { id: "st-ec-24", type: "and", text: "the transaction reference should be <tx_ref>" }
+              ],
+              examples: {
+                headers: ["card_num", "amount", "auth_status", "tx_ref"],
+                rows: [
+                  { id: "r-ec-21", cells: ["4111-XXXX-XXXX-1111", "150.00", "AUTHORIZED", "TXN-OK-9081"] },
+                  { id: "r-ec-22", cells: ["4000-XXXX-XXXX-9999", "5000.00", "REQUIRES_3DS_OTP", "TXN-CHALLENGE-771"] }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          id: "ec-3",
+          group: "Fulfillment & Logistics",
+          name: "Real-Time Inventory Reservation & Fulfillment Processing",
+          desc: "As a Warehouse Management System\nI want to reserve item stock immediately upon payment confirmation\nSo that overselling is prevented across fulfillment nodes",
+          tags: ["@inventory", "@fulfillment"],
+          scenarios: [
+            {
+              id: "sc-ec-3",
+              name: "Reserve stock for ordered SKUs",
+              type: "scenario",
+              tags: ["@stock-reserve"],
+              steps: [
+                { id: "st-ec-31", type: "given", text: "available inventory of 50 units for SKU-LAPTOP-01 at Warehouse East" },
+                { id: "st-ec-32", type: "when", text: "an order for 3 units of SKU-LAPTOP-01 is placed" },
+                { id: "st-ec-33", type: "then", text: "the reserved stock count increases to 3 units" },
+                { id: "st-ec-34", type: "and", text: "the remaining available inventory drops to 47 units" }
+              ],
+              examples: { headers: [], rows: [] }
+            }
+          ]
+        }
+      ],
+      healthcare: [
+        {
+          id: "hc-1",
+          group: "FHIR Interoperability",
+          name: "FHIR R4 Patient Intake & Demographics Processing",
+          desc: "As a Hospital EHR System\nI want to ingest FHIR R4 Patient resources and validate demographics\nSo that patient records synchronize accurately across clinical departments",
+          tags: ["@healthcare", "@fhir", "@patient"],
+          scenarios: [
+            {
+              id: "sc-hc-1",
+              name: "Validate FHIR Patient resource payload ingestion",
+              type: "scenario-outline",
+              tags: ["@fhir-patient"],
+              steps: [
+                { id: "st-hc-1", type: "given", text: "a FHIR R4 Patient JSON payload for patient <patient_id>", payloadFormat: "json", jsonPayload: "{\n  \"resourceType\": \"Patient\",\n  \"id\": \"<patient_id>\",\n  \"name\": [{ \"family\": \"<family_name>\", \"given\": [\"<given_name>\"] }],\n  \"gender\": \"<gender>\",\n  \"birthDate\": \"<birth_date>\"\n}" },
+                { id: "st-hc-2", type: "when", text: "the EHR ingestion service validates the resource against HL7 FHIR schema" },
+                { id: "st-hc-3", type: "then", text: "the validation status should be <status>" },
+                { id: "st-hc-4", type: "and", text: "the assigned Medical Record Number (MRN) should be <mrn>" }
+              ],
+              examples: {
+                headers: ["patient_id", "family_name", "given_name", "gender", "birth_date", "status", "mrn"],
+                rows: [
+                  { id: "r-hc-1", cells: ["PAT-1092", "Smith", "John", "male", "1985-04-12", "VALIDATED", "MRN-88219"] },
+                  { id: "r-hc-2", cells: ["PAT-1093", "Doe", "Jane", "female", "1992-09-25", "VALIDATED", "MRN-88220"] }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          id: "hc-2",
+          group: "Claims & Adjudication",
+          name: "Healthcare Medical Claims Adjudication Engine",
+          desc: "As a Health Insurance Payer Engine\nI want to adjudicate medical claim procedures against coverage policies\nSo that benefit copays and approved reimbursement amounts are calculated",
+          tags: ["@claims", "@adjudication", "@insurance"],
+          scenarios: [
+            {
+              id: "sc-hc-2",
+              name: "Adjudicate outpatient procedure CPT codes",
+              type: "scenario-outline",
+              tags: ["@claims-adjudication"],
+              steps: [
+                { id: "st-hc-21", type: "given", text: "a claim <claim_id> with CPT code <cpt_code> and billed amount <billed_amt>", payloadFormat: "xml", jsonPayload: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Claim xmlns=\"http://hl7.org/fhir/Claim\">\n  <id><claim_id></id>\n  <item>\n    <sequence>1</sequence>\n    <productOrService><coding><code value=\"<cpt_code>\"/></coding></productOrService>\n    <net><value value=\"<billed_amt>\"/><currency value=\"USD\"/></net>\n  </item>\n</Claim>" },
+                { id: "st-hc-22", type: "when", text: "the rules engine evaluates policy deductible and coinsurance" },
+                { id: "st-hc-23", type: "then", text: "the claim adjudication status should be <adjudication_status>" },
+                { id: "st-hc-24", type: "and", text: "the approved payer coverage amount should equal <approved_amt>" }
+              ],
+              examples: {
+                headers: ["claim_id", "cpt_code", "billed_amt", "adjudication_status", "approved_amt"],
+                rows: [
+                  { id: "r-hc-21", cells: ["CLM-7701", "99214", "250.00", "APPROVED", "200.00"] },
+                  { id: "r-hc-22", cells: ["CLM-7702", "99285", "1200.00", "APPROVED_PARTIAL", "950.00"] }
+                ]
+              }
+            }
+          ]
+        }
+      ],
+      saas: [
+        {
+          id: "sa-1",
+          group: "Billing & Subscriptions",
+          name: "Subscription Upgrade & Tier Metered Billing Engine",
+          desc: "As a SaaS Billing Orchestrator\nI want to calculate prorated plan upgrades and metered API usage overages\nSo that subscriber invoices are accurate at billing period renewal",
+          tags: ["@saas", "@billing", "@metering"],
+          scenarios: [
+            {
+              id: "sc-sa-1",
+              name: "Prorated plan upgrade from Starter to Enterprise",
+              type: "scenario-outline",
+              tags: ["@plan-upgrade"],
+              steps: [
+                { id: "st-sa-1", type: "given", text: "tenant <tenant_id> on active plan <current_plan> with API usage <api_calls>", payloadFormat: "json", jsonPayload: "{\n  \"subscription\": {\n    \"tenantId\": \"<tenant_id>\",\n    \"plan\": \"<current_plan>\",\n    \"monthlyQuota\": 100000,\n    \"currentUsage\": \"<api_calls>\"\n  }\n}" },
+                { id: "st-sa-2", type: "when", text: "the tenant requests an immediate upgrade to <new_plan>" },
+                { id: "st-sa-3", type: "then", text: "the prorated upgrade charge calculated should be <prorated_charge>" },
+                { id: "st-sa-4", type: "and", text: "the new monthly API quota should increase to <new_quota>" }
+              ],
+              examples: {
+                headers: ["tenant_id", "current_plan", "api_calls", "new_plan", "prorated_charge", "new_quota"],
+                rows: [
+                  { id: "r-sa-1", cells: ["TENANT-ACME", "STARTER", "85000", "PRO", "$49.00", "500000"] },
+                  { id: "r-sa-2", cells: ["TENANT-GLOBEX", "PRO", "490000", "ENTERPRISE", "$299.00", "5000000"] }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          id: "sa-2",
+          group: "Security & Multi-Tenancy",
+          name: "Multi-Tenant RBAC Authorization & Security Audit Trail",
+          desc: "As an IAM Authorization Gatekeeper\nI want to enforce tenant isolation and role-based access control (RBAC)\nSo that cross-tenant data leaks are impossible",
+          tags: ["@rbac", "@security", "@multitenant"],
+          scenarios: [
+            {
+              id: "sc-sa-2",
+              name: "Block cross-tenant resource access attempt",
+              type: "scenario",
+              tags: ["@tenant-isolation"],
+              steps: [
+                { id: "st-sa-21", type: "given", text: "an authenticated user USER-99 with Tenant Context TENANT-ALPHA" },
+                { id: "st-sa-22", type: "when", text: "the user attempts to GET resource /api/v1/documents/DOC-BETA-77 belonging to TENANT-BETA" },
+                { id: "st-sa-23", type: "then", text: "the IAM security filter blocks the request with HTTP 403 Forbidden" },
+                { id: "st-sa-24", type: "and", text: "a security violation alert is logged in the audit trail" }
+              ],
+              examples: { headers: [], rows: [] }
+            }
+          ]
+        }
+      ],
+      custom: [
+        {
+          id: "cu-1",
+          group: "General Domain Requirements",
+          name: "Custom Enterprise Workflow Specification",
+          desc: "As a System Owner\nI want to define domain-specific business rules and payload templates\nSo that development and test teams share standard specifications",
+          tags: ["@custom", "@workflow"],
+          scenarios: [
+            {
+              id: "sc-cu-1",
+              name: "Validate custom domain business rule execution",
+              type: "scenario",
+              tags: ["@custom-rule"],
+              steps: [
+                { id: "st-cu-1", type: "given", text: "the enterprise workspace is initialized with custom configuration", payloadFormat: "json", jsonPayload: "{\n  \"customDomain\": {\n    \"status\": \"ACTIVE\",\n    \"mode\": \"PRODUCTION_READY\"\n  }\n}" },
+                { id: "st-cu-2", type: "when", text: "business inputs are submitted into the workflow engine" },
+                { id: "st-cu-3", type: "then", text: "the outcome should meet configured domain acceptance criteria" }
+              ],
+              examples: { headers: [], rows: [] }
+            }
+          ]
+        }
+      ]
     };
 
     // Comprehensive Help Topics documenting all features
@@ -653,6 +1003,12 @@
         title: "Gherkin File Export & Gherkin Import", 
         keywords: "gherkin export import feature file docstring copy clipboard download", 
         content: "<h2>Gherkin File Export & Import</h2><p>Ensure 100% Gherkin specification compliance:</p><ul><li>Click <strong>Export Gherkin</strong> or the <strong>Gherkin View</strong> tab to inspect generated Gherkin syntax.</li><li>Click <strong>Copy to Clipboard</strong> or <strong>Download .feature File</strong> to export standard feature files.</li><li>Click <strong>Import File</strong> in the top header to paste or upload existing <code>.feature</code> files into your project workspace.</li></ul>" 
+      },
+      { 
+        id: "payload-repository", 
+        title: "Payload Repository, Custom Templates & Local Folder Import", 
+        keywords: "payload repository custom create import export folder cache localstorage library json xml swift yaml", 
+        content: "<h2>Payload Repository & Custom Payload Management</h2><p>Enterprise BDD Studio allows you to create custom payload templates, save step payloads to cache, import/export payload libraries, and load payload files directly from local folders on disk:</p><ul><li><strong>📦 Payloads Library (Header):</strong> Click the <strong>📦 Payloads Library</strong> button in the top header to manage your payload repository.</li><li><strong>➕ Create Custom Payloads:</strong> Define custom payload templates in JSON, XML, SWIFT, FlatFile, or YAML with placeholder support.</li><li><strong>💾 Save Step Payload to Library:</strong> Click <strong>💾 Save to Library</strong> inside any step payload container to save custom step payloads into cache for reuse across scenarios.</li><li><strong>📂 Load Payloads Folder:</strong> Click <strong>📂 Load Payloads Folder</strong> in the Payload Repository modal to select a local directory on your machine. All payload files (<code>.json</code>, <code>.xml</code>, <code>.swift</code>, <code>.yaml</code>, <code>.txt</code>, <code>.csv</code>) are automatically parsed, format-detected, and saved into your library cache!</li><li><strong>📥 Import & 📤 Export:</strong> Import JSON payload libraries or single/multiple data files, or export your entire payload repository as a single <code>.json</code> bundle.</li></ul>" 
       }
     ];
 
@@ -661,14 +1017,29 @@
       const saved = localStorage.getItem('rf_bdd_state_v1.0') || localStorage.getItem('rf_bdd_state_v2.5');
       if (saved) {
         appState = JSON.parse(saved);
-        if(!appState.openTabs) appState.openTabs = appState.features.map(f => f.id);
-        if(!appState.customDomains) appState.customDomains = [];
+        if (!appState.openTabs) appState.openTabs = appState.features ? appState.features.map(f => f.id) : [];
+        if (!appState.customDomains) appState.customDomains = [];
+        if (!appState.savedDomainFeatures) appState.savedDomainFeatures = {};
+        if (!appState.customPayloads || appState.customPayloads.length === 0) {
+          appState.customPayloads = JSON.parse(JSON.stringify(defaultPayloadLibrary));
+        }
+
+        // Verify active domain features
+        if ((!appState.features || appState.features.length === 0) && appState.context) {
+          if (appState.savedDomainFeatures[appState.context]) {
+            appState.features = JSON.parse(JSON.stringify(appState.savedDomainFeatures[appState.context]));
+          } else if (templates[appState.context]) {
+            appState.features = JSON.parse(JSON.stringify(templates[appState.context]));
+          }
+        }
       } else {
         appState.context = 'banking';
-        appState.features = templates.banking;
+        appState.features = JSON.parse(JSON.stringify(templates.banking));
         appState.activeFeatureId = appState.features[0].id;
         appState.openTabs = appState.features.map(f => f.id);
         appState.customDomains = [];
+        appState.savedDomainFeatures = { banking: appState.features };
+        appState.customPayloads = JSON.parse(JSON.stringify(defaultPayloadLibrary));
       }
       renderDomainSelectOptions();
       renderSidebar();
@@ -697,9 +1068,66 @@
       sel.value = appState.context || 'banking';
     }
 
+    function switchDomain(domain) {
+      if (!domain) return;
+      if (domain === '__create_new_domain__') {
+        createCustomDomainPrompt();
+        return;
+      }
+
+      // Preserve current workspace features for active domain before switching
+      if (appState.context && appState.features) {
+        if (!appState.savedDomainFeatures) appState.savedDomainFeatures = {};
+        appState.savedDomainFeatures[appState.context] = appState.features;
+      }
+
+      appState.context = domain;
+
+      // Load features from saved domain cache, built-in templates object, or default fallback
+      if (appState.savedDomainFeatures && appState.savedDomainFeatures[domain] && appState.savedDomainFeatures[domain].length > 0) {
+        appState.features = JSON.parse(JSON.stringify(appState.savedDomainFeatures[domain]));
+      } else if (templates[domain] && templates[domain].length > 0) {
+        appState.features = JSON.parse(JSON.stringify(templates[domain]));
+      } else {
+        appState.features = [
+          {
+            id: uuid(),
+            group: "Domain Requirements",
+            name: "Default Industry Specification",
+            desc: "As a System User\nI want to define domain requirements\nSo that business rules are validated",
+            tags: [`@${domain}`],
+            scenarios: [
+              {
+                id: uuid(),
+                name: "Initial Scenario",
+                type: "scenario",
+                tags: [],
+                steps: [{ id: uuid(), type: "given", text: "business context is initialized", payloadFormat: "json" }],
+                examples: { headers: [], rows: [] }
+              }
+            ]
+          }
+        ];
+      }
+
+      appState.activeFeatureId = appState.features.length ? appState.features[0].id : null;
+      appState.openTabs = appState.features.map(f => f.id);
+
+      saveState();
+      renderDomainSelectOptions();
+      renderSidebar();
+      renderOpenTabs();
+      if (appState.activeFeatureId) {
+        renderActiveFeature();
+      }
+    }
+
     function createCustomDomainPrompt() {
       const name = prompt("Enter New Industry / Business Domain Name (e.g. Insurance & Claims, Logistics & Freight, Telecom Billing):");
-      if (!name || !name.trim()) return;
+      if (!name || !name.trim()) {
+        document.getElementById('context-select').value = appState.context || 'banking';
+        return;
+      }
       const cleanName = name.trim();
       const domainKey = 'custom_' + cleanName.toLowerCase().replace(/[^a-z0-9]/g, '_');
 
@@ -708,7 +1136,7 @@
         appState.customDomains.push({ key: domainKey, name: cleanName });
       }
 
-      templates[domainKey] = [
+      const initialFeatures = [
         {
           id: uuid(),
           group: `${cleanName} Core`,
@@ -728,16 +1156,11 @@
         }
       ];
 
-      appState.context = domainKey;
-      appState.features = JSON.parse(JSON.stringify(templates[domainKey]));
-      appState.activeFeatureId = appState.features[0].id;
-      appState.openTabs = appState.features.map(f => f.id);
+      templates[domainKey] = initialFeatures;
+      if (!appState.savedDomainFeatures) appState.savedDomainFeatures = {};
+      appState.savedDomainFeatures[domainKey] = initialFeatures;
 
-      saveState();
-      renderDomainSelectOptions();
-      renderSidebar();
-      renderOpenTabs();
-      renderActiveFeature();
+      switchDomain(domainKey);
     }
 
     function createNewGroupPrompt() {
@@ -747,6 +1170,10 @@
     }
 
     function saveState() {
+      if (appState.context && appState.features) {
+        if (!appState.savedDomainFeatures) appState.savedDomainFeatures = {};
+        appState.savedDomainFeatures[appState.context] = appState.features;
+      }
       localStorage.setItem('rf_bdd_state_v1.0', JSON.stringify(appState));
     }
 
@@ -1132,15 +1559,13 @@
                     </select>
                   </div>
                   
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <select style="font-size:11px; padding:3px 6px; background:var(--bg-secondary);" onchange="loadPayloadPreset('${s.id}', '${step.id}', this.value); this.value='';">
-                      <option value="">⚡ Load Sample Preset...</option>
-                      <option value="iso_xml">ISO 20022 pacs.008 XML</option>
-                      <option value="swift_mt103">SWIFT MT103 Block</option>
-                      <option value="json_facility">JSON Credit Limit Tree</option>
-                      <option value="flatfile_ach">NACHA ACH Flat Record</option>
-                      <option value="yaml_rules">YAML Policy Rules</option>
+                  <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                    <select style="font-size:11px; padding:3px 6px; background:var(--bg-secondary); max-width:210px;" onchange="loadPayloadPreset('${s.id}', '${step.id}', this.value); this.value='';">
+                      <option value="">⚡ Load Preset / Library...</option>
+                      ${renderPayloadSelectOptionsHTML()}
                     </select>
+                    <button class="sm" onclick="saveStepPayloadToLibrary('${s.id}', '${step.id}')" title="Save this step's payload into your custom Payload Library cache">💾 Save to Library</button>
+                    <button class="sm" onclick="openPayloadModal('${s.id}', '${step.id}')" title="Open Payload Repository">📦 Library</button>
                     <span class="payload-format-badge">${pFormat.toUpperCase()}</span>
                   </div>
                 </div>
@@ -1230,28 +1655,466 @@
       saveState(); renderActiveFeature();
     }
 
-    function loadPayloadPreset(sId, stepId, presetKey) {
-      if(!presetKey || !payloadPresets[presetKey]) return;
+    function loadPayloadPreset(sId, stepId, presetKeyOrId) {
+      if(!presetKeyOrId) return;
       const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      if(!f) return;
       const s = f.scenarios.find(s => s.id === sId);
+      if(!s) return;
       const step = s.steps.find(st => st.id === stepId);
+      if(!step) return;
       
-      step.jsonPayload = payloadPresets[presetKey];
-      if (presetKey === 'iso_xml') step.payloadFormat = 'xml';
-      else if (presetKey === 'swift_mt103') step.payloadFormat = 'swift';
-      else if (presetKey === 'flatfile_ach') step.payloadFormat = 'flatfile';
-      else if (presetKey === 'yaml_rules') step.payloadFormat = 'yaml';
-      else step.payloadFormat = 'json';
+      // Check custom payload library first
+      const libraryItem = (appState.customPayloads || []).find(item => item.id === presetKeyOrId);
+      if (libraryItem) {
+        step.jsonPayload = libraryItem.content;
+        step.payloadFormat = libraryItem.format || 'json';
+      } else if (payloadPresets[presetKeyOrId]) {
+        step.jsonPayload = payloadPresets[presetKeyOrId];
+        if (presetKeyOrId === 'iso_xml') step.payloadFormat = 'xml';
+        else if (presetKeyOrId === 'swift_mt103') step.payloadFormat = 'swift';
+        else if (presetKeyOrId === 'flatfile_ach') step.payloadFormat = 'flatfile';
+        else if (presetKeyOrId === 'yaml_rules') step.payloadFormat = 'yaml';
+        else step.payloadFormat = 'json';
+      } else {
+        return;
+      }
 
       saveState(); renderActiveFeature();
     }
 
-    function updateStepJsonPayload(sId, stepId, val) {
+    function renderPayloadSelectOptionsHTML() {
+      const list = appState.customPayloads || defaultPayloadLibrary;
+      if (!list || list.length === 0) return '';
+      
+      const customItems = list.map(item => 
+        `<option value="${item.id}">[${(item.format || 'json').toUpperCase()}] ${escapeHtml(item.name)}</option>`
+      ).join('');
+
+      return `<optgroup label="📦 Payload Library (Saved in Cache)">${customItems}</optgroup>`;
+    }
+
+    function saveStepPayloadToLibrary(sId, stepId) {
       const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      if(!f) return;
       const s = f.scenarios.find(s => s.id === sId);
+      if(!s) return;
       const step = s.steps.find(st => st.id === stepId);
-      step.jsonPayload = val;
+      if(!step || !step.jsonPayload || !step.jsonPayload.trim()) {
+        alert("Payload is empty. Please enter payload text in the textarea first.");
+        return;
+      }
+
+      const defaultName = `Saved Payload ${new Date().toLocaleTimeString()}`;
+      const name = prompt("Enter a name for this payload template:", defaultName);
+      if (!name || !name.trim()) return;
+
+      const newPayload = {
+        id: "pl-user-" + uuid(),
+        name: name.trim(),
+        format: step.payloadFormat || 'json',
+        category: "Step Saved",
+        content: step.jsonPayload
+      };
+
+      if (!appState.customPayloads) appState.customPayloads = [];
+      appState.customPayloads.unshift(newPayload);
       saveState();
+      renderActiveFeature();
+      alert(`Saved '${newPayload.name}' to your Payload Repository cache!`);
+    }
+
+    // Modal Payload Manager Logic
+    let activeTargetStepInfo = null;
+
+    function openPayloadModal(sId = null, stepId = null) {
+      if (sId && stepId) {
+        activeTargetStepInfo = { sId, stepId };
+      } else {
+        activeTargetStepInfo = null;
+      }
+      const modal = document.getElementById('payload-modal');
+      if (modal) {
+        modal.classList.add('open');
+        closePayloadForm();
+        renderPayloadLibraryGrid();
+      }
+    }
+
+    function closePayloadModal() {
+      const modal = document.getElementById('payload-modal');
+      if (modal) modal.classList.remove('open');
+      activeTargetStepInfo = null;
+    }
+
+    function renderPayloadLibraryGrid() {
+      const grid = document.getElementById('payload-grid-container');
+      if (!grid) return;
+
+      const searchText = (document.getElementById('payload-search-input')?.value || '').toLowerCase();
+      const formatFilter = document.getElementById('payload-format-filter')?.value || 'all';
+
+      let items = appState.customPayloads || [];
+
+      if (formatFilter !== 'all') {
+        items = items.filter(i => (i.format || 'json').toLowerCase() === formatFilter);
+      }
+
+      if (searchText) {
+        items = items.filter(i => 
+          i.name.toLowerCase().includes(searchText) || 
+          (i.category && i.category.toLowerCase().includes(searchText)) ||
+          i.content.toLowerCase().includes(searchText)
+        );
+      }
+
+      if (items.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding:40px; color:var(--text-secondary);">
+          No payloads found matching your search. Click <strong>➕ Create Payload</strong> or <strong>📂 Load Payloads Folder</strong> to add new templates!
+        </div>`;
+        return;
+      }
+
+      grid.innerHTML = items.map(item => {
+        const fmt = (item.format || 'json').toUpperCase();
+        const cat = item.category || 'General';
+
+        return `
+          <div class="payload-card">
+            <div class="payload-card-header">
+              <div>
+                <div class="payload-card-title">${escapeHtml(item.name)}</div>
+                <div class="payload-card-meta">
+                  <span class="payload-format-badge">${fmt}</span>
+                  <span>🏷️ ${escapeHtml(cat)}</span>
+                </div>
+              </div>
+              <button class="sm" onclick="downloadSinglePayload('${item.id}')" title="Download as file">💾 Save File</button>
+            </div>
+            
+            <div class="payload-card-code">${escapeHtml(item.content)}</div>
+
+            <div class="payload-card-actions">
+              <div style="display:flex; gap:6px;">
+                ${activeTargetStepInfo ? `<button class="primary sm" onclick="applyPayloadToStep('${item.id}')">⚡ Insert into Active Step</button>` : ''}
+                <button class="sm" onclick="editPayloadInLibrary('${item.id}')">✏️ Edit</button>
+              </div>
+              <button class="danger-sm" onclick="deletePayloadFromLibrary('${item.id}')">🗑️ Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openCreatePayloadForm() {
+      document.getElementById('payload-form-title').innerText = "Create Custom Payload";
+      document.getElementById('payload-edit-id').value = "";
+      document.getElementById('payload-form-name').value = "";
+      document.getElementById('payload-form-format').value = "json";
+      document.getElementById('payload-form-category').value = "Custom";
+      document.getElementById('payload-form-content').value = "";
+      document.getElementById('payload-form-container').style.display = "block";
+    }
+
+    function editPayloadInLibrary(id) {
+      const item = (appState.customPayloads || []).find(i => i.id === id);
+      if(!item) return;
+
+      document.getElementById('payload-form-title').innerText = "Edit Payload Template";
+      document.getElementById('payload-edit-id').value = item.id;
+      document.getElementById('payload-form-name').value = item.name;
+      document.getElementById('payload-form-format').value = item.format || "json";
+      document.getElementById('payload-form-category').value = item.category || "Custom";
+      document.getElementById('payload-form-content').value = item.content;
+      document.getElementById('payload-form-container').style.display = "block";
+      document.getElementById('payload-form-container').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function closePayloadForm() {
+      const form = document.getElementById('payload-form-container');
+      if (form) form.style.display = "none";
+    }
+
+    function savePayloadFromForm() {
+      const editId = document.getElementById('payload-edit-id').value;
+      const name = document.getElementById('payload-form-name').value.trim();
+      const format = document.getElementById('payload-form-format').value;
+      const category = document.getElementById('payload-form-category').value.trim() || 'Custom';
+      const content = document.getElementById('payload-form-content').value;
+
+      if (!name) { alert("Please enter a payload template name."); return; }
+      if (!content) { alert("Please enter payload content."); return; }
+
+      if (!appState.customPayloads) appState.customPayloads = [];
+
+      if (editId) {
+        const item = appState.customPayloads.find(i => i.id === editId);
+        if (item) {
+          item.name = name;
+          item.format = format;
+          item.category = category;
+          item.content = content;
+        }
+      } else {
+        appState.customPayloads.unshift({
+          id: "pl-user-" + uuid(),
+          name,
+          format,
+          category,
+          content
+        });
+      }
+
+      saveState();
+      closePayloadForm();
+      renderPayloadLibraryGrid();
+      if (appState.activeFeatureId) renderActiveFeature();
+    }
+
+    function deletePayloadFromLibrary(id) {
+      if (!confirm("Are you sure you want to delete this payload template from cache?")) return;
+      appState.customPayloads = (appState.customPayloads || []).filter(i => i.id !== id);
+      saveState();
+      renderPayloadLibraryGrid();
+      if (appState.activeFeatureId) renderActiveFeature();
+    }
+
+    function applyPayloadToStep(payloadId) {
+      if (!activeTargetStepInfo) return;
+      const item = (appState.customPayloads || []).find(i => i.id === payloadId);
+      if(!item) return;
+
+      loadPayloadPreset(activeTargetStepInfo.sId, activeTargetStepInfo.stepId, payloadId);
+      closePayloadModal();
+    }
+
+    function exportPayloadLibrary() {
+      const list = appState.customPayloads || defaultPayloadLibrary;
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(list, null, 2));
+      const dlAnchorElem = document.createElement('a');
+      dlAnchorElem.setAttribute("href", dataStr);
+      dlAnchorElem.setAttribute("download", `bdd_payload_library_${new Date().toISOString().slice(0,10)}.json`);
+      document.body.appendChild(dlAnchorElem);
+      dlAnchorElem.click();
+      dlAnchorElem.remove();
+    }
+
+    function downloadSinglePayload(id) {
+      const item = (appState.customPayloads || []).find(i => i.id === id);
+      if (!item) return;
+
+      const extMap = { xml: '.xml', json: '.json', swift: '.swift', flatfile: '.txt', yaml: '.yaml' };
+      const ext = extMap[item.format || 'json'] || '.txt';
+      const cleanName = item.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+
+      const blob = new Blob([item.content], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${cleanName}${ext}`;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function resetPayloadLibraryToDefaults() {
+      if (!confirm("Reset payload library to initial built-in defaults? This will restore original sample presets.")) return;
+      appState.customPayloads = JSON.parse(JSON.stringify(defaultPayloadLibrary));
+      saveState();
+      renderPayloadLibraryGrid();
+      if (appState.activeFeatureId) renderActiveFeature();
+      alert("Payload library reset to default templates!");
+    }
+
+    // Folder & Local File Payload Scanner Logic
+    async function openPayloadFolderPicker() {
+      if ('showDirectoryPicker' in window) {
+        try {
+          const dirHandle = await window.showDirectoryPicker();
+          const loadedPayloads = [];
+          await readPayloadDirectoryRecursively(dirHandle, '', loadedPayloads, dirHandle.name);
+          if (loadedPayloads.length > 0) {
+            if (!appState.customPayloads) appState.customPayloads = [];
+            loadedPayloads.reverse().forEach(p => appState.customPayloads.unshift(p));
+            saveState();
+            renderPayloadLibraryGrid();
+            if (appState.activeFeatureId) renderActiveFeature();
+            alert(`Successfully loaded ${loadedPayloads.length} payload file(s) from folder '${dirHandle.name}' into your library cache!`);
+          } else {
+            alert("No payload files (.json, .xml, .swift, .yaml, .txt, .csv) found in the selected folder.");
+          }
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            document.getElementById('payload-folder-input').click();
+          }
+        }
+      } else {
+        document.getElementById('payload-folder-input').click();
+      }
+    }
+
+    async function readPayloadDirectoryRecursively(dirHandle, currentPath, resultList, rootName) {
+      for await (const entry of dirHandle.values()) {
+        if (entry.kind === 'file') {
+          const ext = (entry.name.split('.').pop() || '').toLowerCase();
+          if (['json', 'xml', 'swift', 'yaml', 'yml', 'txt', 'csv', 'dat', 'mt103', 'mt202'].includes(ext)) {
+            const file = await entry.getFile();
+            const text = await file.text();
+            if (text && text.trim()) {
+              const format = detectPayloadFormat(entry.name, text);
+              const folderLabel = currentPath ? `${rootName}/${currentPath}` : rootName;
+              resultList.push({
+                id: "pl-folder-" + uuid(),
+                name: entry.name,
+                format: format,
+                category: `Folder: ${folderLabel}`,
+                content: text
+              });
+            }
+          }
+        } else if (entry.kind === 'directory') {
+          const subPath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
+          await readPayloadDirectoryRecursively(entry, subPath, resultList, rootName);
+        }
+      }
+    }
+
+    function handlePayloadFolderSelect(event) {
+      const files = Array.from(event.target.files);
+      const payloadFiles = files.filter(f => {
+        const ext = (f.name.split('.').pop() || '').toLowerCase();
+        return ['json', 'xml', 'swift', 'yaml', 'yml', 'txt', 'csv', 'dat', 'mt103', 'mt202'].includes(ext);
+      });
+
+      if (payloadFiles.length === 0) {
+        alert("No payload files found in the selected folder.");
+        return;
+      }
+
+      const loadedPayloads = [];
+      let readCount = 0;
+
+      payloadFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = e.target.result;
+          if (text && text.trim()) {
+            const format = detectPayloadFormat(file.name, text);
+            const pathParts = file.webkitRelativePath.split('/');
+            let groupName = "Folder Import";
+            if (pathParts.length > 2) {
+              groupName = pathParts.slice(0, pathParts.length - 1).join('/');
+            } else if (pathParts.length === 2) {
+              groupName = pathParts[0];
+            }
+
+            loadedPayloads.push({
+              id: "pl-folder-" + uuid(),
+              name: file.name,
+              format: format,
+              category: `Folder: ${groupName}`,
+              content: text
+            });
+          }
+
+          readCount++;
+          if (readCount === payloadFiles.length) {
+            if (loadedPayloads.length > 0) {
+              if (!appState.customPayloads) appState.customPayloads = [];
+              loadedPayloads.reverse().forEach(p => appState.customPayloads.unshift(p));
+              saveState();
+              renderPayloadLibraryGrid();
+              if (appState.activeFeatureId) renderActiveFeature();
+              alert(`Successfully loaded ${loadedPayloads.length} payload file(s) into your library cache!`);
+            }
+          }
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    function triggerPayloadFileImport() {
+      document.getElementById('payload-file-input').click();
+    }
+
+    function handlePayloadFileImport(event) {
+      const files = Array.from(event.target.files);
+      if (!files || files.length === 0) return;
+
+      let importCount = 0;
+      let readCount = 0;
+
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = e.target.result;
+          if (text && text.trim()) {
+            // Check if it's a JSON payload export array
+            if (file.name.endsWith('.json')) {
+              try {
+                const parsed = JSON.parse(text);
+                const itemsToImport = Array.isArray(parsed) ? parsed : (parsed.payloads || null);
+                if (itemsToImport && Array.isArray(itemsToImport) && itemsToImport[0] && itemsToImport[0].content) {
+                  if (!appState.customPayloads) appState.customPayloads = [];
+                  itemsToImport.forEach(item => {
+                    appState.customPayloads.unshift({
+                      id: "pl-imp-" + uuid(),
+                      name: item.name || "Imported Payload",
+                      format: item.format || "json",
+                      category: item.category || "Imported Library",
+                      content: item.content
+                    });
+                    importCount++;
+                  });
+                  readCount++;
+                  finishImport();
+                  return;
+                }
+              } catch(err) { /* fallback to single file import */ }
+            }
+
+            const format = detectPayloadFormat(file.name, text);
+            if (!appState.customPayloads) appState.customPayloads = [];
+            appState.customPayloads.unshift({
+              id: "pl-imp-" + uuid(),
+              name: file.name,
+              format: format,
+              category: "Imported File",
+              content: text
+            });
+            importCount++;
+          }
+
+          readCount++;
+          finishImport();
+        };
+        reader.readAsText(file);
+      });
+
+      function finishImport() {
+        if (readCount === files.length) {
+          saveState();
+          renderPayloadLibraryGrid();
+          if (appState.activeFeatureId) renderActiveFeature();
+          alert(`Successfully imported ${importCount} payload template(s) into cache!`);
+          event.target.value = '';
+        }
+      }
+    }
+
+    function detectPayloadFormat(filename, text) {
+      const ext = (filename.split('.').pop() || '').toLowerCase();
+      if (['xml'].includes(ext)) return 'xml';
+      if (['json'].includes(ext)) return 'json';
+      if (['swift', 'mt103', 'mt202'].includes(ext)) return 'swift';
+      if (['yaml', 'yml'].includes(ext)) return 'yaml';
+      if (['csv', 'ach', 'dat'].includes(ext)) return 'flatfile';
+
+      const t = text.trim();
+      if (t.startsWith('<?xml') || t.startsWith('<Document') || t.startsWith('<') && t.endsWith('>')) return 'xml';
+      if (t.startsWith('{') || t.startsWith('[')) return 'json';
+      if (t.includes('{1:') || t.includes('{4:')) return 'swift';
+      if (t.includes(':') && !t.includes('<')) return 'yaml';
+
+      return 'flatfile';
     }
 
     function moveStep(sId, stepId, dir) {
@@ -2035,19 +2898,7 @@
         createCustomDomainPrompt();
         return;
       }
-      if (confirm(`Load templates for domain '${domain.toUpperCase()}'?`)) {
-        appState.context = domain;
-        appState.features = templates[domain] ? JSON.parse(JSON.stringify(templates[domain])) : [];
-        appState.activeFeatureId = appState.features.length ? appState.features[0].id : null;
-        appState.openTabs = appState.features.map(f => f.id);
-        saveState();
-        renderDomainSelectOptions();
-        renderSidebar();
-        renderOpenTabs();
-        renderActiveFeature();
-      } else {
-        e.target.value = appState.context;
-      }
+      switchDomain(domain);
     });
 
     // Initialize
