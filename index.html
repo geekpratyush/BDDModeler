@@ -306,6 +306,7 @@
       <button onclick="createCustomDomainPrompt()" class="sm">+ New Domain</button>
       <button onclick="openImportModal()">Import File</button>
       <button onclick="exportGherkin()">Export Gherkin</button>
+      <button onclick="openAboutModal()" style="background:var(--bg-card); border:1px solid var(--accent); color:var(--text-primary);" title="Visual Feature Carousel & Architect Overview">About Studio 🎨</button>
       <button onclick="toggleHelp()">Help (?)</button>
     </div>
   </header>
@@ -375,7 +376,35 @@
     </div>
   </div>
 
-  <!-- Help Panel -->
+  <!-- About Carousel Modal -->
+  <div class="modal-overlay" id="about-modal">
+    <div class="modal-card" style="width: 860px; max-width: 95vw; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; color: var(--text-primary); box-shadow: 0 20px 40px rgba(0,0,0,0.7);">
+      
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <h2 style="font-size:18px; color:var(--text-primary);">RouteForge BDD Studio <span style="font-size:11px; background:var(--accent); color:white; padding:2px 8px; border-radius:10px; font-weight:600;">v1.0 Enterprise</span></h2>
+        </div>
+        <button onclick="closeAboutModal()" style="background:transparent; border:none; color:var(--text-secondary); font-size:20px; cursor:pointer;">✕</button>
+      </div>
+
+      <!-- Carousel Slide Display -->
+      <div id="about-carousel-container" style="min-height: 430px;">
+        <!-- Slide content dynamically rendered -->
+      </div>
+
+      <!-- Carousel Navigation Controls -->
+      <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:16px; margin-top:16px;">
+        <button onclick="prevAboutSlide()" style="padding:6px 14px; border-radius:6px; font-weight:600;">❮ Previous</button>
+        
+        <div id="carousel-indicators" style="display:flex; gap:8px; align-items:center;">
+          <!-- Indicators rendered dynamically -->
+        </div>
+
+        <button class="primary" onclick="nextAboutSlide()" style="padding:6px 14px; border-radius:6px; font-weight:600;">Next ❯</button>
+      </div>
+
+    </div>
+  </div>
   <div class="modal-overlay" id="help-overlay" onclick="toggleHelp()"></div>
   <div class="help-panel" id="help-panel">
     <div class="help-header">
@@ -1874,6 +1903,130 @@
     function escapeHtml(unsafe) {
       return (unsafe || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
+
+    // --- About Carousel Modal System ---
+    let currentAboutSlide = 0;
+
+    const aboutSlides = [
+      {
+        title: "Enterprise Requirement Engineering & BDD Studio",
+        subtitle: "Architected & Developed by Pratyush Ranjan Mishra",
+        badge: "Architect & Author",
+        image: "assets/editor_showcase.png",
+        content: `
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:12px;">
+            <strong>RouteForge BDD Studio v1.0 Enterprise</strong> is a zero-dependency, professional requirement engineering studio created by <strong>Pratyush Ranjan Mishra</strong> to unify Business Analysts, System Architects, and Quality Engineers across complex enterprise environments.
+          </p>
+          <div style="display:flex; gap:10px; margin-top:14px;">
+            <a href="https://www.linkedin.com/in/leadtherightway/" target="_blank" class="primary" style="text-decoration:none; padding:8px 14px; border-radius:6px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">🔗 LinkedIn Profile (leadtherightway)</a>
+            <a href="https://github.com/geekpratyush" target="_blank" style="text-decoration:none; background:var(--bg-secondary); border:1px solid var(--border); color:white; padding:8px 14px; border-radius:6px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">🐙 GitHub Profile (@geekpratyush)</a>
+          </div>
+        `
+      },
+      {
+        title: "Multi-Format Data Payload Modeling",
+        subtitle: "Total Format Freedom for Business Analysts",
+        badge: "ISO 20022 XML • SWIFT MT • FlatFile • JSON",
+        image: "assets/editor_showcase.png",
+        content: `
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">
+            Model real enterprise payloads natively inside Gherkin feature steps using standard DocString markers (<code>"""xml</code>, <code>"""swift</code>, <code>"""flatfile</code>). Seamlessly handles ISO 20022 MX XML (pacs.008), SWIFT MT103/MT202 message blocks, NACHA ACH fixed-width flat files, JSON, and YAML with 1-click sample presets.
+          </p>
+        `
+      },
+      {
+        title: "Interactive 1-Click Permutation Simulation",
+        subtitle: "Real-Time <placeholder> Variable Substitution & Verification",
+        badge: "Step-by-Step Test Engine",
+        image: "assets/simulation_showcase.png",
+        content: `
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">
+            Step through business scenario executions with 1-click controls. Any <code>&lt;placeholder&gt;</code> variable in XML, SWIFT, or JSON payloads is dynamically substituted with test row values from the Examples table in real time with step-level Pass/Fail status tracking.
+          </p>
+        `
+      },
+      {
+        title: "Jira User Story & Sub-Task Generator",
+        subtitle: "Instant Agile Ticket Creation with Acceptance Criteria",
+        badge: "Jira Wiki • Markdown • REST API JSON",
+        image: "assets/jira_showcase.png",
+        content: `
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">
+            Convert BDD specifications and payloads into complete Jira User Stories with Acceptance Criteria, code-block payloads, and sub-task checklists. Choose between Jira Wiki Markup, Jira Markdown, or Jira REST API JSON format with 1-click copy & download.
+          </p>
+        `
+      },
+      {
+        title: "Local Project Sync & Custom Domain Groups",
+        subtitle: "Native Directory Scanner & Custom Industry Domain Engine",
+        badge: "Local Directory Sync & Multi-Domain",
+        image: "assets/editor_showcase.png",
+        content: `
+          <p style="font-size:13px; color:var(--text-secondary); line-height:1.6;">
+            Open entire directory trees from local disk preserving subfolder paths (e.g. <code>/banking/limits/</code>, <code>/payments/iso/</code>). Add custom subfolder groups with <strong>+ Group</strong>, delete groups with <strong>✕ Group</strong>, and register custom industry domains with <strong>+ New Domain</strong>.
+          </p>
+        `
+      }
+    ];
+
+    window.openAboutModal = () => {
+      currentAboutSlide = 0;
+      renderAboutSlide(currentAboutSlide);
+      document.getElementById('about-modal').classList.add('open');
+    }
+
+    window.closeAboutModal = () => {
+      document.getElementById('about-modal').classList.remove('open');
+    }
+
+    function renderAboutSlide(idx) {
+      const slide = aboutSlides[idx];
+      const container = document.getElementById('about-carousel-container');
+      const indicators = document.getElementById('carousel-indicators');
+
+      container.innerHTML = `
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; align-items:center;">
+          <div>
+            <span style="font-size:11px; background:var(--bg-secondary); border:1px solid var(--border); color:var(--accent); padding:3px 10px; border-radius:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">${slide.badge}</span>
+            <h3 style="font-size:20px; color:var(--text-primary); margin-top:10px; margin-bottom:4px;">${slide.title}</h3>
+            <div style="font-size:12px; color:var(--accent); font-weight:500; margin-bottom:14px;">${slide.subtitle}</div>
+            ${slide.content}
+          </div>
+          <div style="background:var(--bg-primary); border:1px solid var(--border); border-radius:8px; padding:8px; box-shadow:0 8px 24px rgba(0,0,0,0.5); overflow:hidden;">
+            <img src="${slide.image}" alt="${slide.title}" style="width:100%; height:260px; object-fit:cover; border-radius:6px;">
+          </div>
+        </div>
+      `;
+
+      indicators.innerHTML = aboutSlides.map((_, i) => `
+        <span onclick="goAboutSlide(${i})" style="width:${i === idx ? '24px' : '8px'}; height:8px; border-radius:4px; background:${i === idx ? 'var(--accent)' : 'var(--border)'}; cursor:pointer; transition:all 0.3s ease;"></span>
+      `).join('');
+    }
+
+    window.nextAboutSlide = () => {
+      currentAboutSlide = (currentAboutSlide + 1) % aboutSlides.length;
+      renderAboutSlide(currentAboutSlide);
+    }
+
+    window.prevAboutSlide = () => {
+      currentAboutSlide = (currentAboutSlide - 1 + aboutSlides.length) % aboutSlides.length;
+      renderAboutSlide(currentAboutSlide);
+    }
+
+    window.goAboutSlide = (idx) => {
+      currentAboutSlide = idx;
+      renderAboutSlide(currentAboutSlide);
+    }
+
+    // Keyboard Navigation for About Carousel & Help
+    document.addEventListener('keydown', (e) => {
+      const aboutModal = document.getElementById('about-modal');
+      if (aboutModal && aboutModal.classList.contains('open')) {
+        if (e.key === 'ArrowRight') nextAboutSlide();
+        if (e.key === 'ArrowLeft') prevAboutSlide();
+        if (e.key === 'Escape') closeAboutModal();
+      }
+    });
 
     // Domain context selector
     document.getElementById('context-select').addEventListener('change', (e) => {
