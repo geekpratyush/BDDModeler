@@ -348,6 +348,7 @@
         <div class="tab" onclick="setMode('visual')">Visual Flow</div>
         <div class="tab" onclick="setMode('simulate')">Interactive Simulation</div>
         <div class="tab" onclick="setMode('gherkin')">Gherkin View</div>
+        <div class="tab" onclick="setMode('jira')">📋 Jira Story & Tasks</div>
       </div>
 
       <div class="content-area" id="content-area">
@@ -564,7 +565,8 @@
 
     // Help topics
     const helpTopics = [
-      { id: "author-info", title: "Author Credits & Platform Overview", keywords: "author pratyush ranjan mishra architecture contact linkedin github routeforge", content: "<h2>RouteForge BDD Studio v1.0 Enterprise</h2><p>Architected & Developed by <strong>Pratyush Ranjan Mishra</strong>.</p><p>RouteForge BDD Studio bridges the gap between Business Analysts, Solution Architects, and Quality Engineers by combining multi-format payload modeling (ISO 20022 XML, SWIFT MT103, ACH FlatFiles, JSON) with native Gherkin execution and interactive 1-click simulation.</p><p><strong>Connect with the Author:</strong></p><ul><li><strong>LinkedIn:</strong> <a href=\"https://www.linkedin.com/in/leadtherightway/\" target=\"_blank\" style=\"color:#60a5fa;\">linkedin.com/in/leadtherightway</a></li><li><strong>GitHub:</strong> <a href=\"https://github.com/geekpratyush\" target=\"_blank\" style=\"color:#60a5fa;\">github.com/geekpratyush</a></li></ul>" },
+      { id: "author-info", title: "Author Credits & Platform Overview", keywords: "author pratyush ranjan mishra architecture contact linkedin github routeforge", content: "<h2>RouteForge BDD Studio v1.0 Enterprise</h2><p>Architected & Developed by <strong>Pratyush Ranjan Mishra</strong>.</p><p>RouteForge BDD Studio bridges the gap between Business Analysts, Solution Architects, and Quality Engineers by combining multi-format payload modeling (ISO 20022 XML, SWIFT MT103, ACH FlatFiles, JSON) with native Gherkin execution, interactive 1-click simulation, and automatic Jira Story & Sub-Task generation.</p><p><strong>Connect with the Author:</strong></p><ul><li><strong>LinkedIn:</strong> <a href=\"https://www.linkedin.com/in/leadtherightway/\" target=\"_blank\" style=\"color:#60a5fa;\">linkedin.com/in/leadtherightway</a></li><li><strong>GitHub:</strong> <a href=\"https://github.com/geekpratyush\" target=\"_blank\" style=\"color:#60a5fa;\">github.com/geekpratyush</a></li></ul>" },
+      { id: "jira-export", title: "Exporting to Jira User Stories & Sub-Tasks", keywords: "jira story task wiki markdown copy export agile issue requirement", content: "<h2>Exporting to Jira User Stories & Sub-Tasks</h2><p>Once your BDD scenarios and payloads are finalized in RouteForge BDD Studio, you can instantly convert them into complete Jira User Stories with Acceptance Criteria and Sub-Tasks!</p><ul><li>Click the <strong>📋 Jira Story & Tasks</strong> tab in the mode bar.</li><li>Choose your preferred Jira format: <strong>Jira Wiki Markup</strong>, <strong>Jira Markdown</strong>, or <strong>Jira REST API JSON</strong>.</li><li>Click <strong>📋 Copy Jira Story</strong> to copy formatted text for direct pasting into Jira.</li><li>Click <strong>💾 Download Jira Spec</strong> to save the ticket specification locally.</li></ul>" },
       { id: "multi-format-payloads", title: "Multi-Format Payloads (XML, SWIFT, FlatFile, JSON, YAML)", keywords: "xml swift flatfile ach csv json yaml docstring payload format", content: "<h2>Multi-Format Payloads & Freedom for BAs</h2><p>RouteForge BDD Studio gives Business Analysts complete freedom to model data in any industry format:</p><ul><li><strong>JSON:</strong> REST APIs, Microservices, and MongoDB documents.</li><li><strong>XML:</strong> ISO 20022 MX payment messages (<code>pacs.008</code>, <code>camt.053</code>), SOAP Services, FPML.</li><li><strong>SWIFT MT & FlatFiles:</strong> SWIFT MT103 / MT202 blocks, NACHA ACH fixed-width records, ISO 8583 card settlement flat lines, CSV.</li><li><strong>YAML:</strong> Policy rules, system flags, and configuration maps.</li></ul><p>Use the <strong>⚡ Insert Sample Preset</strong> dropdown inside any step payload container to instantly populate realistic industry templates!</p>" },
       { id: "folder-opening", title: "Opening Local Project Folders", keywords: "folder open directory project feature subfolders", content: "<h2>Opening Local Project Folders</h2><p>RouteForge BDD Studio allows you to open an entire directory from your local system containing <code>.feature</code> files.</p><ul><li>Click <strong>📂 Open Project Folder</strong> in the top header.</li><li>Select your project root directory.</li><li>Subfolders (e.g. <code>/banking/limits/</code>, <code>/payments/iso/</code>) are automatically mapped into sidebar project folders!</li><li>Open features appear in the top Workspace Tabs Bar for quick navigation.</li></ul>" }
     ];
@@ -948,8 +950,10 @@
       `).join('') + `<button class="sm" onclick="addTagPrompt()" style="border-radius:12px;">+ Add Tag</button>`;
 
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      const tabMap = { 'edit': 0, 'visual': 1, 'simulate': 2, 'gherkin': 3 };
-      document.querySelectorAll('.tab')[tabMap[appState.mode]].classList.add('active');
+      const tabMap = { 'edit': 0, 'visual': 1, 'simulate': 2, 'gherkin': 3, 'jira': 4 };
+      if (tabMap[appState.mode] !== undefined) {
+        document.querySelectorAll('.tab')[tabMap[appState.mode]].classList.add('active');
+      }
 
       renderModeContent(f);
     }
@@ -1005,6 +1009,7 @@
       if (appState.mode === 'visual') renderVisualMode(f, area);
       if (appState.mode === 'simulate') renderSimulateMode(f, area);
       if (appState.mode === 'gherkin') renderGherkinMode(f, area);
+      if (appState.mode === 'jira') renderJiraMode(f, area);
     }
 
     // --- Edit Mode ---
@@ -1477,6 +1482,170 @@
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = (f.name.replace(/\s+/g, '_').toLowerCase() || 'feature') + '.feature';
+      a.click();
+    }
+
+    // --- Jira Story & Task Generator ---
+    let currentJiraFormat = 'wiki';
+
+    function generateJiraText(f, format = 'wiki') {
+      const groupName = f.group || 'General Features';
+      const tags = (f.tags || []).join(' ');
+
+      if (format === 'json') {
+        const payload = {
+          fields: {
+            summary: `[${groupName}] ${f.name}`,
+            issuetype: { name: "Story" },
+            description: f.desc || "",
+            labels: (f.tags || []).map(t => t.replace('@', '')),
+            acceptanceCriteria: f.scenarios.map(s => ({
+              scenario: s.name,
+              type: s.type,
+              stepsCount: s.steps.length,
+              hasExamples: s.examples.rows.length > 0
+            })),
+            subtasks: [
+              { summary: `Sub-Task: API Contract & Schema Mapping for ${f.name}` },
+              { summary: `Sub-Task: Transformation & Processing Engine Implementation` },
+              { summary: `Sub-Task: BDD Automated Integration Test Suite (Cucumber/Behave)` },
+              { summary: `Sub-Task: Permutation QA Acceptance & Edge Case Validation` }
+            ]
+          }
+        };
+        return JSON.stringify(payload, null, 2);
+      }
+
+      const isWiki = format === 'wiki';
+      let out = "";
+
+      // Title & Overview
+      if (isWiki) {
+        out += `h1. 📋 Jira User Story: [${groupName}] ${f.name}\n\n`;
+        out += `{panel:title=Feature Metadata | borderStyle=solid | borderColor=#3b82f6 | titleBGColor=#151c2c | bgColor=#0b0f19}\n`;
+        out += `*Group/Folder:* ${groupName}\n`;
+        out += `*Tags/Labels:* ${tags || 'None'}\n`;
+        out += `{panel}\n\n`;
+        out += `h2. 📖 User Story & Description\n`;
+        out += (f.desc ? f.desc.split("\n").map(l => `*${l}*`).join("\n") : "No description provided.") + "\n\n";
+        out += `h2. ✅ Acceptance Criteria (Gherkin Scenarios)\n\n`;
+      } else {
+        out += `# 📋 Jira User Story: [${groupName}] ${f.name}\n\n`;
+        out += `**Group/Folder:** \`${groupName}\`  \n`;
+        out += `**Tags/Labels:** ${tags ? tags.split(' ').map(t=>`\`${t}\``).join(' ') : 'None'}  \n\n`;
+        out += `## 📖 User Story & Description\n`;
+        out += (f.desc ? f.desc.split("\n").map(l => `> **${l}**`).join("\n") : "No description provided.") + "\n\n";
+        out += `## ✅ Acceptance Criteria (Gherkin Scenarios)\n\n`;
+      }
+
+      // Scenarios
+      f.scenarios.forEach((s, idx) => {
+        const scTitle = `${s.type === 'scenario-outline' ? 'Scenario Outline' : 'Scenario'} ${idx+1}: ${s.name}`;
+        if (isWiki) {
+          out += `h3. 🔹 ${scTitle}\n`;
+        } else {
+          out += `### 🔹 ${scTitle}\n`;
+        }
+
+        s.steps.forEach(step => {
+          const kw = step.type.toUpperCase();
+          const pFmt = (step.payloadFormat || 'json').toLowerCase();
+          
+          if (isWiki) {
+            out += `*${kw}* ${step.text}\n`;
+            if (step.jsonPayload) {
+              out += `{code:${pFmt}}\n${step.jsonPayload}\n{code}\n`;
+            }
+          } else {
+            out += `* **${kw}** ${step.text}\n`;
+            if (step.jsonPayload) {
+              out += `\`\`\`${pFmt}\n${step.jsonPayload}\n\`\`\`\n`;
+            }
+          }
+        });
+
+        if (s.type === 'scenario-outline' && s.examples.rows.length > 0) {
+          out += "\n";
+          if (isWiki) {
+            out += `*Examples (Test Permutations Data Table):*\n`;
+            out += `|| ${s.examples.headers.join(' || ')} ||\n`;
+            s.examples.rows.forEach(r => {
+              out += `| ${r.cells.join(' | ')} |\n`;
+            });
+          } else {
+            out += `**Examples (Test Permutations Data Table):**\n\n`;
+            out += `| ${s.examples.headers.join(' | ')} |\n`;
+            out += `| ${s.examples.headers.map(() => '---').join(' | ')} |\n`;
+            s.examples.rows.forEach(r => {
+              out += `| ${r.cells.join(' | ')} |\n`;
+            });
+          }
+        }
+        out += "\n";
+      });
+
+      // Sub-Tasks Checklist
+      if (isWiki) {
+        out += `h2. 🛠️ Implementation Sub-Tasks Checklist\n`;
+        out += `* [ ] *ST-01:* API & Payload Contract Definition (${f.name})\n`;
+        out += `* [ ] *ST-02:* Processing & Data Transformation Engine\n`;
+        out += `* [ ] *ST-03:* Automated BDD Integration Test Suite (Cucumber/Behave/SpecFlow)\n`;
+        out += `* [ ] *ST-04:* QA Permutation & Edge-Case Verification\n`;
+      } else {
+        out += `## 🛠️ Implementation Sub-Tasks Checklist\n`;
+        out += `- [ ] **ST-01:** API & Payload Contract Definition (${f.name})\n`;
+        out += `- [ ] **ST-02:** Processing & Data Transformation Engine\n`;
+        out += `- [ ] **ST-03:** Automated BDD Integration Test Suite (Cucumber/Behave/SpecFlow)\n`;
+        out += `- [ ] **ST-04:** QA Permutation & Edge-Case Verification\n`;
+      }
+
+      return out;
+    }
+
+    function renderJiraMode(f, container) {
+      const jiraContent = generateJiraText(f, currentJiraFormat);
+      
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `
+        <div style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:12px; color:var(--text-secondary);">Jira Format:</label>
+            <select id="jira-format-select" onchange="changeJiraFormat(this.value)" style="padding:6px 12px; background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border); border-radius:6px; font-size:12px;">
+              <option value="wiki" ${currentJiraFormat==='wiki'?'selected':''}>Jira Wiki Markup (Classic / Jira Server & Cloud)</option>
+              <option value="markdown" ${currentJiraFormat==='markdown'?'selected':''}>Jira Markdown (Modern Jira Cloud)</option>
+              <option value="json" ${currentJiraFormat==='json'?'selected':''}>Jira REST API Import JSON</option>
+            </select>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="primary" onclick="copyJiraStory()">📋 Copy Jira Story</button>
+            <button onclick="downloadJiraStory()">💾 Download Jira Spec</button>
+          </div>
+        </div>
+
+        <div class="gherkin-view" id="jira-preview-text" style="line-height:1.6; color:#a5d6ff;">${escapeHtml(jiraContent)}</div>
+      `;
+      container.appendChild(wrap);
+    }
+
+    window.changeJiraFormat = (fmt) => {
+      currentJiraFormat = fmt;
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      renderActiveFeature();
+    }
+
+    window.copyJiraStory = () => {
+      const text = document.getElementById('jira-preview-text').innerText;
+      navigator.clipboard.writeText(text).then(() => alert('Jira Story & Sub-Tasks copied to clipboard! Paste directly into Jira.'));
+    }
+
+    window.downloadJiraStory = () => {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const text = document.getElementById('jira-preview-text').innerText;
+      const ext = currentJiraFormat === 'json' ? '.json' : '.txt';
+      const blob = new Blob([text], { type: 'text/plain' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = (f.name.replace(/\s+/g, '_').toLowerCase() || 'jira_story') + '_jira' + ext;
       a.click();
     }
 
