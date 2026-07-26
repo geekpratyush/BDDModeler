@@ -563,12 +563,68 @@
       custom: []
     };
 
-    // Help topics
+    // Comprehensive Help Topics documenting all features
     const helpTopics = [
-      { id: "author-info", title: "Author Credits & Platform Overview", keywords: "author pratyush ranjan mishra architecture contact linkedin github routeforge", content: "<h2>RouteForge BDD Studio v1.0 Enterprise</h2><p>Architected & Developed by <strong>Pratyush Ranjan Mishra</strong>.</p><p>RouteForge BDD Studio bridges the gap between Business Analysts, Solution Architects, and Quality Engineers by combining multi-format payload modeling (ISO 20022 XML, SWIFT MT103, ACH FlatFiles, JSON) with native Gherkin execution, interactive 1-click simulation, and automatic Jira Story & Sub-Task generation.</p><p><strong>Connect with the Author:</strong></p><ul><li><strong>LinkedIn:</strong> <a href=\"https://www.linkedin.com/in/leadtherightway/\" target=\"_blank\" style=\"color:#60a5fa;\">linkedin.com/in/leadtherightway</a></li><li><strong>GitHub:</strong> <a href=\"https://github.com/geekpratyush\" target=\"_blank\" style=\"color:#60a5fa;\">github.com/geekpratyush</a></li></ul>" },
-      { id: "jira-export", title: "Exporting to Jira User Stories & Sub-Tasks", keywords: "jira story task wiki markdown copy export agile issue requirement", content: "<h2>Exporting to Jira User Stories & Sub-Tasks</h2><p>Once your BDD scenarios and payloads are finalized in RouteForge BDD Studio, you can instantly convert them into complete Jira User Stories with Acceptance Criteria and Sub-Tasks!</p><ul><li>Click the <strong>📋 Jira Story & Tasks</strong> tab in the mode bar.</li><li>Choose your preferred Jira format: <strong>Jira Wiki Markup</strong>, <strong>Jira Markdown</strong>, or <strong>Jira REST API JSON</strong>.</li><li>Click <strong>📋 Copy Jira Story</strong> to copy formatted text for direct pasting into Jira.</li><li>Click <strong>💾 Download Jira Spec</strong> to save the ticket specification locally.</li></ul>" },
-      { id: "multi-format-payloads", title: "Multi-Format Payloads (XML, SWIFT, FlatFile, JSON, YAML)", keywords: "xml swift flatfile ach csv json yaml docstring payload format", content: "<h2>Multi-Format Payloads & Freedom for BAs</h2><p>RouteForge BDD Studio gives Business Analysts complete freedom to model data in any industry format:</p><ul><li><strong>JSON:</strong> REST APIs, Microservices, and MongoDB documents.</li><li><strong>XML:</strong> ISO 20022 MX payment messages (<code>pacs.008</code>, <code>camt.053</code>), SOAP Services, FPML.</li><li><strong>SWIFT MT & FlatFiles:</strong> SWIFT MT103 / MT202 blocks, NACHA ACH fixed-width records, ISO 8583 card settlement flat lines, CSV.</li><li><strong>YAML:</strong> Policy rules, system flags, and configuration maps.</li></ul><p>Use the <strong>⚡ Insert Sample Preset</strong> dropdown inside any step payload container to instantly populate realistic industry templates!</p>" },
-      { id: "folder-opening", title: "Opening Local Project Folders", keywords: "folder open directory project feature subfolders", content: "<h2>Opening Local Project Folders</h2><p>RouteForge BDD Studio allows you to open an entire directory from your local system containing <code>.feature</code> files.</p><ul><li>Click <strong>📂 Open Project Folder</strong> in the top header.</li><li>Select your project root directory.</li><li>Subfolders (e.g. <code>/banking/limits/</code>, <code>/payments/iso/</code>) are automatically mapped into sidebar project folders!</li><li>Open features appear in the top Workspace Tabs Bar for quick navigation.</li></ul>" }
+      { 
+        id: "author-info", 
+        title: "Author Credits & Architecture Overview", 
+        keywords: "author pratyush ranjan mishra architecture contact linkedin github routeforge overview studio", 
+        content: "<h2>RouteForge BDD Studio v1.0 Enterprise</h2><p>Architected & Developed by <strong>Pratyush Ranjan Mishra</strong>.</p><p>RouteForge BDD Studio bridges the gap between Business Analysts, Solution Architects, and Quality Engineers by combining multi-format payload modeling (ISO 20022 XML, SWIFT MT103, ACH FlatFiles, JSON, YAML) with native Gherkin execution, interactive 1-click simulation, and automatic Jira Story & Sub-Task generation.</p><p><strong>Connect with the Author:</strong></p><ul><li><strong>LinkedIn:</strong> <a href=\"https://www.linkedin.com/in/leadtherightway/\" target=\"_blank\" style=\"color:#60a5fa;\">linkedin.com/in/leadtherightway</a></li><li><strong>GitHub:</strong> <a href=\"https://github.com/geekpratyush\" target=\"_blank\" style=\"color:#60a5fa;\">github.com/geekpratyush</a></li></ul>" 
+      },
+      { 
+        id: "multi-format-payloads", 
+        title: "Multi-Format Payloads (XML, SWIFT, FlatFile, JSON, YAML)", 
+        keywords: "xml swift flatfile ach csv json yaml docstring payload format presets iso20022", 
+        content: "<h2>Multi-Format Payloads & Freedom for BAs</h2><p>RouteForge BDD Studio gives Business Analysts complete freedom to model data in any industry format:</p><ul><li><strong>JSON:</strong> REST APIs, Microservices, and MongoDB documents.</li><li><strong>XML:</strong> ISO 20022 MX payment messages (<code>pacs.008</code>, <code>camt.053</code>), SOAP WebServices, FPML.</li><li><strong>SWIFT MT & FlatFiles:</strong> SWIFT MT103 / MT202 blocks, NACHA ACH fixed-width records, ISO 8583 card settlement flat lines, pipe/comma CSV.</li><li><strong>YAML:</strong> Policy rules, system flags, and configuration maps.</li></ul><p><strong>⚡ Sample Payload Presets:</strong> Click the <em>⚡ Load Sample Preset</em> dropdown inside any step payload container to instantly populate realistic templates like ISO 20022 XML or SWIFT MT103!</p>" 
+      },
+      { 
+        id: "folder-opening", 
+        title: "Opening Local Project Folders & Workspace Tabs", 
+        keywords: "folder open directory project feature subfolders tabs workspace scanner", 
+        content: "<h2>Opening Local Project Folders & Workspace Tabs</h2><p>RouteForge BDD Studio allows you to open an entire directory from your local system containing <code>.feature</code> files.</p><ul><li>Click <strong>📂 Open Project Folder</strong> in the top header.</li><li>Select your project root directory.</li><li>Subfolders (e.g. <code>/banking/limits/</code>, <code>/payments/iso/</code>) are automatically mapped into sidebar project folders!</li><li>Open features appear in the top <strong>Workspace Tabs Bar</strong> for seamless tab switching.</li></ul>" 
+      },
+      { 
+        id: "domains-custom", 
+        title: "Domain Templates & Custom Industry Creation", 
+        keywords: "domain template industry banking custom creation workspace context", 
+        content: "<h2>Domain Templates & Custom Industry Creation</h2><p>Switch between pre-configured domain templates or create your own custom industry domains:</p><ul><li><strong>Built-in Domains:</strong> Banking & Cash Management, E-Commerce & Retail, Healthcare & Life Sciences, SaaS & Enterprise Cloud.</li><li><strong>+ New Domain:</strong> Click the <strong>+ New Domain</strong> button in the top header to create custom domains (e.g. <em>Insurance & Claims</em>, <em>Logistics & Freight</em>, <em>Telecom Billing</em>).</li><li>Custom domains persist across browser sessions in <code>localStorage</code>.</li></ul>" 
+      },
+      { 
+        id: "groups-folder-management", 
+        title: "Creating & Deleting Folder Groups", 
+        keywords: "group folder create delete sidebar project structure subfolder management", 
+        content: "<h2>Creating & Deleting Folder Groups</h2><p>Organize feature files into logical subfolder groups in the sidebar:</p><ul><li><strong>+ Group (Header):</strong> Click <strong>+ Group</strong> in the sidebar header to create a new folder group (e.g., <em>Sanctions Screening</em>, <em>Earmarking Engine</em>).</li><li><strong>+ Add (Folder Header):</strong> Click <strong>+ Add</strong> on any folder header to add a feature directly into that specific group.</li><li><strong>✕ Group (Delete):</strong> Click <strong>✕ Group</strong> on any folder header to safely delete the group and clean up open tabs.</li></ul>" 
+      },
+      { 
+        id: "interactive-simulation", 
+        title: "Interactive 1-Click Simulation Engine", 
+        keywords: "simulation run test step execution placeholder variable substitution pass fail", 
+        content: "<h2>Interactive 1-Click Simulation Engine</h2><p>Simulate test scenario execution with real-time variable injection:</p><ul><li>Click the <strong>Interactive Simulation</strong> tab or <strong>⚡ Simulate Row</strong> on any Examples table row.</li><li>Step through scenarios using <strong>▶ Start Simulation</strong>, <strong>Next</strong>, and <strong>Prev</strong> controls.</li><li><strong>Dynamic Placeholder Substitution:</strong> Any <code>&lt;placeholder&gt;</code> variable in XML, SWIFT, or JSON payloads is dynamically replaced with actual row test data in real-time!</li><li>Mark steps as <strong>✓ Pass</strong> or <strong>✕ Fail</strong> to verify business logic.</li></ul>" 
+      },
+      { 
+        id: "jira-export", 
+        title: "Exporting to Jira User Stories & Sub-Tasks", 
+        keywords: "jira story task wiki markdown json export copy agile ticket requirement subtask", 
+        content: "<h2>Exporting to Jira User Stories & Sub-Tasks</h2><p>Instantly convert your BDD specifications and payloads into complete Jira tickets ready for sprint planning:</p><ul><li>Click the <strong>📋 Jira Story & Tasks</strong> tab in the workspace mode bar.</li><li>Choose your preferred Jira format: <strong>Jira Wiki Markup</strong> (Classic/Server), <strong>Jira Markdown</strong> (Cloud), or <strong>Jira REST API JSON</strong>.</li><li>Click <strong>📋 Copy Jira Story</strong> for direct pasting into Jira descriptions.</li><li>Click <strong>💾 Download Jira Spec</strong> to save the ticket specification locally as `.txt` or `.json`.</li></ul>" 
+      },
+      { 
+        id: "examples-table", 
+        title: "Examples Tables & Data Permutation Modeling", 
+        keywords: "examples table scenario outline permutation columns rows data-driven", 
+        content: "<h2>Examples Tables & Data Permutation Modeling</h2><p>Model data-driven test permutations in Scenario Outlines:</p><ul><li>Convert any scenario to an outline with <strong>+ Add Examples Data Table</strong>.</li><li>Add or remove headers using <strong>+ Column</strong> and <strong>✕ Delete Col</strong>.</li><li>Add or remove data rows using <strong>+ Row</strong> and <strong>✕</strong>.</li><li>Click <strong>⚡ Simulate Row</strong> on any row to immediately test that specific permutation in the simulation engine.</li></ul>" 
+      },
+      { 
+        id: "visual-flow", 
+        title: "Visual Flow Diagramming Mode", 
+        keywords: "visual flow diagram node scenario given when then color code graph preview", 
+        content: "<h2>Visual Flow Diagramming Mode</h2><p>Visualize business logic flow without reading text markup:</p><ul><li>Click the <strong>Visual Flow</strong> tab in the mode bar.</li><li>Automatically generates color-coded node diagrams for <code>Given</code>, <code>When</code>, <code>Then</code>, <code>And</code>, and <code>But</code> steps.</li><li>Displays substituted payload preview blocks directly beneath steps.</li></ul>" 
+      },
+      { 
+        id: "gherkin-export-import", 
+        title: "Gherkin File Export & Gherkin Import", 
+        keywords: "gherkin export import feature file docstring copy clipboard download", 
+        content: "<h2>Gherkin File Export & Import</h2><p>Ensure 100% Gherkin specification compliance:</p><ul><li>Click <strong>Export Gherkin</strong> or the <strong>Gherkin View</strong> tab to inspect generated Gherkin syntax.</li><li>Click <strong>Copy to Clipboard</strong> or <strong>Download .feature File</strong> to export standard feature files.</li><li>Click <strong>Import File</strong> in the top header to paste or upload existing <code>.feature</code> files into your project workspace.</li></ul>" 
+      }
     ];
 
     // Load State
