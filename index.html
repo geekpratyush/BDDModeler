@@ -314,6 +314,7 @@
       </select>
       <button onclick="createCustomDomainPrompt()" class="sm">+ New Domain</button>
       <button onclick="openPayloadModal()" style="background:rgba(139,92,246,0.15); color:var(--and); border-color:rgba(139,92,246,0.4); font-weight:600;" title="Payload Repository & Custom Templates">📦 Payloads Library</button>
+      <button onclick="openPromptModal()" style="background:linear-gradient(135deg, rgba(168,85,247,0.25), rgba(59,130,246,0.25)); border:1px solid rgba(168,85,247,0.5); color:#e0e7ff; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="AI System Prompt Generator for Mermaid & Design text to Gherkin">✨ Prompt Generator</button>
       <button onclick="openImportModal()">Import File</button>
       <button onclick="exportGherkin()">Export Gherkin</button>
       <button onclick="openAboutModal()" style="background:var(--bg-card); border:1px solid var(--accent); color:var(--text-primary);" title="Visual Feature Carousel & Architect Overview">About Studio 🎨</button>
@@ -486,6 +487,120 @@
 
     </div>
   </div>
+
+  <!-- AI Gherkin Prompt Generator Modal -->
+  <div class="modal-overlay" id="prompt-modal">
+    <div class="modal-card" style="width: 960px; max-width: 95vw; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; color: var(--text-primary); box-shadow: 0 20px 50px rgba(0,0,0,0.85);">
+      
+      <!-- Modal Header -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:16px;">
+        <div>
+          <h2 style="font-size:20px; color:var(--text-primary); display:flex; align-items:center; gap:10px;">
+            ✨ AI Gherkin Prompt Generator
+            <span style="font-size:11px; background:linear-gradient(135deg, rgba(168,85,247,0.3), rgba(59,130,246,0.3)); color:#e0e7ff; padding:3px 10px; border-radius:12px; font-weight:600; border:1px solid rgba(168,85,247,0.4);">Prefix Prompt & Multi-Format Samples</span>
+          </h2>
+          <div style="font-size:12px; color:var(--text-secondary); margin-top:4px; line-height:1.5;">
+            Generate an optimized system prefix prompt for LLMs (ChatGPT, Claude, Gemini, DeepSeek) to convert any <strong>Mermaid Diagram</strong> or <strong>Design Text</strong> into BDD Studio-compliant Gherkin feature files.
+          </div>
+        </div>
+        <button onclick="closePromptModal()" style="background:transparent; border:none; color:var(--text-secondary); font-size:22px; cursor:pointer; padding:4px 8px;">✕</button>
+      </div>
+
+      <!-- Domain & Payload Configuration Bar -->
+      <div style="display:flex; gap:14px; background:var(--bg-primary); border:1px solid var(--border); padding:12px 16px; border-radius:8px; align-items:center; flex-wrap:wrap; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <label style="font-size:12px; font-weight:600; color:var(--text-secondary);">Target Industry Domain:</label>
+          <select id="prompt-domain-select" onchange="updatePromptGeneratorText()" style="background:var(--bg-card); border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; border-radius:6px; font-size:12px;">
+            <option value="Banking & Financial Services (ISO 20022 / SWIFT / ACH)">Banking & Financial Services (ISO 20022 / SWIFT)</option>
+            <option value="E-Commerce & Retail Payments">E-Commerce & Retail Payments</option>
+            <option value="Healthcare & Insurance (HL7 / FHIR)">Healthcare & Insurance (HL7 / FHIR)</option>
+            <option value="SaaS Platform & Multi-Tenant APIs">SaaS Platform & Multi-Tenant APIs</option>
+            <option value="Supply Chain & Logistics">Supply Chain & Logistics</option>
+            <option value="General Enterprise Systems">General Enterprise Systems</option>
+          </select>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+          <label style="font-size:12px; font-weight:600; color:var(--text-secondary);">DocString Payload Format:</label>
+          <select id="prompt-payload-select" onchange="updatePromptGeneratorText()" style="background:var(--bg-card); border:1px solid var(--border); color:var(--text-primary); padding:6px 12px; border-radius:6px; font-size:12px;">
+            <option value="xml">ISO XML ("""xml)</option>
+            <option value="json">JSON ("""json)</option>
+            <option value="swift">SWIFT Block ("""swift)</option>
+            <option value="flatfile">ACH FlatFile ("""flatfile)</option>
+            <option value="yaml">YAML ("""yaml)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Modal Tabs -->
+      <div style="display:flex; gap:4px; border-bottom:1px solid var(--border); margin-bottom:16px;">
+        <div class="tab active" onclick="switchPromptTab('prefix')" id="prompt-tab-prefix">📜 Prefix Prompt</div>
+        <div class="tab" onclick="switchPromptTab('sample-input')" id="prompt-tab-sample-input">📊 Sample Input (Mermaid & Design)</div>
+        <div class="tab" onclick="switchPromptTab('sample-output')" id="prompt-tab-sample-output">✨ Sample Gherkin Output</div>
+        <div class="tab" onclick="switchPromptTab('try-sample')" id="prompt-tab-try-sample">🚀 1-Click Import Sample</div>
+      </div>
+
+      <!-- Tab 1: Prefix Prompt -->
+      <div id="prompt-content-prefix">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:12px; color:var(--text-secondary);">
+            Copy this prefix prompt and prepend it to your Mermaid diagram or design requirements when querying any AI model:
+          </span>
+          <div style="display:flex; gap:8px;">
+            <button class="primary sm" onclick="copyPromptPrefixText()">📋 Copy Prefix Prompt</button>
+            <button class="sm" onclick="copyFullPromptWithSample()">⚡ Copy Full Prompt with Sample</button>
+          </div>
+        </div>
+        <textarea id="prompt-prefix-text" readonly style="width:100%; height:260px; background:#080c14; border:1px solid var(--border); color:#a5d6ff; font-family:var(--font-mono); font-size:12px; line-height:1.5; padding:12px; border-radius:8px; outline:none; resize:vertical;"></textarea>
+      </div>
+
+      <!-- Tab 2: Sample Input -->
+      <div id="prompt-content-sample-input" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:12px; color:var(--text-secondary);">
+            Example Mermaid flowchart diagram & system design text input:
+          </span>
+          <button class="primary sm" onclick="copyPromptSampleInput()">📋 Copy Sample Input</button>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div>
+            <div style="font-size:11px; font-weight:600; color:var(--accent); margin-bottom:4px;">1. Sample Mermaid Diagram Input Code</div>
+            <textarea id="prompt-sample-mermaid-text" readonly style="width:100%; height:240px; background:#080c14; border:1px solid var(--border); color:#60a5fa; font-family:var(--font-mono); font-size:11px; line-height:1.5; padding:10px; border-radius:6px; outline:none; resize:none;"></textarea>
+          </div>
+          <div>
+            <div style="font-size:11px; font-weight:600; color:var(--accent); margin-bottom:4px;">2. Sample System Design Text Input</div>
+            <textarea id="prompt-sample-design-text" readonly style="width:100%; height:240px; background:#080c14; border:1px solid var(--border); color:#e2e8f0; font-family:var(--font-mono); font-size:11px; line-height:1.5; padding:10px; border-radius:6px; outline:none; resize:none;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Sample Gherkin Output -->
+      <div id="prompt-content-sample-output" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:12px; color:var(--text-secondary);">
+            Generated Gherkin feature file compliant with BDD Studio (with DocString Payloads & Examples):
+          </span>
+          <button class="primary sm" onclick="copyPromptSampleOutput()">📋 Copy Sample Gherkin</button>
+        </div>
+        <textarea id="prompt-sample-output-text" readonly style="width:100%; height:260px; background:#080c14; border:1px solid var(--border); color:#34d399; font-family:var(--font-mono); font-size:12px; line-height:1.5; padding:12px; border-radius:8px; outline:none; resize:vertical;"></textarea>
+      </div>
+
+      <!-- Tab 4: 1-Click Import Sample -->
+      <div id="prompt-content-try-sample" style="display:none;">
+        <div style="background:var(--bg-primary); border:1px solid var(--accent); border-radius:8px; padding:24px; text-align:center;">
+          <h3 style="font-size:16px; color:var(--text-primary); margin-bottom:8px;">🚀 Render the Sample Feature Live in BDD Studio!</h3>
+          <p style="font-size:13px; color:var(--text-secondary); max-width:620px; margin:0 auto 18px auto; line-height:1.6;">
+            Load this AI-generated sample Gherkin directly into your workspace. It will automatically parse into scenario nodes, multi-format payloads, data permutation tables, interactive step simulations, and Jira user stories!
+          </p>
+          <button class="primary" onclick="loadSamplePromptFeatureIntoWorkspace()" style="padding:10px 24px; font-size:13px; font-weight:600; display:inline-flex; align-items:center; gap:8px;">
+            📥 Load Sample Feature into Workspace & Render Live
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <div class="modal-overlay" id="help-overlay" onclick="toggleHelp()"></div>
   <div class="help-panel" id="help-panel">
     <div class="help-header">
@@ -1009,6 +1124,18 @@
         title: "Payload Repository, Custom Templates & Local Folder Import", 
         keywords: "payload repository custom create import export folder cache localstorage library json xml swift yaml", 
         content: "<h2>Payload Repository & Custom Payload Management</h2><p>Enterprise BDD Studio allows you to create custom payload templates, save step payloads to cache, import/export payload libraries, and load payload files directly from local folders on disk:</p><ul><li><strong>📦 Payloads Library (Header):</strong> Click the <strong>📦 Payloads Library</strong> button in the top header to manage your payload repository.</li><li><strong>➕ Create Custom Payloads:</strong> Define custom payload templates in JSON, XML, SWIFT, FlatFile, or YAML with placeholder support.</li><li><strong>💾 Save Step Payload to Library:</strong> Click <strong>💾 Save to Library</strong> inside any step payload container to save custom step payloads into cache for reuse across scenarios.</li><li><strong>📂 Load Payloads Folder:</strong> Click <strong>📂 Load Payloads Folder</strong> in the Payload Repository modal to select a local directory on your machine. All payload files (<code>.json</code>, <code>.xml</code>, <code>.swift</code>, <code>.yaml</code>, <code>.txt</code>, <code>.csv</code>) are automatically parsed, format-detected, and saved into your library cache!</li><li><strong>📥 Import & 📤 Export:</strong> Import JSON payload libraries or single/multiple data files, or export your entire payload repository as a single <code>.json</code> bundle.</li></ul>" 
+      },
+      { 
+        id: "gherkin-interactive-editor", 
+        title: "Interactive Live Gherkin Editor & Synchronizer", 
+        keywords: "gherkin editor edit sync parse live synchronization model visual flow simulation jira", 
+        content: "<h2>Interactive Live Gherkin Editor & Synchronizer</h2><p>Enterprise BDD Studio turns the Gherkin View into a fully bi-directional live code editor:</p><ul><li><strong>Edit or Paste Gherkin:</strong> Type or paste any <code>.feature</code> syntax directly inside the Gherkin View code editor.</li><li><strong>⚡ Apply & Sync Model:</strong> Click <strong>⚡ Apply & Sync Model</strong> or press <code>Ctrl + Enter</code> to instantly parse and update the active feature model.</li><li><strong>Seamless View Updates:</strong> Any edit to Gherkin immediately updates your <strong>Visual Flow</strong> nodes, <strong>Interactive Simulation</strong> test steps, data permutation tables, and <strong>Jira Story Generator</strong>!</li><li><strong>🔄 Reset to Model:</strong> Re-generate clean Gherkin syntax anytime from your active workspace model.</li></ul>" 
+      },
+      { 
+        id: "ai-prompt-generator", 
+        title: "AI Gherkin Prompt Generator (Mermaid & Design Text Converter)", 
+        keywords: "ai prompt generator system prefix mermaid diagram design text converter llm chatgpt claude gemini sample", 
+        content: "<h2>AI Gherkin System Prompt Generator</h2><p>Convert Mermaid diagrams or design text into studio-ready Gherkin feature files using LLMs (ChatGPT, Claude, Gemini, DeepSeek):</p><ul><li><strong>✨ Prompt Generator:</strong> Click the <strong>✨ Prompt Generator</strong> button in the top header or Gherkin View toolbar.</li><li><strong>Domain & Format Customization:</strong> Select your target industry domain (Banking, E-Commerce, Healthcare, SaaS) and payload format (ISO XML, SWIFT, JSON, FlatFile, YAML).</li><li><strong>📜 Prefix Prompt Tab:</strong> Copy the optimized system prefix prompt to prepend to your LLM query.</li><li><strong>📊 Sample Input Tab:</strong> View sample Mermaid flowchart diagram code and architecture design text.</li><li><strong>✨ Sample Output Tab:</strong> Inspect the resulting AI-generated Gherkin feature file.</li><li><strong>🚀 1-Click Import Sample:</strong> Click <strong>📥 Load Sample Feature into Workspace</strong> to test and render the sample feature live inside BDD Studio!</li></ul>" 
       }
     ];
 
@@ -2407,29 +2534,131 @@
       return out;
     }
 
+    // --- Gherkin View & Interactive Live Editor ---
     function renderGherkinMode(f, container) {
       const gherkin = generateGherkin(f);
       container.innerHTML = `
-        <div style="margin-bottom:16px; display:flex; gap:12px;">
-          <button class="primary" onclick="copyGherkin()">Copy to Clipboard</button>
-          <button onclick="downloadGherkin()">Download .feature File</button>
+        <div style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <button class="primary" id="gherkin-sync-btn" onclick="applyGherkinEditorChanges()" style="display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(59,130,246,0.3);">
+              ⚡ Apply & Sync Model
+            </button>
+            <button onclick="resetGherkinEditorText()" style="background:var(--bg-secondary); border:1px solid var(--border); color:var(--text-secondary);" title="Re-generate Gherkin from active feature data model">
+              🔄 Reset to Model
+            </button>
+            <span id="gherkin-sync-badge" style="font-size:12px; color:#10b981; font-weight:600; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:12px;">
+              ✓ Model In Sync
+            </span>
+          </div>
+
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <button onclick="openPromptModal()" style="background:linear-gradient(135deg, rgba(168,85,247,0.25), rgba(59,130,246,0.25)); border:1px solid rgba(168,85,247,0.5); color:#e0e7ff; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="AI System Prompt Generator for Mermaid & Design Text">
+              ✨ AI Prompt Generator
+            </button>
+            <button onclick="copyGherkin()">📋 Copy to Clipboard</button>
+            <button onclick="downloadGherkin()">💾 Download .feature File</button>
+          </div>
         </div>
-        <div class="gherkin-view" id="gherkin-text">${escapeHtml(gherkin)}</div>
+
+        <div style="position:relative; border-radius:8px; border:1px solid var(--border); overflow:hidden; background:#080c14; box-shadow: 0 8px 24px rgba(0,0,0,0.4);">
+          <div style="display:flex; justify-content:space-between; align-items:center; background:#0d1322; padding:8px 16px; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-secondary);">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+              <strong style="color:var(--text-primary); font-weight:600;">Interactive Gherkin Feature Code Editor</strong>
+              <span style="color:var(--accent); font-family:var(--font-mono);">${escapeHtml(f.name)}.feature</span>
+            </div>
+            <div>Press <kbd style="background:var(--bg-primary); padding:2px 6px; border-radius:4px; border:1px solid var(--border); color:var(--text-primary);">Ctrl + Enter</kbd> to Sync Model</div>
+          </div>
+          <textarea id="gherkin-editor" spellcheck="false" oninput="onGherkinEditorInput()" onkeydown="onGherkinEditorKeyDown(event)" style="width:100%; height:520px; background:#080c14; color:#e2e8f0; font-family:var(--font-mono); font-size:13px; line-height:1.6; padding:16px; border:none; outline:none; resize:vertical; tab-size:2;">${escapeHtml(gherkin)}</textarea>
+        </div>
+
+        <div id="gherkin-toast" style="display:none; margin-top:12px; padding:10px 16px; background:rgba(16,185,129,0.15); border:1px solid #10b981; border-radius:6px; color:#34d399; font-size:12px; font-weight:600; align-items:center; gap:8px;">
+          ✓ Gherkin parsed successfully! Scenarios, Steps, Payloads & Examples tables are synced to Visual Flow, Simulation, and Jira Story.
+        </div>
       `;
     }
 
+    window.onGherkinEditorInput = () => {
+      const badge = document.getElementById('gherkin-sync-badge');
+      if (badge) {
+        badge.innerHTML = '⚠️ Live Editing (Unsaved Sync)';
+        badge.style.color = '#f59e0b';
+        badge.style.background = 'rgba(245,158,11,0.15)';
+        badge.style.borderColor = 'rgba(245,158,11,0.4)';
+      }
+    }
+
+    window.onGherkinEditorKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        applyGherkinEditorChanges();
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        const ed = e.target;
+        const start = ed.selectionStart;
+        const end = ed.selectionEnd;
+        ed.value = ed.value.substring(0, start) + "  " + ed.value.substring(end);
+        ed.selectionStart = ed.selectionEnd = start + 2;
+        onGherkinEditorInput();
+      }
+    }
+
+    window.applyGherkinEditorChanges = () => {
+      const ed = document.getElementById('gherkin-editor');
+      if (!ed) return;
+      const text = ed.value;
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      if (!f) return;
+
+      const parsed = parseGherkinText(text, f.name, f.group);
+      if (parsed) {
+        f.name = parsed.name;
+        f.desc = parsed.desc || f.desc;
+        f.tags = parsed.tags;
+        f.scenarios = parsed.scenarios;
+        saveState();
+
+        renderSidebar();
+        renderOpenTabs();
+        renderActiveFeature();
+
+        const toast = document.getElementById('gherkin-toast');
+        if (toast) {
+          toast.style.display = 'flex';
+          setTimeout(() => { if (toast) toast.style.display = 'none'; }, 3500);
+        }
+      }
+    }
+
+    window.resetGherkinEditorText = () => {
+      const f = appState.features.find(f => f.id === appState.activeFeatureId);
+      const ed = document.getElementById('gherkin-editor');
+      if (f && ed) {
+        ed.value = generateGherkin(f);
+        const badge = document.getElementById('gherkin-sync-badge');
+        if (badge) {
+          badge.innerHTML = '✓ Model In Sync';
+          badge.style.color = '#10b981';
+          badge.style.background = 'rgba(16,185,129,0.1)';
+          badge.style.borderColor = 'rgba(16,185,129,0.3)';
+        }
+      }
+    }
+
     window.copyGherkin = () => {
-      const text = document.getElementById('gherkin-text').innerText;
-      navigator.clipboard.writeText(text).then(() => alert('Gherkin syntax copied to clipboard!'));
+      const ed = document.getElementById('gherkin-editor') || document.getElementById('gherkin-text');
+      const text = ed ? (ed.value || ed.innerText) : '';
+      navigator.clipboard.writeText(text).then(() => alert('Gherkin feature syntax copied to clipboard!'));
     }
 
     window.downloadGherkin = () => {
       const f = appState.features.find(f => f.id === appState.activeFeatureId);
-      const text = document.getElementById('gherkin-text').innerText;
+      const ed = document.getElementById('gherkin-editor') || document.getElementById('gherkin-text');
+      const text = ed ? (ed.value || ed.innerText) : '';
       const blob = new Blob([text], { type: 'text/plain' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = (f.name.replace(/\s+/g, '_').toLowerCase() || 'feature') + '.feature';
+      a.download = ((f ? f.name : 'feature').replace(/\s+/g, '_').toLowerCase() || 'feature') + '.feature';
       a.click();
     }
 
@@ -2632,7 +2861,7 @@
     function parseGherkinText(text, defaultTitle = "Untitled Feature", groupName = "General Features") {
       const lines = text.split('\n');
       let featureName = defaultTitle;
-      let featureDesc = "";
+      let featureDescLines = [];
       let featureTags = [];
       let scenarios = [];
       let currentSc = null;
@@ -2641,6 +2870,8 @@
       let docStringFmt = "json";
       let docStringLines = [];
       let inExamples = false;
+      let featureStarted = false;
+      let pendingScenarioTags = [];
 
       lines.forEach(l => {
         const rawLine = l;
@@ -2669,9 +2900,17 @@
 
         if (trim.startsWith('Feature:')) {
           featureName = trim.replace('Feature:', '').trim();
+          featureStarted = true;
           inExamples = false;
-        } else if (trim.startsWith('@') && !currentSc) {
-          featureTags = trim.split(/\s+/);
+        } else if (trim.startsWith('@')) {
+          const tags = trim.split(/\s+/);
+          if (!featureStarted) {
+            featureTags = tags;
+          } else if (!currentSc) {
+            pendingScenarioTags = tags;
+          } else {
+            pendingScenarioTags = tags;
+          }
         } else if (trim.startsWith('Scenario:') || trim.startsWith('Scenario Outline:')) {
           const isOutline = trim.startsWith('Scenario Outline:');
           const scName = trim.replace(/Scenario Outline:|Scenario:/, '').trim();
@@ -2680,10 +2919,11 @@
             id: uuid(),
             name: scName || "Untitled Scenario",
             type: isOutline ? 'scenario-outline' : 'scenario',
-            tags: [],
+            tags: pendingScenarioTags,
             steps: [],
             examples: { headers: [], rows: [] }
           };
+          pendingScenarioTags = [];
           scenarios.push(currentSc);
         } else if (currentSc && (trim.startsWith('Given ') || trim.startsWith('When ') || trim.startsWith('Then ') || trim.startsWith('And ') || trim.startsWith('But '))) {
           inExamples = false;
@@ -2702,6 +2942,8 @@
           } else {
             currentSc.examples.rows.push({ id: uuid(), cells });
           }
+        } else if (featureStarted && !currentSc && trim && !trim.startsWith('#')) {
+          featureDescLines.push(trim);
         }
       });
 
@@ -2713,10 +2955,309 @@
         id: uuid(),
         group: groupName,
         name: featureName,
-        desc: featureDesc,
+        desc: featureDescLines.join('\n'),
         tags: featureTags,
         scenarios
       };
+    }
+
+    // --- AI Prompt Generator Modal Logic ---
+    window.openPromptModal = () => {
+      const modal = document.getElementById('prompt-modal');
+      if (modal) {
+        modal.classList.add('open');
+        updatePromptGeneratorText();
+        switchPromptTab('prefix');
+      }
+    }
+
+    window.closePromptModal = () => {
+      const modal = document.getElementById('prompt-modal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    window.switchPromptTab = (tabId) => {
+      const tabs = ['prefix', 'sample-input', 'sample-output', 'try-sample'];
+      tabs.forEach(t => {
+        const tabEl = document.getElementById(`prompt-tab-${t}`);
+        const contentEl = document.getElementById(`prompt-content-${t}`);
+        if (tabEl) tabEl.classList.toggle('active', t === tabId);
+        if (contentEl) contentEl.style.display = (t === tabId) ? 'block' : 'none';
+      });
+    }
+
+    function generatePromptPrefixText(domain, payloadFmt) {
+      const fmtUpper = payloadFmt.toUpperCase();
+      return `You are an expert Behavior-Driven Development (BDD) Specifier & Enterprise Solution Architect specializing in ${domain}.
+
+Your task is to convert any provided Mermaid Diagram (Flowchart, Sequence, or State diagram) or Architecture Design Specification Text into a standard, fully-executable Gherkin Feature File matching Enterprise BDD Studio specifications.
+
+RULES FOR GENERATING GHERKIN:
+1. FEATURE HEADER & TAGS:
+   - Provide relevant domain tags above the feature (e.g. @${domain.toLowerCase().replace(/[^a-z0-9]/g, '')} @p1_critical @api).
+   - Define a clear Feature title and background description user story:
+     Feature: <Feature Name>
+       As a <Role>
+       I want <Goal>
+       So that <Benefit>
+
+2. SCENARIOS & DATA PERMUTATIONS:
+   - Use "Scenario:" for single test flows.
+   - Use "Scenario Outline:" when test permutations exist.
+   - For Scenario Outlines, include an "Examples:" table with header names and test data rows:
+     Examples:
+       | param1 | param2 | expectedStatus |
+
+3. GHERKIN STEPS:
+   - Use Given, When, Then, And, But keywords.
+   - In Scenario Outlines, reference table variables using <placeholderName> in step text and payload bodies.
+
+4. MULTI-FORMAT DOCSTRING PAYLOADS (${fmtUpper}):
+   - Embed realistic payload contracts directly beneath steps using standard triple-quote DocString markers specifying the format: """${payloadFmt}
+   - Example Payload Block:
+     Given the client submits a request payload:
+     """${payloadFmt}
+     <Insert realistic ${fmtUpper} payload with <placeholder> variables here>
+     """
+
+Convert the following Mermaid diagram or design specification text into a complete, studio-ready Gherkin Feature file following all rules above:`;
+    }
+
+    function generateSampleMermaidInput() {
+      return `graph TD
+    A[Client Request: Payment Transfer] --> B{Validate Payload & Signature}
+    B -- Invalid Signature --> C[Reject Transaction: Status RJCT]
+    B -- Valid --> D{Check Sender Account Balance}
+    D -- Insufficient Funds --> E[Reject Transaction: Status INSU]
+    D -- Balance OK --> F[Process Debit & Credit Settlement]
+    F --> G[Generate Confirmation: Status ACCP]`;
+    }
+
+    function generateSampleDesignText() {
+      return `Enterprise Payment Transfer & Validation Engine Specification:
+- Input: Incoming payment message containing Sender account, Receiver account, Settlement Currency, Amount, and EndToEnd Transaction ID.
+- Validation: Verify digital signature and XML/JSON schema compliance. Reject with code RJCT if signature fails.
+- Liquidity Check: Query account ledger. Return code INSU if balance is below settlement amount.
+- Settlement: Debit sender account, credit receiver account, and dispatch confirmation with code ACCP.`;
+    }
+
+    function generateSampleGherkinOutput(domain, payloadFmt) {
+      if (payloadFmt === 'xml') {
+        return `@banking @iso20022 @payments @pacs008
+Feature: ISO 20022 Wire Transfer Settlement & Validation Engine
+  As an Enterprise Payment Gateway System
+  I want to process incoming ISO 20022 pacs.008 credit transfers
+  So that invalid payments are rejected with pacs.002 and valid transfers are debited and settled seamlessly.
+
+  @validation @smoke
+  Scenario Outline: Process and validate incoming pacs.008 payment requests with permutations
+    Given an active payment processing node configured for ISO 20022 standards
+    When an incoming credit transfer pacs.008 message is received:
+      """xml
+      <?xml version="1.0" encoding="UTF-8"?>
+      <Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.008.001.08">
+        <FIToFICstmrCdtTrf>
+          <GrpHdr><MsgId><msgId></MsgId><CreDtTm>2026-07-27T23:00:00Z</CreDtTm></GrpHdr>
+          <CdtTrfTxInf>
+            <PmtId><EndToEndId><txId></EndToEndId></PmtId>
+            <IntrBkSttlmAmt Ccy="USD"><amount></IntrBkSttlmAmt>
+            <Dbtr><Nm><senderName></Nm></Dbtr>
+            <Cdtr><Nm><receiverName></Nm></Cdtr>
+          </CdtTrfTxInf>
+        </FIToFICstmrCdtTrf>
+      </Document>
+      """
+    And the system evaluates the signature validity as "<sigValid>" and account balance as "<balanceStatus>"
+    Then the engine should produce a pacs.002 status report with status "<expectedStatus>" and code "<expectedReason>":
+      """xml
+      <?xml version="1.0" encoding="UTF-8"?>
+      <Document xmlns="urn:iso:std:iso:20022:tech:xsd:pacs.002.001.10">
+        <FIToFIPmtStsRpt>
+          <TxInfAndSts>
+            <OrgnlEndToEndId><txId></OrgnlEndToEndId>
+            <TxSts><expectedStatus></TxSts>
+            <StsRsnInf><Reason><Cd><expectedReason></Cd></Reason></StsRsnInf>
+          </TxInfAndSts>
+        </FIToFIPmtStsRpt>
+      </Document>
+      """
+
+    Examples:
+      | msgId   | txId   | amount   | senderName    | receiverName | sigValid | balanceStatus | expectedStatus | expectedReason |
+      | MSG-101 | TX-901 | 50000.00 | Acme Corp     | Global Trading| true     | SUFFICIENT    | ACCP           | NONE           |
+      | MSG-102 | TX-902 | 12000.00 | Fraud Inc     | Beneficiary B| false    | SUFFICIENT    | RJCT           | SIG_FAILED     |
+      | MSG-103 | TX-903 | 99000.00 | Low Bal LLC   | Beneficiary C| true     | INSUFFICIENT  | RJCT           | INSU_FUNDS     |`;
+      } else if (payloadFmt === 'swift') {
+        return `@banking @swift @mt103 @payments
+Feature: SWIFT MT103 Single Customer Credit Transfer Engine
+  As a Core Banking Payment Engine
+  I want to process incoming SWIFT MT103 financial messages
+  So that valid messages trigger ledger settlement and invalid messages generate MT199 status alerts.
+
+  Scenario Outline: Process SWIFT MT103 messages with data permutations
+    Given a SWIFT gateway connection listening on port 8443
+    When an MT103 wire message is received:
+      """swift
+      {1:F01BANKDEFFAXXX0000000000}{2:I103BANKDEFFXXXXN}{4:
+      :20:TRX<txId>
+      :23B:CRED
+      :32A:260727USD<amount>
+      :50K:/<senderAccount>
+      :59:/<receiverAccount>
+      :71A:OUR
+      -}
+      """
+    And the account status is evaluated as "<accStatus>"
+    Then the banking system should respond with settlement code "<expectedStatus>":
+
+    Examples:
+      | txId   | amount   | senderAccount | receiverAccount | accStatus | expectedStatus |
+      | SW-001 | 15000.00 | 9988776655    | 1122334455      | ACTIVE    | SETTLED_200    |
+      | SW-002 | 85000.00 | 5544332211    | 6677889900      | FROZEN    | REJECTED_403   |`;
+      } else if (payloadFmt === 'flatfile') {
+        return `@banking @nacha @ach @flatfile
+Feature: NACHA ACH Direct Deposit & Payment Processing Engine
+  As a Clearing House Processing Node
+  I want to parse fixed-width NACHA ACH flat file batch entries
+  So that direct debit and credit records are processed accurately.
+
+  Scenario Outline: Process ACH fixed-width flat file entries
+    Given an active ACH file reader node
+    When a batch detail record line is ingested:
+      """flatfile
+      62210330004123456780000050000<accountId>Acme Corporation          012345670000001
+      """
+    Then the ACH engine should flag the entry status as "<expectedStatus>":
+
+    Examples:
+      | accountId  | expectedStatus |
+      | ACC-10023  | PROCESSED_OK   |
+      | ACC-99999  | INVALID_ACCT   |`;
+      } else if (payloadFmt === 'yaml') {
+        return `@ecommerce @checkout @yaml
+Feature: E-Commerce Order Discount & Risk Rule Engine
+  As a Retail Checkout Gateway
+  I want to evaluate order rules defined in YAML format
+  So that discounts are calculated and high-risk orders are flagged for manual review.
+
+  Scenario Outline: Evaluate checkout order risk rules
+    Given an active retail rule evaluation service
+    When an order request is received with configuration:
+      """yaml
+      orderId: "<orderId>"
+      customerTier: "<tier>"
+      orderTotal: <amount>
+      riskScore: <riskScore>
+      """
+    Then the system outcome should be "<expectedOutcome>":
+
+    Examples:
+      | orderId | tier     | amount | riskScore | expectedOutcome |
+      | ORD-501 | GOLD     | 450.00 | 12        | APPROVED        |
+      | ORD-502 | STANDARD | 120.00 | 85        | MANUAL_REVIEW   |`;
+      } else {
+        return `@ecommerce @api @checkout @json
+Feature: E-Commerce Checkout & Payment Gateway Integration
+  As a Retail Shopping Platform
+  I want to submit customer checkout orders via JSON REST API
+  So that payments are authorized and inventory is reserved.
+
+  Scenario Outline: Authorize checkout payment transactions
+    Given the API gateway endpoint "POST /v1/checkout/pay" is online
+    When a checkout payload is submitted:
+      """json
+      {
+        "transactionId": "<txId>",
+        "customerId": "<custId>",
+        "amount": <amount>,
+        "currency": "USD",
+        "paymentMethod": {
+          "type": "CREDIT_CARD",
+          "cardNumber": "<cardNum>"
+        }
+      }
+      """
+    Then the HTTP status response code should be <expectedCode> and status "<expectedStatus>":
+
+    Examples:
+      | txId   | custId   | amount | cardNum          | expectedCode | expectedStatus |
+      | TX-101 | CUST-801 | 149.99 | 4111222233334444 | 200          | APPROVED       |
+      | TX-102 | CUST-802 | 999.00 | 4000000000000002 | 402          | DECLINED       |`;
+      }
+    }
+
+    window.updatePromptGeneratorText = () => {
+      const domainSel = document.getElementById('prompt-domain-select');
+      const payloadSel = document.getElementById('prompt-payload-select');
+      const domain = domainSel ? domainSel.value : 'Banking & Financial Services (ISO 20022 / SWIFT)';
+      const payloadFmt = payloadSel ? payloadSel.value : 'xml';
+
+      const prefixText = generatePromptPrefixText(domain, payloadFmt);
+      const mermaidText = generateSampleMermaidInput();
+      const designText = generateSampleDesignText();
+      const outputText = generateSampleGherkinOutput(domain, payloadFmt);
+
+      const prefixEl = document.getElementById('prompt-prefix-text');
+      const mermaidEl = document.getElementById('prompt-sample-mermaid-text');
+      const designEl = document.getElementById('prompt-sample-design-text');
+      const outputEl = document.getElementById('prompt-sample-output-text');
+
+      if (prefixEl) prefixEl.value = prefixText;
+      if (mermaidEl) mermaidEl.value = mermaidText;
+      if (designEl) designEl.value = designText;
+      if (outputEl) outputEl.value = outputText;
+    }
+
+    window.copyPromptPrefixText = () => {
+      const el = document.getElementById('prompt-prefix-text');
+      if (el) {
+        navigator.clipboard.writeText(el.value).then(() => alert('AI System Prefix Prompt copied to clipboard! Paste into ChatGPT, Claude, Gemini, or DeepSeek.'));
+      }
+    }
+
+    window.copyFullPromptWithSample = () => {
+      const prefixEl = document.getElementById('prompt-prefix-text');
+      const mermaidEl = document.getElementById('prompt-sample-mermaid-text');
+      const designEl = document.getElementById('prompt-sample-design-text');
+      if (prefixEl && mermaidEl && designEl) {
+        const fullPrompt = `${prefixEl.value}\n\n--- MERMAID DIAGRAM INPUT ---\n${mermaidEl.value}\n\n--- ARCHITECTURE DESIGN SPECIFICATION ---\n${designEl.value}`;
+        navigator.clipboard.writeText(fullPrompt).then(() => alert('Full AI Prompt (Prefix + Sample Input) copied to clipboard!'));
+      }
+    }
+
+    window.copyPromptSampleInput = () => {
+      const mermaidEl = document.getElementById('prompt-sample-mermaid-text');
+      const designEl = document.getElementById('prompt-sample-design-text');
+      if (mermaidEl && designEl) {
+        const text = `--- MERMAID DIAGRAM INPUT ---\n${mermaidEl.value}\n\n--- ARCHITECTURE DESIGN SPECIFICATION ---\n${designEl.value}`;
+        navigator.clipboard.writeText(text).then(() => alert('Sample Input (Mermaid & Design Spec) copied to clipboard!'));
+      }
+    }
+
+    window.copyPromptSampleOutput = () => {
+      const outputEl = document.getElementById('prompt-sample-output-text');
+      if (outputEl) {
+        navigator.clipboard.writeText(outputEl.value).then(() => alert('Sample Generated Gherkin Feature copied to clipboard!'));
+      }
+    }
+
+    window.loadSamplePromptFeatureIntoWorkspace = () => {
+      const outputEl = document.getElementById('prompt-sample-output-text');
+      if (!outputEl || !outputEl.value.trim()) return;
+
+      const gherkinText = outputEl.value;
+      const domainSel = document.getElementById('prompt-domain-select');
+      const groupName = domainSel ? domainSel.value.split(' ')[0] : 'AI Generated';
+
+      const newFeat = parseGherkinText(gherkinText, "AI Sample Feature", groupName);
+      if (newFeat) {
+        appState.features.push(newFeat);
+        if (!appState.openTabs.includes(newFeat.id)) appState.openTabs.push(newFeat.id);
+        selectFeature(newFeat.id);
+        closePromptModal();
+        setMode('gherkin');
+        alert(`✓ Loaded sample feature "${newFeat.name}" into workspace! Check Visual Flow, Simulation, Gherkin View, and Jira Story.`);
+      }
     }
 
     window.exportGherkin = () => {
@@ -2881,13 +3422,18 @@
       renderAboutSlide(currentAboutSlide);
     }
 
-    // Keyboard Navigation for About Carousel & Help
+    // Keyboard Navigation for Modals
     document.addEventListener('keydown', (e) => {
       const aboutModal = document.getElementById('about-modal');
       if (aboutModal && aboutModal.classList.contains('open')) {
         if (e.key === 'ArrowRight') nextAboutSlide();
         if (e.key === 'ArrowLeft') prevAboutSlide();
         if (e.key === 'Escape') closeAboutModal();
+      }
+
+      const promptModal = document.getElementById('prompt-modal');
+      if (promptModal && promptModal.classList.contains('open')) {
+        if (e.key === 'Escape') closePromptModal();
       }
     });
 
