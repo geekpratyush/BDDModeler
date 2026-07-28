@@ -3,32 +3,250 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="author" content="Pratyush Ranjan Mishra">
-  <meta name="description" content="Enterprise BDD Studio v1.0 Enterprise - Multi-Format Data Modeling & Behavioral Requirement Engineering Studio by Pratyush Ranjan Mishra">
-  <title>Enterprise BDD Studio v1.0 Enterprise - Pratyush Ranjan Mishra</title>
+  <meta name="description" content="Enterprise BDD Studio v1.0 Enterprise - Multi-Format Data Modeling & Behavioral Requirement Engineering Studio">
+  <title>Enterprise BDD Studio v1.0 Enterprise</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-    :root {
-      --bg-primary: #0b0f19;
-      --bg-secondary: #111827;
-      --bg-card: #151c2c;
-      --bg-card-hover: #1c263c;
-      --border: #1f2937;
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --given: #10b981;
-      --when: #3b82f6;
-      --then: #f59e0b;
-      --and: #8b5cf6;
-      --but: #ef4444;
-      --font-main: 'Inter', sans-serif;
-      --font-mono: 'Fira Code', monospace;
+    :root, [data-theme="dark"] {
+      --bg-primary: #1e1e1e;
+      --bg-secondary: #252526;
+      --bg-card: #2d2d2d;
+      --bg-card-hover: #37373d;
+      --bg-input: #3c3c3c;
+      --editor-bg: #1e1e1e;
+      --editor-fg: #d4d4d4;
+      --border: #333333;
+      --border-hover: #454545;
+      --text-primary: #cccccc;
+      --text-secondary: #9cdcfe;
+      --text-muted: #858585;
+      --accent: #007acc;
+      --accent-hover: #0062a3;
+      --accent-glow: rgba(0, 122, 204, 0.25);
+      --purple-accent: #c586c0;
+      --success: #4ec9b0;
+      --danger: #f14c4c;
+      --warning: #ce9178;
+      --given: #4ec9b0;
+      --when: #569cd6;
+      --then: #ce9178;
+      --and: #c586c0;
+      --but: #f14c4c;
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
+      --status-bar-bg: #007acc;
+      --status-bar-text: #ffffff;
+      --select-option-bg: #252526;
+      --select-option-color: #cccccc;
+      --button-primary-text: #ffffff;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f3f3f3;
+      --bg-card: #f8f8f8;
+      --bg-card-hover: #e8e8e8;
+      --bg-input: #ffffff;
+      --editor-bg: #ffffff;
+      --editor-fg: #000000;
+      --border: #e5e5e5;
+      --border-hover: #c8c8c8;
+      --text-primary: #000000;
+      --text-secondary: #001080;
+      --text-muted: #57606a;
+      --accent: #0066b8;
+      --accent-hover: #004e8c;
+      --accent-glow: rgba(0, 102, 184, 0.15);
+      --purple-accent: #af00db;
+      --success: #098658;
+      --danger: #cd3131;
+      --warning: #ad5700;
+      --given: #098658;
+      --when: #0000ff;
+      --then: #a31515;
+      --and: #af00db;
+      --but: #cd3131;
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+      --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+      --status-bar-bg: #0066b8;
+      --status-bar-text: #ffffff;
+      --select-option-bg: #ffffff;
+      --select-option-color: #000000;
+      --button-primary-text: #ffffff;
+    }
+
+    [data-theme="high-contrast-dark"] {
+      --bg-primary: #000000;
+      --bg-secondary: #0a0a0a;
+      --bg-card: #121212;
+      --bg-card-hover: #1f1f1f;
+      --bg-input: #000000;
+      --editor-bg: #000000;
+      --editor-fg: #ffffff;
+      --border: #666666;
+      --border-hover: #ffffff;
+      --text-primary: #ffffff;
+      --text-secondary: #00ffff;
+      --text-muted: #aaaaaa;
+      --accent: #ffff00;
+      --accent-hover: #e6e600;
+      --accent-glow: rgba(255, 255, 0, 0.3);
+      --purple-accent: #ff00ff;
+      --success: #00ff00;
+      --danger: #ff3333;
+      --warning: #ffaa00;
+      --given: #00ff00;
+      --when: #00ffff;
+      --then: #ffff00;
+      --and: #ff00ff;
+      --but: #ff3333;
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+      --radius-sm: 2px;
+      --radius-md: 4px;
+      --radius-lg: 4px;
+      --shadow-sm: none;
+      --shadow-md: 0 0 0 1px #ffffff;
+      --shadow-lg: 0 0 0 2px #ffff00;
+      --status-bar-bg: #000000;
+      --status-bar-text: #ffff00;
+      --select-option-bg: #000000;
+      --select-option-color: #ffffff;
+      --button-primary-text: #000000;
+    }
+
+    [data-theme="high-contrast-light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f0f0f0;
+      --bg-input: #ffffff;
+      --editor-bg: #ffffff;
+      --editor-fg: #000000;
+      --border: #000000;
+      --border-hover: #0000ff;
+      --text-primary: #000000;
+      --text-secondary: #0000ff;
+      --text-muted: #333333;
+      --accent: #0000ff;
+      --accent-hover: #0000cc;
+      --accent-glow: rgba(0, 0, 255, 0.2);
+      --purple-accent: #800080;
+      --success: #006400;
+      --danger: #b22222;
+      --warning: #b8860b;
+      --given: #006400;
+      --when: #0000ff;
+      --then: #b8860b;
+      --and: #800080;
+      --but: #b22222;
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+      --radius-sm: 2px;
+      --radius-md: 4px;
+      --radius-lg: 4px;
+      --shadow-sm: none;
+      --shadow-md: 0 0 0 1px #000000;
+      --shadow-lg: 0 0 0 2px #0000ff;
+      --status-bar-bg: #0000ff;
+      --status-bar-text: #ffffff;
+      --select-option-bg: #ffffff;
+      --select-option-color: #000000;
+      --button-primary-text: #ffffff;
+    }
+
+    [data-theme="dracula"] {
+      --bg-primary: #282a36;
+      --bg-secondary: #21222c;
+      --bg-card: #343746;
+      --bg-card-hover: #44475a;
+      --bg-input: #282a36;
+      --editor-bg: #282a36;
+      --editor-fg: #f8f8f2;
+      --border: #44475a;
+      --border-hover: #6272a4;
+      --text-primary: #f8f8f2;
+      --text-secondary: #8be9fd;
+      --text-muted: #6272a4;
+      --accent: #ff79c6;
+      --accent-hover: #ff92d0;
+      --accent-glow: rgba(255, 121, 198, 0.25);
+      --purple-accent: #bd93f9;
+      --success: #50fa7b;
+      --danger: #ff5555;
+      --warning: #ffb86c;
+      --given: #50fa7b;
+      --when: #8be9fd;
+      --then: #ffb86c;
+      --and: #bd93f9;
+      --but: #ff5555;
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 10px;
+      --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.5);
+      --status-bar-bg: #bd93f9;
+      --status-bar-text: #282a36;
+      --select-option-bg: #282a36;
+      --select-option-color: #f8f8f2;
+      --button-primary-text: #282a36;
+    }
+
+    [data-theme="github-light"] {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f6f8fa;
+      --bg-card: #ffffff;
+      --bg-card-hover: #eaeef2;
+      --bg-input: #ffffff;
+      --editor-bg: #ffffff;
+      --editor-fg: #24292f;
+      --border: #d0d7de;
+      --border-hover: #8c959f;
+      --text-primary: #24292f;
+      --text-secondary: #0969da;
+      --text-muted: #57606a;
+      --accent: #0969da;
+      --accent-hover: #0550ae;
+      --accent-glow: rgba(9, 105, 218, 0.15);
+      --purple-accent: #8250df;
+      --success: #1a7f37;
+      --danger: #cf222e;
+      --warning: #9a6700;
+      --given: #1a7f37;
+      --when: #0969da;
+      --then: #9a6700;
+      --and: #8250df;
+      --but: #cf222e;
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+      --radius-sm: 6px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --shadow-sm: 0 1px 3px rgba(31, 35, 40, 0.12);
+      --shadow-md: 0 3px 6px rgba(31, 35, 40, 0.15);
+      --shadow-lg: 0 8px 24px rgba(31, 35, 40, 0.2);
+      --status-bar-bg: #24292f;
+      --status-bar-text: #ffffff;
+      --select-option-bg: #ffffff;
+      --select-option-color: #24292f;
+      --button-primary-text: #ffffff;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,190 +258,615 @@
       flex-direction: column;
       height: 100vh;
       overflow: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Scrollbars */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: var(--bg-primary); }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.12); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.25); }
 
-    /* Header */
+    /* Modern Clean Header */
     header {
-      background-color: var(--bg-secondary);
+      background: var(--bg-secondary);
       border-bottom: 1px solid var(--border);
-      padding: 12px 24px;
+      padding: 0 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 60px;
+      height: 56px;
+      gap: 16px;
+      z-index: 10;
     }
-    .brand { font-size: 20px; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 8px; }
-    .brand span { font-size: 11px; background: rgba(59, 130, 246, 0.2); color: var(--accent); padding: 2px 6px; border-radius: 4px; }
-    .header-controls { display: flex; gap: 10px; align-items: center; }
     
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.01em;
+    }
+    
+    .brand .logo-icon {
+      width: 26px;
+      height: 26px;
+      background: linear-gradient(135deg, var(--accent), var(--purple-accent));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      box-shadow: 0 2px 8px rgba(56, 189, 248, 0.3);
+    }
+
+    .brand span.version-tag {
+      font-size: 10px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .architect-badge {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.03);
+      padding: 3px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .architect-badge a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .architect-badge a:hover {
+      color: var(--accent);
+    }
+
+    .header-center-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.25);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    /* Buttons & Form Controls */
     button, select {
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: var(--text-primary);
       padding: 6px 12px;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       font-family: var(--font-main);
-      font-size: 13px;
-      transition: all 0.2s;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      outline: none;
     }
-    button:hover { background: var(--border); }
-    button.primary { background: var(--accent); border-color: var(--accent); color: white; }
-    button.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
-    button.folder-btn { background: rgba(16, 185, 129, 0.15); color: var(--success); border-color: rgba(16, 185, 129, 0.3); font-weight: 600; }
-    button.folder-btn:hover { background: var(--success); color: white; }
-    button.sm { padding: 3px 8px; font-size: 11px; }
-    button.danger-sm { padding: 2px 6px; font-size: 11px; background: rgba(239,68,68,0.2); color: var(--danger); border-color: rgba(239,68,68,0.3); }
-    button.danger-sm:hover { background: var(--danger); color: white; }
-    button.action-sim { background: rgba(16, 185, 129, 0.2); color: var(--success); border-color: rgba(16, 185, 129, 0.4); font-size: 11px; }
-    button.action-sim:hover { background: var(--success); color: white; }
 
-    /* Layout */
+    select option {
+      background-color: var(--select-option-bg);
+      color: var(--select-option-color);
+      padding: 8px 12px;
+    }
+    
+    /* Professional IDE Status Bar */
+    .ide-status-bar {
+      height: 24px;
+      background: var(--status-bar-bg);
+      color: var(--status-bar-text);
+      font-size: 11px;
+      font-family: var(--font-main);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 12px;
+      user-select: none;
+      z-index: 100;
+      border-top: 1px solid var(--border);
+    }
+    .status-left, .status-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .status-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0.9;
+    }
+    .status-item:hover {
+      opacity: 1;
+    }
+    
+    button:hover, select:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+
+    button:focus-visible, select:focus-visible {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    /* Resizable Sidebar Splitter Bar */
+    .sidebar-resizer {
+      width: 4px;
+      background: var(--border);
+      cursor: col-resize;
+      position: relative;
+      z-index: 5;
+      transition: background 0.15s ease;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .sidebar-resizer:hover, .sidebar-resizer.resizing {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--button-primary-text);
+      font-weight: 600;
+    }
+    button.primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      color: var(--button-primary-text);
+      box-shadow: 0 2px 10px var(--accent-glow);
+    }
+
+    button.folder-btn {
+      background: rgba(16, 185, 129, 0.12);
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.3);
+      font-weight: 600;
+    }
+    button.folder-btn:hover {
+      background: var(--success);
+      color: #ffffff;
+    }
+
+    button.sm { padding: 4px 8px; font-size: 11px; }
+    
+    button.danger-sm {
+      padding: 3px 7px;
+      font-size: 11px;
+      background: rgba(244, 63, 94, 0.12);
+      color: var(--danger);
+      border-color: rgba(244, 63, 94, 0.3);
+    }
+    button.danger-sm:hover {
+      background: var(--danger);
+      color: #ffffff;
+    }
+
+    button.action-sim {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.3);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    button.action-sim:hover { background: var(--success); color: #ffffff; }
+
+    /* Layout Structure */
     .app-container { display: flex; flex: 1; overflow: hidden; }
+    
     .sidebar {
-      width: 310px;
+      width: 290px;
       background-color: var(--bg-secondary);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
     }
-    .sidebar-header { padding: 14px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }
-    .sidebar-title { display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
-    .sidebar-search { width: 100%; background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 10px; border-radius: 6px; outline: none; font-size: 12px; }
+
+    .sidebar-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
     
-    .feature-list { flex: 1; overflow-y: auto; padding: 8px; }
+    .sidebar-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
     
-    /* Group Folder Styles */
+    .sidebar-search {
+      width: 100%;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 7px 12px;
+      border-radius: var(--radius-sm);
+      outline: none;
+      font-size: 12px;
+      transition: border-color 0.15s;
+    }
+    .sidebar-search:focus {
+      border-color: var(--accent);
+      background: rgba(0,0,0,0.4);
+    }
+    
+    .feature-list { flex: 1; overflow-y: auto; padding: 10px; }
+    
+    /* Clean Sidebar Folder & Item Styles */
     .group-folder { margin-bottom: 12px; }
     .group-header {
-      padding: 6px 10px; font-size: 12px; font-weight: 700; color: var(--text-secondary);
-      display: flex; justify-content: space-between; align-items: center;
-      cursor: pointer; background: rgba(255,255,255,0.02); border-radius: 4px; margin-bottom: 4px;
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      margin-bottom: 4px;
+      transition: background 0.15s;
     }
-    .group-header:hover { color: var(--text-primary); background: var(--bg-card); }
+    .group-header:hover { color: var(--text-primary); background: rgba(255,255,255,0.03); }
     .group-title { display: flex; align-items: center; gap: 6px; word-break: break-all; }
+    .group-count { font-weight: 500; opacity: 0.6; }
+
+    .group-actions {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .group-header:hover .group-actions { opacity: 1; }
 
     .feature-item {
       padding: 8px 12px;
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      margin-bottom: 4px;
-      margin-left: 10px;
+      margin-bottom: 3px;
+      margin-left: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 13px;
+      color: var(--text-secondary);
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
     }
-    .feature-item:hover { background: var(--bg-card); }
-    .feature-item.active { background: var(--bg-card); border-left: 3px solid var(--accent); font-weight: 500; }
+    .feature-item:hover {
+      background: rgba(255,255,255,0.04);
+      color: var(--text-primary);
+    }
+    .feature-item.active {
+      background: var(--accent-glow);
+      color: var(--accent);
+      border-color: rgba(56, 189, 248, 0.25);
+      font-weight: 600;
+    }
 
-    .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .feature-item-delete {
+      opacity: 0;
+      background: transparent;
+      border: none;
+      color: var(--danger);
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      transition: all 0.15s ease;
+    }
+    .feature-item:hover .feature-item-delete { opacity: 1; }
+    .feature-item-delete:hover { background: rgba(244, 63, 94, 0.2); }
+
+    .main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg-primary); }
     
-    /* Open Workspace File Tabs Bar */
+    /* Workspace Open File Tabs Bar */
     .workspace-tabs-bar {
-      display: flex; background: #0d1322; border-bottom: 1px solid var(--border);
-      overflow-x: auto; padding: 0 8px; gap: 4px; min-height: 38px; align-items: center;
+      display: flex;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      overflow-x: auto;
+      padding: 6px 12px 0 12px;
+      gap: 6px;
+      min-height: 40px;
+      align-items: flex-end;
     }
     .workspace-tab {
-      padding: 6px 12px; font-size: 12px; color: var(--text-secondary); background: var(--bg-secondary);
-      border: 1px solid var(--border); border-bottom: none; border-radius: 6px 6px 0 0;
-      cursor: pointer; display: flex; align-items: center; gap: 8px; white-space: nowrap; max-width: 180px;
+      padding: 6px 14px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 6px 6px 0 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      max-width: 200px;
+      transition: all 0.15s;
     }
-    .workspace-tab.active { background: var(--bg-primary); color: var(--accent); border-color: var(--accent); font-weight: 600; }
-    .workspace-tab .close-tab { font-size: 10px; color: var(--danger); }
-    .workspace-tab .close-tab:hover { font-weight: bold; }
+    .workspace-tab:hover { color: var(--text-primary); background: var(--bg-card-hover); }
+    .workspace-tab.active {
+      background: var(--bg-primary);
+      color: var(--accent);
+      border-color: var(--accent);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+    }
+    .workspace-tab .close-tab {
+      font-size: 10px;
+      color: var(--text-muted);
+      border-radius: 3px;
+      padding: 1px 3px;
+      transition: all 0.15s;
+    }
+    .workspace-tab .close-tab:hover { color: var(--danger); background: rgba(244, 63, 94, 0.15); }
 
     /* Meta Panel */
     .meta-panel {
       padding: 16px 24px;
       border-bottom: 1px solid var(--border);
-      background: var(--bg-primary);
+      background: var(--bg-secondary);
     }
-    .meta-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 8px; }
+    .meta-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 6px; }
     .meta-panel input.title {
-      background: transparent; border: none; color: var(--text-primary);
-      font-size: 22px; font-weight: 700; width: 100%; outline: none;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 20px;
+      font-weight: 700;
+      width: 100%;
+      outline: none;
+      letter-spacing: -0.01em;
     }
     .meta-panel textarea.desc {
-      background: transparent; border: none; color: var(--text-secondary);
-      font-size: 13px; width: 100%; outline: none; resize: none; font-family: var(--font-main);
-      min-height: 48px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+      width: 100%;
+      outline: none;
+      resize: none;
+      font-family: var(--font-main);
+      min-height: 42px;
+      line-height: 1.5;
     }
-    .tag-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
-    .tag-chip { font-size: 11px; background: rgba(59, 130, 246, 0.15); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.3); padding: 2px 8px; border-radius: 12px; display: flex; align-items: center; gap: 4px; }
-    .tag-chip .remove { cursor: pointer; color: var(--danger); font-weight: bold; }
+    
+    .tag-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; align-items: center; }
+    .tag-chip {
+      font-size: 11px;
+      background: var(--accent-glow);
+      color: var(--accent);
+      border: 1px solid var(--border);
+      padding: 2px 10px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 500;
+    }
+    .tag-chip .remove {
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 10px;
+      transition: color 0.15s;
+    }
+    .tag-chip .remove:hover { color: var(--danger); }
 
-    /* Mode Tabs */
-    .tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--bg-secondary); }
+    /* Mode Navigation Tabs (Segmented Bar) */
+    .tabs {
+      display: flex;
+      padding: 6px 24px;
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      gap: 6px;
+    }
     .tab {
-      padding: 12px 24px; cursor: pointer; border-bottom: 2px solid transparent;
-      color: var(--text-secondary); font-weight: 500; font-size: 14px;
+      padding: 7px 16px;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 13px;
+      transition: all 0.15s;
+      user-select: none;
     }
-    .tab:hover { color: var(--text-primary); }
-    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab:hover { color: var(--text-primary); background: var(--bg-card-hover); }
+    .tab.active {
+      color: var(--accent);
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      font-weight: 600;
+    }
 
-    /* Content Area */
+    /* Main Workspace Content Area */
     .content-area { flex: 1; overflow-y: auto; padding: 24px; background: var(--bg-primary); }
 
     /* Scenario Card */
     .scenario-card {
-      background: var(--bg-card); border: 1px solid var(--border);
-      border-radius: 8px; padding: 20px; margin-bottom: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.15s;
     }
+    .scenario-card:hover { border-color: var(--border-hover); }
+    
     .scenario-header { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
-    .scenario-type { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; background: var(--bg-secondary); color: var(--text-secondary); cursor: pointer; user-select: none; border: 1px solid var(--border); }
-    .scenario-name { flex: 1; background: transparent; border: none; color: var(--text-primary); font-size: 16px; font-weight: 600; outline: none; border-bottom: 1px solid transparent; }
+    .scenario-type {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+      border: 1px solid var(--border);
+      letter-spacing: 0.05em;
+    }
+    .scenario-name {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 15px;
+      font-weight: 600;
+      outline: none;
+      border-bottom: 1px solid transparent;
+      padding-bottom: 2px;
+      transition: border-color 0.15s;
+    }
     .scenario-name:focus { border-bottom-color: var(--accent); }
     
-    .step-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; background: rgba(0,0,0,0.15); padding: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.03); }
+    .step-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 8px;
+      background: rgba(0,0,0,0.2);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      transition: border-color 0.15s;
+    }
+    .step-row:hover { border-color: var(--border-hover); }
+    
     .step-main { display: flex; gap: 8px; align-items: center; }
     .step-type {
-      font-size: 11px; font-weight: 700; padding: 5px 8px; border-radius: 4px; width: 64px; text-align: center; cursor: pointer; user-select: none;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      width: 64px;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      letter-spacing: 0.03em;
     }
-    .type-given { background: rgba(16, 185, 129, 0.2); color: var(--given); }
-    .type-when { background: rgba(59, 130, 246, 0.2); color: var(--when); }
-    .type-then { background: rgba(245, 158, 11, 0.2); color: var(--then); }
-    .type-and { background: rgba(139, 92, 246, 0.2); color: var(--and); }
-    .type-but { background: rgba(239, 68, 68, 0.2); color: var(--but); }
+    .type-given { background: rgba(16, 185, 129, 0.15); color: var(--given); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .type-when { background: var(--accent-glow); color: var(--when); border: 1px solid rgba(56, 189, 248, 0.3); }
+    .type-then { background: rgba(245, 158, 11, 0.15); color: var(--then); border: 1px solid rgba(245, 158, 11, 0.3); }
+    .type-and { background: rgba(192, 132, 252, 0.15); color: var(--and); border: 1px solid rgba(192, 132, 252, 0.3); }
+    .type-but { background: rgba(244, 63, 94, 0.15); color: var(--but); border: 1px solid rgba(244, 63, 94, 0.3); }
     
-    .step-input { flex: 1; background: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 12px; border-radius: 6px; outline: none; font-size: 13px; }
+    .step-input {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      outline: none;
+      font-size: 13px;
+      transition: border-color 0.15s;
+    }
     .step-input:focus { border-color: var(--accent); }
 
     /* Multi-Format Payload Editor */
-    .payload-editor-toggle { font-size: 11px; color: var(--text-secondary); background: transparent; border: 1px solid var(--border); padding: 3px 8px; border-radius: 4px; font-weight: 600; }
-    .payload-editor-toggle.active { color: var(--accent); border-color: var(--accent); background: rgba(59,130,246,0.1); }
-    .payload-container { margin-top: 6px; padding: 10px; background: #080c14; border: 1px solid var(--border); border-radius: 6px; display: none; }
+    .payload-editor-toggle {
+      font-size: 11px;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .payload-editor-toggle.active { color: var(--accent); border-color: var(--accent); background: var(--accent-glow); }
+    
+    .payload-container {
+      margin-top: 6px;
+      padding: 12px;
+      background: var(--editor-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      display: none;
+    }
     .payload-container.open { display: block; }
     .payload-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px; }
-    .payload-format-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: rgba(139,92,246,0.2); color: var(--and); text-transform: uppercase; }
-    .payload-container textarea { width: 100%; height: 120px; background: transparent; border: none; color: #a5d6ff; font-family: var(--font-mono); font-size: 12px; outline: none; resize: vertical; line-height: 1.4; }
+    .payload-format-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; background: var(--accent-glow); color: var(--and); text-transform: uppercase; }
+    .payload-container textarea { width: 100%; height: 120px; background: transparent; border: none; color: var(--editor-fg); font-family: var(--font-mono); font-size: 12px; outline: none; resize: vertical; line-height: 1.4; }
 
     .add-step-toolbar { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
-    .add-step-toolbar button { font-size: 11px; padding: 4px 8px; }
+    .add-step-toolbar button { font-size: 11px; padding: 5px 10px; }
 
-    /* Examples Section */
+    /* Examples Table Section */
     .examples-section { margin-top: 24px; padding-top: 16px; border-top: 1px dashed var(--border); }
     .examples-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-    .examples-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-    .examples-table th, .examples-table td { border: 1px solid var(--border); padding: 4px; text-align: center; }
+    .examples-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 8px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); }
+    .examples-table th, .examples-table td { border-bottom: 1px solid var(--border); border-right: 1px solid var(--border); padding: 4px; text-align: center; }
+    .examples-table th:last-child, .examples-table td:last-child { border-right: none; }
+    .examples-table tr:last-child td { border-bottom: none; }
     .examples-table input { width: 100%; background: transparent; border: none; color: var(--text-primary); padding: 6px; outline: none; font-family: var(--font-mono); font-size: 12px; text-align: left; }
-    .examples-table th { background: var(--bg-secondary); }
+    .examples-table th { background: var(--bg-card); }
     .examples-table th input { font-weight: 600; color: var(--accent); }
 
     /* Visual Flow Mode */
-    .flow-scenario { margin-bottom: 40px; }
-    .flow-title { font-size: 17px; margin-bottom: 20px; font-weight: 600; color: var(--text-primary); }
+    .flow-scenario { margin-bottom: 36px; }
+    .flow-title { font-size: 16px; margin-bottom: 18px; font-weight: 600; color: var(--text-primary); }
     .flow-node {
-      padding: 12px 20px; border-radius: 8px; margin: 0 auto 16px auto; width: max-content;
-      min-width: 280px; max-width: 650px; text-align: left; font-weight: 500; font-size: 14px;
-      position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      animation: popIn 0.4s ease-out backwards;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      margin: 0 auto 16px auto;
+      width: max-content;
+      min-width: 280px;
+      max-width: 650px;
+      text-align: left;
+      font-weight: 500;
+      font-size: 13px;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) backwards;
     }
     .flow-node::after {
       content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
@@ -231,94 +874,130 @@
     }
     .flow-node:last-child::after { display: none; }
     
-    .flow-given { background: rgba(16, 185, 129, 0.12); border: 1px solid var(--given); color: var(--text-primary); border-left: 4px solid var(--given); }
-    .flow-when { background: rgba(59, 130, 246, 0.12); border: 1px solid var(--when); color: var(--text-primary); border-left: 4px solid var(--when); }
-    .flow-then { background: rgba(245, 158, 11, 0.12); border: 1px solid var(--then); color: var(--text-primary); border-left: 4px solid var(--then); }
-    .flow-and { background: rgba(139, 92, 246, 0.12); border: 1px solid var(--and); color: var(--text-primary); border-left: 4px solid var(--and); }
-    .flow-but { background: rgba(239, 68, 68, 0.12); border: 1px solid var(--but); color: var(--text-primary); border-left: 4px solid var(--but); }
+    .flow-given { background: rgba(16, 185, 129, 0.08); border: 1px solid var(--given); color: var(--text-primary); border-left: 4px solid var(--given); }
+    .flow-when { background: var(--accent-glow); border: 1px solid var(--when); color: var(--text-primary); border-left: 4px solid var(--when); }
+    .flow-then { background: rgba(245, 158, 11, 0.08); border: 1px solid var(--then); color: var(--text-primary); border-left: 4px solid var(--then); }
+    .flow-and { background: rgba(192, 132, 252, 0.08); border: 1px solid var(--and); color: var(--text-primary); border-left: 4px solid var(--and); }
+    .flow-but { background: rgba(244, 63, 94, 0.08); border: 1px solid var(--but); color: var(--text-primary); border-left: 4px solid var(--but); }
     
-    .flow-json-block { margin-top: 8px; padding: 8px; background: rgba(0,0,0,0.3); border-radius: 4px; font-family: var(--font-mono); font-size: 11px; color: #a5d6ff; max-height: 140px; overflow-y: auto; white-space: pre-wrap; }
+    .flow-json-block { margin-top: 8px; padding: 8px; background: var(--editor-bg); border: 1px solid var(--border); border-radius: 4px; font-family: var(--font-mono); font-size: 11px; color: var(--editor-fg); max-height: 140px; overflow-y: auto; white-space: pre-wrap; }
 
-    @keyframes popIn { 0% { opacity: 0; transform: scale(0.96) translateY(8px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+    @keyframes popIn { 0% { opacity: 0; transform: scale(0.96) translateY(6px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
 
-    /* Simulate Mode */
+    /* Interactive Simulation Mode */
     .sim-container { max-width: 850px; margin: 0 auto; }
-    .sim-controls { display: flex; gap: 12px; margin-bottom: 24px; padding: 16px; background: var(--bg-card); border-radius: 8px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap;}
-    .sim-step { padding: 16px; border-radius: 8px; margin-bottom: 14px; border: 1px solid var(--border); background: var(--bg-secondary); opacity: 0.55; transition: all 0.3s; }
-    .sim-step.active { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); animation: pulse 2s infinite; }
+    .sim-controls { display: flex; gap: 12px; margin-bottom: 20px; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius-md); border: 1px solid var(--border); align-items: center; flex-wrap: wrap;}
+    .sim-step { padding: 16px; border-radius: var(--radius-md); margin-bottom: 12px; border: 1px solid var(--border); background: var(--bg-secondary); opacity: 0.55; transition: all 0.25s; }
+    .sim-step.active { opacity: 1; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); animation: pulse 2s infinite; }
     .sim-step.pass { opacity: 1; border-color: var(--success); background: rgba(16, 185, 129, 0.05); }
-    .sim-step.fail { opacity: 1; border-color: var(--danger); background: rgba(239, 68, 68, 0.05); }
+    .sim-step.fail { opacity: 1; border-color: var(--danger); background: rgba(244, 63, 94, 0.05); }
     .sim-step-header { display: flex; justify-content: space-between; align-items: center; }
-    .placeholder-highlight { color: #60a5fa; font-weight: 700; background: rgba(59, 130, 246, 0.2); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); }
+    .placeholder-highlight { color: var(--accent); font-weight: 700; background: var(--accent-glow); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); }
     .sim-actions { display: none; gap: 8px; }
     .sim-step.active .sim-actions { display: flex; }
 
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(56, 189, 248, 0); } 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); } }
 
-    /* Gherkin View */
-    .gherkin-view { background: var(--bg-card); padding: 24px; border-radius: 8px; border: 1px solid var(--border); font-family: var(--font-mono); font-size: 13px; white-space: pre-wrap; color: #e2e8f0; line-height: 1.5; }
+    /* Gherkin Raw View */
+    .gherkin-view { background: var(--editor-bg); padding: 24px; border-radius: var(--radius-md); border: 1px solid var(--border); font-family: var(--font-mono); font-size: 13px; white-space: pre-wrap; color: var(--editor-fg); line-height: 1.6; }
 
-    /* Help & Modal Panel */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 100; display: none; }
+    /* Glassmorphic Modals & Overlay */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(8px); z-index: 100; display: none; }
     .modal-overlay.open { display: flex; align-items: center; justify-content: center; }
-    .modal-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; width: 640px; max-width: 90%; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); z-index: 101; }
+    .modal-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); width: 640px; max-width: 90%; padding: 24px; display: flex; flex-direction: column; gap: 16px; box-shadow: var(--shadow-lg); z-index: 101; }
 
     .help-panel {
       position: fixed; right: 0; top: 0; bottom: 0; width: 750px; max-width: 100%;
-      background: #0d1322; border-left: 1px solid var(--border); z-index: 150;
-      transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.7);
+      background: var(--bg-secondary); border-left: 1px solid var(--border); z-index: 150;
+      transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; flex-direction: column; box-shadow: var(--shadow-lg);
     }
     .help-panel.open { transform: translateX(0); }
     .help-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary); }
     .help-search { padding: 14px 24px; border-bottom: 1px solid var(--border); background: var(--bg-secondary); }
-    .help-search input { width: 100%; background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 10px 16px; border-radius: 6px; outline: none; font-size: 13px; }
-    .help-body { display: flex; flex: 1; overflow: hidden; background: #080c14; }
+    .help-search input { width: 100%; background: var(--bg-primary); border: 1px solid var(--border); color: var(--text-primary); padding: 10px 16px; border-radius: var(--radius-sm); outline: none; font-size: 13px; }
+    .help-body { display: flex; flex: 1; overflow: hidden; background: var(--bg-primary); }
     .help-nav { width: 240px; border-right: 1px solid var(--border); overflow-y: auto; padding: 12px; background: var(--bg-secondary); }
-    .help-topic { padding: 10px 14px; cursor: pointer; border-radius: 6px; margin-bottom: 4px; color: var(--text-secondary); font-size: 13px; transition: all 0.15s; }
-    .help-topic:hover { background: var(--bg-card); color: var(--text-primary); }
+    .help-topic { padding: 10px 14px; cursor: pointer; border-radius: var(--radius-sm); margin-bottom: 4px; color: var(--text-secondary); font-size: 13px; transition: all 0.15s; }
+    .help-topic:hover { background: var(--bg-card-hover); color: var(--text-primary); }
     .help-topic.active { background: var(--bg-card); color: var(--accent); font-weight: 600; border-left: 3px solid var(--accent); }
-    .help-content { flex: 1; overflow-y: auto; padding: 28px; line-height: 1.6; color: #cbd5e1; }
-    .help-content h2 { margin-bottom: 16px; color: #f8fafc; font-size: 20px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-    .help-content p, .help-content ul { margin-bottom: 16px; color: #cbd5e1; font-size: 14px; line-height: 1.6; }
+    .help-content { flex: 1; overflow-y: auto; padding: 28px; line-height: 1.6; color: var(--text-primary); }
+    .help-content h2 { margin-bottom: 16px; color: var(--text-primary); font-size: 18px; font-weight: 700; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .help-content p, .help-content ul { margin-bottom: 16px; color: var(--text-primary); font-size: 14px; line-height: 1.6; }
     .help-content li { margin-left: 20px; margin-bottom: 8px; }
-    .help-content code { background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px; }
+    .help-content code { background: var(--accent-glow); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 12px; }
 
     /* Payload Repository Modal Styles */
     .payload-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: 16px; margin-top: 16px; max-height: 480px; overflow-y: auto; padding-right: 4px; }
-    .payload-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.2s; }
+    .payload-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.2s; }
     .payload-card:hover { border-color: var(--accent); }
     .payload-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
     .payload-card-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
     .payload-card-meta { font-size: 11px; color: var(--text-secondary); display: flex; align-items: center; gap: 6px; }
-    .payload-card-code { background: #080c14; border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-family: var(--font-mono); font-size: 11px; color: #a5d6ff; height: 110px; overflow-y: auto; white-space: pre-wrap; line-height: 1.4; word-break: break-all; }
+    .payload-card-code { background: var(--editor-bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-family: var(--font-mono); font-size: 11px; color: var(--editor-fg); height: 110px; overflow-y: auto; white-space: pre-wrap; line-height: 1.4; word-break: break-all; }
     .payload-card-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="brand">
-      <div>Enterprise BDD Studio <span>v1.0 Enterprise</span></div>
-      <div style="font-size:10px; font-weight:400; color:var(--text-secondary); margin-top:2px;">
-        Architected by <a href="https://www.linkedin.com/in/leadtherightway/" target="_blank" style="color:var(--accent); text-decoration:none; font-weight:600;">Pratyush Ranjan Mishra</a> | <a href="https://github.com/geekpratyush" target="_blank" style="color:var(--text-secondary); text-decoration:none;">GitHub @geekpratyush</a>
+    <div class="brand-section">
+      <div class="brand">
+        <div class="logo-icon"><i class="fa-solid fa-cube"></i></div>
+        Enterprise BDD Studio
+        <span class="version-tag">v1.0</span>
+      </div>
+      <div class="architect-badge">
+        <a href="https://github.com/geekpratyush" target="_blank" style="color:var(--text-secondary); text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+          <i class="fa-brands fa-github" style="font-size:14px;"></i>
+          GitHub Repository
+        </a>
       </div>
     </div>
-    <div class="header-controls">
-      <button class="folder-btn" onclick="openFolderPicker()">📂 Open Project Folder</button>
+
+    <div class="header-center-tools">
+      <button class="folder-btn" onclick="openFolderPicker()">
+        <i class="fa-solid fa-folder-open"></i> Open Folder
+      </button>
       <input type="file" id="folder-input" webkitdirectory directory multiple style="display:none;" onchange="handleFolderSelect(event)">
       
-      <label style="font-size:12px; color:var(--text-secondary); margin-left:8px;">Domain Template:</label>
-      <select id="context-select" style="background: var(--bg-card); border: 1px solid var(--border); color: var(--text-primary); padding: 6px 12px; border-radius: 6px;">
+      <span style="font-size:12px; color:var(--text-muted); margin: 0 4px;">Domain:</span>
+      <select id="context-select" style="background: var(--bg-card); border: 1px solid var(--border); color: var(--accent); font-weight: 600; padding: 4px 8px; border-radius: var(--radius-sm);">
         <!-- Dynamically rendered -->
       </select>
-      <button onclick="createCustomDomainPrompt()" class="sm">+ New Domain</button>
-      <button onclick="openPayloadModal()" style="background:rgba(139,92,246,0.15); color:var(--and); border-color:rgba(139,92,246,0.4); font-weight:600;" title="Payload Repository & Custom Templates">📦 Payloads Library</button>
-      <button onclick="openPromptModal()" style="background:linear-gradient(135deg, rgba(168,85,247,0.25), rgba(59,130,246,0.25)); border:1px solid rgba(168,85,247,0.5); color:#e0e7ff; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="AI System Prompt Generator for Mermaid & Design text to Gherkin">✨ Prompt Generator</button>
-      <button onclick="openImportModal()">Import File</button>
-      <button onclick="exportGherkin()">Export Gherkin</button>
-      <button onclick="openAboutModal()" style="background:var(--bg-card); border:1px solid var(--accent); color:var(--text-primary);" title="Visual Feature Carousel & Architect Overview">About Studio 🎨</button>
-      <button onclick="toggleHelp()">Help (?)</button>
+      <button onclick="createCustomDomainPrompt()" class="sm" title="Add Custom Domain Template"><i class="fa-solid fa-plus"></i> Domain</button>
+    </div>
+
+    <div class="header-controls">
+      <button onclick="openPromptModal()" class="primary" title="AI System Prompt Generator">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Prompt Generator
+      </button>
+      <button onclick="openPayloadModal()" title="Payload Repository & Library">
+        <i class="fa-solid fa-database"></i> Payloads
+      </button>
+      <button onclick="openAboutModal()" title="Visual Showcase & Architecture">
+        <i class="fa-solid fa-images"></i> Showcase
+      </button>
+      <button onclick="openImportModal()">
+        <i class="fa-solid fa-file-import"></i> Import
+      </button>
+      <button onclick="exportGherkin()">
+        <i class="fa-solid fa-file-export"></i> Export
+      </button>
+      <button onclick="toggleHelp()" title="Documentation & Help Guide">
+        <i class="fa-solid fa-circle-question"></i> Help
+      </button>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <i class="fa-solid fa-palette" style="color:var(--accent); font-size:13px;"></i>
+        <select id="header-theme-select" onchange="setTheme(this.value)" style="background:var(--bg-card); border-color:var(--border); color:var(--text-primary); font-size:12px; font-weight:600; padding:4px 8px;" title="Select Studio Color Theme">
+          <option value="dark">🌙 VS Code Dark+</option>
+          <option value="light">☀️ VS Code Light+</option>
+          <option value="high-contrast-dark">⚡ High Contrast Dark (OLED)</option>
+          <option value="high-contrast-light">🎯 High Contrast Light</option>
+          <option value="dracula">🧛 Dracula Cyberpunk</option>
+          <option value="github-light">🐙 GitHub Light</option>
+        </select>
+      </div>
     </div>
   </header>
 
@@ -328,14 +1007,17 @@
         <div class="sidebar-title">
           <span>Project Workspace</span>
           <div style="display:flex; gap:4px;">
-            <button class="sm" onclick="createNewGroupPrompt()" title="Create New Folder Group">+ Group</button>
-            <button class="primary sm" onclick="createNewFeature()" title="Create New Feature">+ Feature</button>
+            <button class="sm" onclick="createNewGroupPrompt()" title="Create New Folder Group"><i class="fa-solid fa-folder-plus"></i> Group</button>
+            <button class="primary sm" onclick="createNewFeature()" title="Create New Feature"><i class="fa-solid fa-plus"></i> Feature</button>
           </div>
         </div>
         <input type="text" class="sidebar-search" id="sidebar-search" placeholder="Search features & groups..." onkeyup="renderSidebar()">
       </div>
       <div class="feature-list" id="feature-list"></div>
     </div>
+
+    <!-- Resizable Splitter Bar -->
+    <div class="sidebar-resizer" id="sidebar-resizer" title="Drag left or right to resize workspace panel"></div>
 
     <div class="main-area">
       <!-- Active Open Tabs Bar -->
@@ -356,11 +1038,11 @@
       </div>
 
       <div class="tabs" id="tabs" style="display:none;">
-        <div class="tab active" onclick="setMode('edit')">Edit Mode</div>
-        <div class="tab" onclick="setMode('visual')">Visual Flow</div>
-        <div class="tab" onclick="setMode('simulate')">Interactive Simulation</div>
-        <div class="tab" onclick="setMode('gherkin')">Gherkin View</div>
-        <div class="tab" onclick="setMode('jira')">📋 Jira Story & Tasks</div>
+        <div class="tab active" onclick="setMode('edit')"><i class="fa-solid fa-pen-to-square"></i> Edit Mode</div>
+        <div class="tab" onclick="setMode('visual')"><i class="fa-solid fa-diagram-project"></i> Visual Flow</div>
+        <div class="tab" onclick="setMode('simulate')"><i class="fa-solid fa-play"></i> Interactive Simulation</div>
+        <div class="tab" onclick="setMode('gherkin')"><i class="fa-solid fa-code"></i> Gherkin View</div>
+        <div class="tab" onclick="setMode('jira')"><i class="fa-solid fa-list-check"></i> Jira Story & Tasks</div>
       </div>
 
       <div class="content-area" id="content-area">
@@ -370,6 +1052,30 @@
       </div>
     </div>
   </div>
+
+  <!-- Professional IDE Status Bar -->
+  <footer class="ide-status-bar">
+    <div class="status-left">
+      <span class="status-item"><i class="fa-solid fa-building-columns" style="font-size:11px;"></i> <span id="status-domain">Banking & Cash Management</span></span>
+      <span class="status-item"><i class="fa-solid fa-code-branch" style="font-size:11px;"></i> <span id="status-features">0 Features</span></span>
+      <span class="status-item"><i class="fa-solid fa-vial" style="font-size:11px;"></i> <span id="status-scenarios">0 Scenarios</span></span>
+    </div>
+    <div class="status-right">
+      <span class="status-item">UTF-8</span>
+      <span class="status-item">Gherkin v2.0</span>
+      <span class="status-item" style="display:inline-flex; align-items:center; gap:4px;" title="Switch Studio Theme">
+        <span id="theme-status-icon"><i class="fa-solid fa-palette" style="font-size:11px;"></i></span>
+        <select id="status-theme-select" onchange="setTheme(this.value)" style="background:transparent; border:none; color:var(--status-bar-text); font-size:11px; font-weight:600; cursor:pointer; outline:none; padding:0 2px;">
+          <option value="dark" style="background:#252526; color:#cccccc;">VS Code Dark+</option>
+          <option value="light" style="background:#ffffff; color:#000000;">VS Code Light+</option>
+          <option value="high-contrast-dark" style="background:#000000; color:#ffff00;">High Contrast Dark</option>
+          <option value="high-contrast-light" style="background:#ffffff; color:#0000ff;">High Contrast Light</option>
+          <option value="dracula" style="background:#282a36; color:#ff79c6;">Dracula Cyberpunk</option>
+          <option value="github-light" style="background:#f6f8fa; color:#24292f;">GitHub Light</option>
+        </select>
+      </span>
+    </div>
+  </footer>
 
   <!-- Import Modal -->
   <div class="modal-overlay" id="import-modal">
@@ -393,7 +1099,8 @@
       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:12px;">
         <div>
           <h2 style="font-size:18px; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
-            📦 Payload Repository & Custom Library
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M21 19c0 1.66-4 3-9 3s-9-1.34-9-3"></path></svg>
+            Payload Repository & Custom Library
             <span style="font-size:11px; background:rgba(139,92,246,0.2); color:var(--and); padding:2px 8px; border-radius:10px; font-weight:600;">Persisted in Cache</span>
           </h2>
           <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">
@@ -417,13 +1124,13 @@
           </select>
         </div>
         <div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <button class="primary sm" onclick="openCreatePayloadForm()">➕ Create Payload</button>
-          <button class="folder-btn sm" onclick="openPayloadFolderPicker()">📂 Load Payloads Folder</button>
+          <button class="primary sm" onclick="openCreatePayloadForm()">+ Create Payload</button>
+          <button class="folder-btn sm" onclick="openPayloadFolderPicker()">Load Payloads Folder</button>
           <input type="file" id="payload-folder-input" webkitdirectory directory multiple style="display:none;" onchange="handlePayloadFolderSelect(event)">
-          <button class="sm" onclick="triggerPayloadFileImport()">📥 Import File / JSON</button>
+          <button class="sm" onclick="triggerPayloadFileImport()">Import File / JSON</button>
           <input type="file" id="payload-file-input" accept=".json,.xml,.swift,.txt,.yaml,.yml,.csv" multiple style="display:none;" onchange="handlePayloadFileImport(event)">
-          <button class="sm" onclick="exportPayloadLibrary()">📤 Export Library</button>
-          <button class="danger-sm" onclick="resetPayloadLibraryToDefaults()">🔄 Reset</button>
+          <button class="sm" onclick="exportPayloadLibrary()">Export Library</button>
+          <button class="danger-sm" onclick="resetPayloadLibraryToDefaults()">Reset Defaults</button>
         </div>
       </div>
 
@@ -445,9 +1152,9 @@
           </select>
           <input type="text" id="payload-form-category" placeholder="Category / Tag (e.g. Payments, Custom)" style="flex:1; min-width:120px; background:var(--bg-secondary); border:1px solid var(--border); color:var(--text-primary); padding:6px 10px; border-radius:6px; font-size:12px; outline:none;">
         </div>
-        <textarea id="payload-form-content" placeholder="Enter payload content template or <placeholder> tags..." style="width:100%; height:140px; background:#080c14; border:1px solid var(--border); color:#a5d6ff; font-family:var(--font-mono); font-size:12px; padding:10px; border-radius:6px; outline:none; resize:vertical; line-height:1.4;"></textarea>
+        <textarea id="payload-form-content" placeholder="Enter payload content template or <placeholder> tags..." style="width:100%; height:140px; background:var(--bg-primary); border:1px solid var(--border); color:var(--text-primary); font-family:var(--font-mono); font-size:12px; padding:10px; border-radius:6px; outline:none; resize:vertical; line-height:1.4;"></textarea>
         <div style="display:flex; justify-content:flex-end; margin-top:10px; gap:8px;">
-          <button class="primary sm" onclick="savePayloadFromForm()">💾 Save Payload to Cache</button>
+          <button class="primary sm" onclick="savePayloadFromForm()">Save Payload to Cache</button>
         </div>
       </div>
 
@@ -496,8 +1203,8 @@
       <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:1px solid var(--border); padding-bottom:14px; margin-bottom:16px;">
         <div>
           <h2 style="font-size:20px; color:var(--text-primary); display:flex; align-items:center; gap:10px;">
-            ✨ AI Gherkin Prompt Generator
-            <span style="font-size:11px; background:linear-gradient(135deg, rgba(168,85,247,0.3), rgba(59,130,246,0.3)); color:#e0e7ff; padding:3px 10px; border-radius:12px; font-weight:600; border:1px solid rgba(168,85,247,0.4);">Prefix Prompt & Multi-Format Samples</span>
+            AI Gherkin System Prompt Generator
+            <span style="font-size:11px; background:var(--accent-glow); color:var(--accent); padding:3px 10px; border-radius:12px; font-weight:600; border:1px solid var(--border);">Prefix Prompt & Multi-Format Samples</span>
           </h2>
           <div style="font-size:12px; color:var(--text-secondary); margin-top:4px; line-height:1.5;">
             Generate an optimized system prefix prompt for LLMs (ChatGPT, Claude, Gemini, DeepSeek) to convert any <strong>Mermaid Diagram</strong> or <strong>Design Text</strong> into BDD Studio-compliant Gherkin feature files.
@@ -534,10 +1241,10 @@
 
       <!-- Modal Tabs -->
       <div style="display:flex; gap:4px; border-bottom:1px solid var(--border); margin-bottom:16px;">
-        <div class="tab active" onclick="switchPromptTab('prefix')" id="prompt-tab-prefix">📜 Prefix Prompt</div>
-        <div class="tab" onclick="switchPromptTab('sample-input')" id="prompt-tab-sample-input">📊 Sample Input (Mermaid & Design)</div>
-        <div class="tab" onclick="switchPromptTab('sample-output')" id="prompt-tab-sample-output">✨ Sample Gherkin Output</div>
-        <div class="tab" onclick="switchPromptTab('try-sample')" id="prompt-tab-try-sample">🚀 1-Click Import Sample</div>
+        <div class="tab active" onclick="switchPromptTab('prefix')" id="prompt-tab-prefix">Prefix Prompt</div>
+        <div class="tab" onclick="switchPromptTab('sample-input')" id="prompt-tab-sample-input">Sample Input (Mermaid & Design)</div>
+        <div class="tab" onclick="switchPromptTab('sample-output')" id="prompt-tab-sample-output">Sample Gherkin Output</div>
+        <div class="tab" onclick="switchPromptTab('try-sample')" id="prompt-tab-try-sample">Load Sample Feature</div>
       </div>
 
       <!-- Tab 1: Prefix Prompt -->
@@ -547,11 +1254,11 @@
             Copy this prefix prompt and prepend it to your Mermaid diagram or design requirements when querying any AI model:
           </span>
           <div style="display:flex; gap:8px;">
-            <button class="primary sm" onclick="copyPromptPrefixText()">📋 Copy Prefix Prompt</button>
-            <button class="sm" onclick="copyFullPromptWithSample()">⚡ Copy Full Prompt with Sample</button>
+            <button class="primary sm" onclick="copyPromptPrefixText()">Copy Prefix Prompt</button>
+            <button class="sm" onclick="copyFullPromptWithSample()">Copy Full Prompt with Sample</button>
           </div>
         </div>
-        <textarea id="prompt-prefix-text" readonly style="width:100%; height:260px; background:#080c14; border:1px solid var(--border); color:#a5d6ff; font-family:var(--font-mono); font-size:12px; line-height:1.5; padding:12px; border-radius:8px; outline:none; resize:vertical;"></textarea>
+        <textarea id="prompt-prefix-text" readonly style="width:100%; height:260px; background:var(--bg-primary); border:1px solid var(--border); color:var(--text-primary); font-family:var(--font-mono); font-size:12px; line-height:1.5; padding:12px; border-radius:8px; outline:none; resize:vertical;"></textarea>
       </div>
 
       <!-- Tab 2: Sample Input -->
@@ -560,16 +1267,16 @@
           <span style="font-size:12px; color:var(--text-secondary);">
             Example Mermaid flowchart diagram & system design text input:
           </span>
-          <button class="primary sm" onclick="copyPromptSampleInput()">📋 Copy Sample Input</button>
+          <button class="primary sm" onclick="copyPromptSampleInput()">Copy Sample Input</button>
         </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
           <div>
             <div style="font-size:11px; font-weight:600; color:var(--accent); margin-bottom:4px;">1. Sample Mermaid Diagram Input Code</div>
-            <textarea id="prompt-sample-mermaid-text" readonly style="width:100%; height:240px; background:#080c14; border:1px solid var(--border); color:#60a5fa; font-family:var(--font-mono); font-size:11px; line-height:1.5; padding:10px; border-radius:6px; outline:none; resize:none;"></textarea>
+            <textarea id="prompt-sample-mermaid-text" readonly style="width:100%; height:240px; background:var(--bg-primary); border:1px solid var(--border); color:var(--text-primary); font-family:var(--font-mono); font-size:11px; line-height:1.5; padding:10px; border-radius:6px; outline:none; resize:none;"></textarea>
           </div>
           <div>
             <div style="font-size:11px; font-weight:600; color:var(--accent); margin-bottom:4px;">2. Sample System Design Text Input</div>
-            <textarea id="prompt-sample-design-text" readonly style="width:100%; height:240px; background:#080c14; border:1px solid var(--border); color:#e2e8f0; font-family:var(--font-mono); font-size:11px; line-height:1.5; padding:10px; border-radius:6px; outline:none; resize:none;"></textarea>
+            <textarea id="prompt-sample-design-text" readonly style="width:100%; height:240px; background:var(--bg-primary); border:1px solid var(--border); color:var(--text-primary); font-family:var(--font-mono); font-size:11px; line-height:1.5; padding:10px; border-radius:6px; outline:none; resize:none;"></textarea>
           </div>
         </div>
       </div>
@@ -580,9 +1287,9 @@
           <span style="font-size:12px; color:var(--text-secondary);">
             Generated Gherkin feature file compliant with BDD Studio (with DocString Payloads & Examples):
           </span>
-          <button class="primary sm" onclick="copyPromptSampleOutput()">📋 Copy Sample Gherkin</button>
+          <button class="primary sm" onclick="copyPromptSampleOutput()">Copy Sample Gherkin</button>
         </div>
-        <textarea id="prompt-sample-output-text" readonly style="width:100%; height:260px; background:#080c14; border:1px solid var(--border); color:#34d399; font-family:var(--font-mono); font-size:12px; line-height:1.5; padding:12px; border-radius:8px; outline:none; resize:vertical;"></textarea>
+        <textarea id="prompt-sample-output-text" readonly style="width:100%; height:260px; background:var(--bg-primary); border:1px solid var(--border); color:var(--text-primary); font-family:var(--font-mono); font-size:12px; line-height:1.5; padding:12px; border-radius:8px; outline:none; resize:vertical;"></textarea>
       </div>
 
       <!-- Tab 4: 1-Click Import Sample -->
@@ -1061,9 +1768,9 @@
     const helpTopics = [
       { 
         id: "author-info", 
-        title: "Author Credits & Architecture Overview", 
-        keywords: "author pratyush ranjan mishra architecture contact linkedin github routeforge overview studio", 
-        content: "<h2>Enterprise BDD Studio v1.0 Enterprise</h2><p>Architected & Developed by <strong>Pratyush Ranjan Mishra</strong>.</p><p>Enterprise BDD Studio bridges the gap between Business Analysts, Solution Architects, and Quality Engineers by combining multi-format payload modeling (ISO 20022 XML, SWIFT MT103, ACH FlatFiles, JSON, YAML) with native Gherkin execution, interactive 1-click simulation, and automatic Jira Story & Sub-Task generation.</p><p><strong>Connect with the Author:</strong></p><ul><li><strong>LinkedIn:</strong> <a href=\"https://www.linkedin.com/in/leadtherightway/\" target=\"_blank\" style=\"color:#60a5fa;\">linkedin.com/in/leadtherightway</a></li><li><strong>GitHub:</strong> <a href=\"https://github.com/geekpratyush\" target=\"_blank\" style=\"color:#60a5fa;\">github.com/geekpratyush</a></li></ul>" 
+        title: "Platform Overview & GitHub Repository", 
+        keywords: "architecture github repository source code overview studio bdd modeler", 
+        content: "<h2>Enterprise BDD Studio v1.0 Enterprise</h2><p>Enterprise BDD Studio bridges the gap between Business Analysts, Solution Architects, and Quality Engineers by combining multi-format payload modeling (ISO 20022 XML, SWIFT MT103, ACH FlatFiles, JSON, YAML) with native Gherkin execution, interactive 1-click simulation, and automatic Jira Story & Sub-Task generation.</p><p><strong>Open Source Repository:</strong></p><ul><li><strong>GitHub Repository:</strong> <a href=\"https://github.com/geekpratyush\" target=\"_blank\" style=\"color:var(--accent);\">github.com/geekpratyush</a></li></ul>" 
       },
       { 
         id: "multi-format-payloads", 
@@ -1302,6 +2009,7 @@
         appState.savedDomainFeatures[appState.context] = appState.features;
       }
       localStorage.setItem('rf_bdd_state_v1.0', JSON.stringify(appState));
+      if (typeof updateStatusBar === 'function') updateStatusBar();
     }
 
     // Open Project Folder Logic
@@ -1426,10 +2134,13 @@
         const groupHeader = document.createElement('div');
         groupHeader.className = 'group-header';
         groupHeader.innerHTML = `
-          <div class="group-title">📁 ${escapeHtml(groupName)} (${filteredFeatures.length})</div>
-          <div style="display:flex; gap:4px; align-items:center;">
-            <button class="sm" onclick="addFeatureToGroup('${escapeHtml(groupName)}', event)" title="Add feature to group">+ Add</button>
-            <button class="danger-sm" onclick="deleteGroupFolder('${escapeHtml(groupName)}', event)" title="Delete Group Folder">✕ Group</button>
+          <div class="group-title">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent); flex-shrink:0;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            ${escapeHtml(groupName)} <span class="group-count">(${filteredFeatures.length})</span>
+          </div>
+          <div class="group-actions">
+            <button class="sm" onclick="addFeatureToGroup('${escapeHtml(groupName)}', event)" title="Add feature to group">+ Feature</button>
+            <button class="danger-sm" onclick="deleteGroupFolder('${escapeHtml(groupName)}', event)" title="Delete Group Folder">✕</button>
           </div>
         `;
         groupDiv.appendChild(groupHeader);
@@ -1438,8 +2149,11 @@
           const item = document.createElement('div');
           item.className = `feature-item ${f.id === appState.activeFeatureId ? 'active' : ''}`;
           item.innerHTML = `
-            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:190px;">${escapeHtml(f.name || 'Untitled Feature')}</span>
-            <button onclick="deleteFeature('${f.id}', event)" class="danger-sm">✕</button>
+            <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px; display:flex; align-items:center; gap:6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity:0.8; flex-shrink:0;"><path d="M13 2H6a2 2 0 0 1-2 2v16a2 2 0 0 1 2 2h12a2 2 0 0 1 2 2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+              ${escapeHtml(f.name || 'Untitled Feature')}
+            </span>
+            <button onclick="deleteFeature('${f.id}', event)" class="feature-item-delete" title="Delete Feature">✕</button>
           `;
           item.onclick = () => { selectFeature(f.id); };
           groupDiv.appendChild(item);
@@ -1466,7 +2180,10 @@
         const tab = document.createElement('div');
         tab.className = `workspace-tab ${f.id === appState.activeFeatureId ? 'active' : ''}`;
         tab.innerHTML = `
-          <span style="overflow:hidden; text-overflow:ellipsis;">📄 ${escapeHtml(f.name)}</span>
+          <span style="overflow:hidden; text-overflow:ellipsis; display:flex; align-items:center; gap:6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent); flex-shrink:0;"><path d="M13 2H6a2 2 0 0 1-2 2v16a2 2 0 0 1 2 2h12a2 2 0 0 1 2 2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>
+            ${escapeHtml(f.name)}
+          </span>
           <span class="close-tab" onclick="closeWorkspaceTab('${f.id}', event)">✕</span>
         `;
         tab.onclick = () => { selectFeature(f.id); };
@@ -2431,14 +3148,14 @@
         if (!appState.sim.exampleRowId || !activeSc.examples.rows.find(r=>r.id===appState.sim.exampleRowId)) {
           appState.sim.exampleRowId = activeSc.examples.rows[0].id;
         }
-        exOptions = `<select id="sim-ex" style="padding:6px; border-radius:4px; background:var(--bg-secondary); color:white; border:1px solid var(--border);" onchange="simChangeEx(this.value)">` + 
+        exOptions = `<select id="sim-ex" style="padding:6px; border-radius:4px; background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border);" onchange="simChangeEx(this.value)">` + 
           activeSc.examples.rows.map((r,i) => `<option value="${r.id}" ${r.id===appState.sim.exampleRowId?'selected':''}>Data Permutation Row ${i+1}: (${r.cells.join(', ')})</option>`).join('') +
           `</select>`;
       }
 
       wrap.innerHTML = `
         <div class="sim-controls">
-          <select style="padding: 6px; border-radius:4px; background:var(--bg-secondary); color:white; border:1px solid var(--border); flex:1;" onchange="simChangeSc(this.value)">
+          <select style="padding: 6px; border-radius:4px; background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border); flex:1;" onchange="simChangeSc(this.value)">
             ${scOptions}
           </select>
           ${exOptions}
@@ -2540,36 +3257,36 @@
       container.innerHTML = `
         <div style="margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
           <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-            <button class="primary" id="gherkin-sync-btn" onclick="applyGherkinEditorChanges()" style="display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(59,130,246,0.3);">
-              ⚡ Apply & Sync Model
+            <button class="primary" id="gherkin-sync-btn" onclick="applyGherkinEditorChanges()" style="display:inline-flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-bolt"></i> Apply & Sync Model
             </button>
             <button onclick="resetGherkinEditorText()" style="background:var(--bg-secondary); border:1px solid var(--border); color:var(--text-secondary);" title="Re-generate Gherkin from active feature data model">
-              🔄 Reset to Model
+              <i class="fa-solid fa-rotate-left"></i> Reset to Model
             </button>
-            <span id="gherkin-sync-badge" style="font-size:12px; color:#10b981; font-weight:600; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:12px;">
-              ✓ Model In Sync
+            <span id="gherkin-sync-badge" style="font-size:12px; color:var(--success); font-weight:600; display:inline-flex; align-items:center; gap:4px; padding:4px 10px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); border-radius:12px;">
+              <i class="fa-solid fa-check"></i> Model In Sync
             </span>
           </div>
 
           <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-            <button onclick="openPromptModal()" style="background:linear-gradient(135deg, rgba(168,85,247,0.25), rgba(59,130,246,0.25)); border:1px solid rgba(168,85,247,0.5); color:#e0e7ff; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="AI System Prompt Generator for Mermaid & Design Text">
-              ✨ AI Prompt Generator
+            <button onclick="openPromptModal()" class="primary" style="display:inline-flex; align-items:center; gap:6px;" title="AI System Prompt Generator for Mermaid & Design Text">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI Prompt Generator
             </button>
-            <button onclick="copyGherkin()">📋 Copy to Clipboard</button>
-            <button onclick="downloadGherkin()">💾 Download .feature File</button>
+            <button onclick="copyGherkin()"><i class="fa-solid fa-copy"></i> Copy to Clipboard</button>
+            <button onclick="downloadGherkin()"><i class="fa-solid fa-download"></i> Download .feature File</button>
           </div>
         </div>
 
-        <div style="position:relative; border-radius:8px; border:1px solid var(--border); overflow:hidden; background:#080c14; box-shadow: 0 8px 24px rgba(0,0,0,0.4);">
-          <div style="display:flex; justify-content:space-between; align-items:center; background:#0d1322; padding:8px 16px; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-secondary);">
+        <div style="position:relative; border-radius:8px; border:1px solid var(--border); overflow:hidden; background:var(--editor-bg); box-shadow: var(--shadow-md);">
+          <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-secondary); padding:8px 16px; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-secondary);">
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+              <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--success);"></span>
               <strong style="color:var(--text-primary); font-weight:600;">Interactive Gherkin Feature Code Editor</strong>
               <span style="color:var(--accent); font-family:var(--font-mono);">${escapeHtml(f.name)}.feature</span>
             </div>
             <div>Press <kbd style="background:var(--bg-primary); padding:2px 6px; border-radius:4px; border:1px solid var(--border); color:var(--text-primary);">Ctrl + Enter</kbd> to Sync Model</div>
           </div>
-          <textarea id="gherkin-editor" spellcheck="false" oninput="onGherkinEditorInput()" onkeydown="onGherkinEditorKeyDown(event)" style="width:100%; height:520px; background:#080c14; color:#e2e8f0; font-family:var(--font-mono); font-size:13px; line-height:1.6; padding:16px; border:none; outline:none; resize:vertical; tab-size:2;">${escapeHtml(gherkin)}</textarea>
+          <textarea id="gherkin-editor" spellcheck="false" oninput="onGherkinEditorInput()" onkeydown="onGherkinEditorKeyDown(event)" style="width:100%; height:520px; background:var(--editor-bg); color:var(--editor-fg); font-family:var(--font-mono); font-size:13px; line-height:1.6; padding:16px; border:none; outline:none; resize:vertical; tab-size:2;">${escapeHtml(gherkin)}</textarea>
         </div>
 
         <div id="gherkin-toast" style="display:none; margin-top:12px; padding:10px 16px; background:rgba(16,185,129,0.15); border:1px solid #10b981; border-radius:6px; color:#34d399; font-size:12px; font-weight:600; align-items:center; gap:8px;">
@@ -2637,7 +3354,7 @@
         ed.value = generateGherkin(f);
         const badge = document.getElementById('gherkin-sync-badge');
         if (badge) {
-          badge.innerHTML = '✓ Model In Sync';
+          badge.innerHTML = '<i class="fa-solid fa-check"></i> Model In Sync';
           badge.style.color = '#10b981';
           badge.style.background = 'rgba(16,185,129,0.1)';
           badge.style.borderColor = 'rgba(16,185,129,0.3)';
@@ -2794,12 +3511,12 @@
             </select>
           </div>
           <div style="display:flex; gap:8px;">
-            <button class="primary" onclick="copyJiraStory()">📋 Copy Jira Story</button>
-            <button onclick="downloadJiraStory()">💾 Download Jira Spec</button>
+            <button class="primary" onclick="copyJiraStory()"><i class="fa-solid fa-copy"></i> Copy Jira Story</button>
+            <button onclick="downloadJiraStory()"><i class="fa-solid fa-download"></i> Download Jira Spec</button>
           </div>
         </div>
 
-        <div class="gherkin-view" id="jira-preview-text" style="line-height:1.6; color:#a5d6ff;">${escapeHtml(jiraContent)}</div>
+        <div class="gherkin-view" id="jira-preview-text" style="line-height:1.6; background:var(--editor-bg); color:var(--editor-fg);">${escapeHtml(jiraContent)}</div>
       `;
       container.appendChild(wrap);
     }
@@ -3314,16 +4031,18 @@ Feature: E-Commerce Checkout & Payment Gateway Integration
     const aboutSlides = [
       {
         title: "Enterprise Requirement Engineering & BDD Studio",
-        subtitle: "Architected & Developed by Pratyush Ranjan Mishra",
-        badge: "Architect & Author",
+        subtitle: "Multi-Format Data Modeling & Behavioral Engineering",
+        badge: "GitHub Open Source",
         image: "assets/editor_showcase.png",
         content: `
           <p style="font-size:13px; color:var(--text-secondary); line-height:1.6; margin-bottom:12px;">
-            <strong>Enterprise BDD Studio v1.0 Enterprise</strong> is a zero-dependency, professional requirement engineering studio created by <strong>Pratyush Ranjan Mishra</strong> to unify Business Analysts, System Architects, and Quality Engineers across complex enterprise environments.
+            <strong>Enterprise BDD Studio v1.0 Enterprise</strong> is a zero-dependency, professional requirement engineering studio to unify Business Analysts, System Architects, and Quality Engineers across complex enterprise environments.
           </p>
           <div style="display:flex; gap:10px; margin-top:14px;">
-            <a href="https://www.linkedin.com/in/leadtherightway/" target="_blank" class="primary" style="text-decoration:none; padding:8px 14px; border-radius:6px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">🔗 LinkedIn Profile (leadtherightway)</a>
-            <a href="https://github.com/geekpratyush" target="_blank" style="text-decoration:none; background:var(--bg-secondary); border:1px solid var(--border); color:white; padding:8px 14px; border-radius:6px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">🐙 GitHub Profile (@geekpratyush)</a>
+            <a href="https://github.com/geekpratyush" target="_blank" class="primary" style="text-decoration:none; padding:8px 14px; border-radius:6px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+              GitHub Repository
+            </a>
           </div>
         `
       },
@@ -3447,8 +4166,97 @@ Feature: E-Commerce Checkout & Payment Gateway Integration
       switchDomain(domain);
     });
 
-    // Initialize
+    // Resizable Sidebar Functionality
+    function initSidebarResizer() {
+      const resizer = document.getElementById('sidebar-resizer');
+      const sidebar = document.querySelector('.sidebar');
+      if (!resizer || !sidebar) return;
+
+      let isResizing = false;
+
+      const savedWidth = localStorage.getItem('rf_sidebar_width');
+      if (savedWidth) {
+        sidebar.style.width = `${savedWidth}px`;
+      }
+
+      resizer.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        resizer.classList.add('resizing');
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isResizing) return;
+        const containerRect = document.querySelector('.app-container').getBoundingClientRect();
+        let newWidth = e.clientX - containerRect.left;
+        
+        const minWidth = 180;
+        const maxWidth = Math.min(650, window.innerWidth * 0.5);
+        
+        if (newWidth < minWidth) newWidth = minWidth;
+        if (newWidth > maxWidth) newWidth = maxWidth;
+
+        sidebar.style.width = `${newWidth}px`;
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (isResizing) {
+          isResizing = false;
+          resizer.classList.remove('resizing');
+          document.body.style.cursor = '';
+          document.body.style.userSelect = '';
+          const currentWidth = parseInt(sidebar.style.width, 10);
+          if (currentWidth) {
+            localStorage.getItem('rf_sidebar_width', currentWidth);
+          }
+        }
+      });
+    }
+
+    // Multi-Theme Engine (6 Studio IDE Themes)
+    function toggleTheme() {
+      const themes = ['dark', 'light', 'high-contrast-dark', 'high-contrast-light', 'dracula', 'github-light'];
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const currentIndex = themes.indexOf(currentTheme);
+      const nextTheme = themes[(currentIndex + 1) % themes.length];
+      setTheme(nextTheme);
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('rf_bdd_theme', theme);
+      
+      const headerSelect = document.getElementById('header-theme-select');
+      const statusSelect = document.getElementById('status-theme-select');
+
+      if (headerSelect) headerSelect.value = theme;
+      if (statusSelect) statusSelect.value = theme;
+    }
+
+    function updateStatusBar() {
+      const domainSpan = document.getElementById('status-domain');
+      const featuresSpan = document.getElementById('status-features');
+      const scenariosSpan = document.getElementById('status-scenarios');
+      
+      if (domainSpan && appState.context) {
+        domainSpan.textContent = appState.context;
+      }
+      if (featuresSpan && appState.features) {
+        featuresSpan.textContent = `${appState.features.length} Feature${appState.features.length === 1 ? '' : 's'}`;
+      }
+      if (scenariosSpan && appState.features) {
+        const totalScenarios = appState.features.reduce((acc, f) => acc + (f.scenarios ? f.scenarios.length : 0), 0);
+        scenariosSpan.textContent = `${totalScenarios} Scenario${totalScenarios === 1 ? '' : 's'}`;
+      }
+    }
+
+    // Initialize Theme & State
+    const savedTheme = localStorage.getItem('rf_bdd_theme') || 'dark';
+    setTheme(savedTheme);
     loadState();
+    initSidebarResizer();
+    updateStatusBar();
   </script>
 </body>
 </html>
